@@ -16,4 +16,3 @@ test('integration testing', async t => {
 
   t.ok(wechaty, 'should instantiate wechaty with puppet mocker')
 })
-

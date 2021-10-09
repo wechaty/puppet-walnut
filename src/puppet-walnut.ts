@@ -16,8 +16,7 @@
  *   limitations under the License.
  *
  */
-import path  from 'path'
-
+import path from 'path'
 import {
   ContactPayload,
 
@@ -41,75 +40,111 @@ import {
 
   log,
   PayloadType,
-}                           from 'wechaty-puppet'
+  MessageType,
+} from 'wechaty-puppet'
 
 import {
   CHATIE_OFFICIAL_ACCOUNT_QRCODE,
   qrCodeForChatie,
   VERSION,
-}                                   from './config'
+} from './config'
 
-// import { Attachment } from './mock/user/types'
-
-import {
-  Mocker,
-  // ContactMock,
-}                     from './mock/mod'
-// import { UrlLink, MiniProgram } from 'wechaty'
-
-export type PuppetMockOptions = PuppetOptions & {
-  mocker?: Mocker,
+export type Puppet5gmsgOptions = PuppetOptions & {
+  sms?: string
 }
 
-class PuppetMock extends Puppet {
+const Koa = require('koa')
+const Router = require('koa-router')
+const koaBody = require('koa-body')
+const rp = require('request-promise')
+const getAccessToken = require('./utils/getAccessToken')
+const url = 'maap.5g-msg.com:30001'
+const sipID = '20210401'
+const app = new Koa()
+const router = new Router()
+
+class PuppetWalnut extends Puppet {
 
   static override readonly VERSION = VERSION
 
   private loopTimer?: NodeJS.Timer
 
-  mocker: Mocker
-
+  sms: string
+  smsid:string
+  private messageStore : { [id:string]:any}
   constructor (
-    public override options: PuppetMockOptions = {},
+    public override options: Puppet5gmsgOptions = {},
   ) {
     super(options)
-    log.verbose('PuppetMock', 'constructor()')
-
-    if (options.mocker) {
-      log.verbose('PuppetMock', 'constructor() use options.mocker')
-      this.mocker = options.mocker
+    log.verbose('PuppetWalnut', 'constructor("%s")', JSON.stringify(options))
+    if (options.sms) {
+      this.sms = options.sms
     } else {
-      log.verbose('PuppetMock', 'constructor() creating the default mocker')
-      this.mocker = new Mocker()
-      // this.mocker.use(SimpleBehavior())
+      log.verbose('PuppetWalnut', 'constructor() creating the default PuppetWalnut')
+      const sms = '+861234'
+      this.sms = sms
     }
-    this.mocker.puppet = this
+    this.smsid = '2sed2680-d680-4ba5-9f4a-3d0c918e3d97'
+    this.messageStore = {}
   }
 
   override async start (): Promise<void> {
-    log.verbose('PuppetMock', 'start()')
-
     if (this.state.on()) {
-      log.warn('PuppetMock', 'start() is called on a ON puppet. await ready(on) and return.')
+      log.warn('PuppetWalnut', 'start() is called on a ON puppet. await ready(on) and return.')
       await this.state.ready('on')
       return
     }
-
     this.state.on('pending')
 
     // Do some async initializing tasks
 
-    this.state.on(true)
+    app.use(koaBody({
+      mltipart: true,
+    }))
 
+    void this.login('f1907c6b123d41c33238a0c3ce304efe')
+
+    app.use(async (ctx: any, next: any) => {
+      const start = Date.now()
+      const ms = Date.now() - start
+      log.verbose(`${ctx.method} ${ctx.url} - ${ms}ms`)
+      await next()
+    })
+    router.get('/sms/notifyPath', async (ctx: any) => {
+      const echostr = ctx.request.header.echostr
+      ctx.body = {
+        appId: '28871d8c83954bc78424ffcbff80285c',
+        echoStr: echostr,
+        msg: 'notifyPath',
+      }
+      ctx.set('appId', '28871d8c83954bc78424ffcbff80285c')
+      ctx.set('echoStr', echostr)
+    })
+
+      .post('/sms/messageNotification/sip:20210401@botplatform.rcs.chinaunicom.cn/messages', async (ctx: any) => {
+        const payload = ctx.request.body
+        this.smsid = payload.messageId
+        this.messageStore[payload.messageId] = payload
+
+        this.emit('message', { messageId: payload.messageId })
+
+      })
+
+    app.use(router.routes())
+    app.use(router.allowedMethods())
+
+    app.listen(5000, () => {
+      log.verbose('服务开启在5000端口')
+    })
+    this.state.on(true)
     /**
      * Start mocker after the puppet fully turned ON.
      */
-    setImmediate(() => this.mocker.start())
+    // setImmediate(() => this.mocker.start())
   }
 
   override async stop (): Promise<void> {
     log.verbose('PuppetMock', 'stop()')
-
     if (this.state.off()) {
       log.warn('PuppetMock', 'stop() is called on a OFF puppet. await ready(off) and return.')
       await this.state.ready('off')
@@ -118,11 +153,11 @@ class PuppetMock extends Puppet {
 
     this.state.off('pending')
 
-    if (this.loopTimer) {
-      clearInterval(this.loopTimer)
-    }
+    // if (this.loopTimer) {
+    //   clearInterval(this.loopTimer)
+    // }
 
-    this.mocker.stop()
+    // this.mocker.stop()
 
     if (this.logonoff()) {
       await this.logout()
@@ -133,12 +168,12 @@ class PuppetMock extends Puppet {
   }
 
   override login (contactId: string): Promise<void> {
-    log.verbose('PuppetMock', 'login()')
+    log.verbose('PuppetWalnut', 'login()')
     return super.login(contactId)
   }
 
   override async logout (): Promise<void> {
-    log.verbose('PuppetMock', 'logout()')
+    log.verbose('PuppetWalnut', 'logout()')
 
     if (!this.id) {
       throw new Error('logout before login?')
@@ -187,8 +222,8 @@ class PuppetMock extends Puppet {
    * Contact
    *
    */
-  override contactAlias (contactId: string)                      : Promise<string>
-  override contactAlias (contactId: string, alias: string | null): Promise<void>
+  override contactAlias(contactId: string): Promise<string>
+  override contactAlias(contactId: string, alias: string | null): Promise<void>
 
   override async contactAlias (contactId: string, alias?: string | null): Promise<void | string> {
     log.verbose('PuppetMock', 'contactAlias(%s, %s)', contactId, alias)
@@ -198,8 +233,8 @@ class PuppetMock extends Puppet {
     }
   }
 
-  override async contactPhone (contactId: string): Promise<string[]>
-  override async contactPhone (contactId: string, phoneList: string[]): Promise<void>
+  override async contactPhone(contactId: string): Promise<string[]>
+  override async contactPhone(contactId: string, phoneList: string[]): Promise<void>
 
   override async contactPhone (contactId: string, phoneList?: string[]): Promise<string[] | void> {
     log.verbose('PuppetMock', 'contactPhone(%s, %s)', contactId, phoneList)
@@ -218,11 +253,12 @@ class PuppetMock extends Puppet {
 
   override async contactList (): Promise<string[]> {
     log.verbose('PuppetMock', 'contactList()')
-    return [...this.mocker.cacheContactPayload.keys()]
+    // return [...this.mocker.cacheContactPayload.keys()]
+    throw new Error('Method not implemented.')
   }
 
-  override async contactAvatar (contactId: string)                : Promise<FileBox>
-  override async contactAvatar (contactId: string, file: FileBox) : Promise<void>
+  override async contactAvatar(contactId: string): Promise<FileBox>
+  override async contactAvatar(contactId: string, file: FileBox): Promise<void>
 
   override async contactAvatar (contactId: string, file?: FileBox): Promise<void | FileBox> {
     log.verbose('PuppetMock', 'contactAvatar(%s)', contactId)
@@ -242,9 +278,9 @@ class PuppetMock extends Puppet {
   }
 
   override async contactRawPayloadParser (payload: ContactPayload) { return payload }
-  override async contactRawPayload (id: string): Promise<ContactPayload> {
-    log.verbose('PuppetMock', 'contactRawPayload(%s)', id)
-    return this.mocker.contactPayload(id)
+  override async contactRawPayload (rawid: string): Promise<ContactPayload> {
+    log.verbose('PuppetMock', 'contactRawPayload(%s)', rawid)
+    throw new Error('Method not implemented.')
   }
 
   /**
@@ -252,7 +288,7 @@ class PuppetMock extends Puppet {
    * Conversation
    *
    */
-  override async conversationReadMark (conversationId: string, hasRead?: boolean) : Promise<void> {
+  override async conversationReadMark (conversationId: string, hasRead?: boolean): Promise<void> {
     log.verbose('PuppetService', 'conversationRead(%s, %s)', conversationId, hasRead)
   }
 
@@ -275,7 +311,7 @@ class PuppetMock extends Puppet {
   override async messageImage (
     messageId: string,
     imageType: ImageType,
-  ) : Promise<FileBox> {
+  ): Promise<FileBox> {
     log.verbose('PuppetMock', 'messageImage(%s, %s[%s])',
       messageId,
       imageType,
@@ -306,15 +342,15 @@ class PuppetMock extends Puppet {
     )
   }
 
-  override async messageUrl (messageId: string)  : Promise<UrlLinkPayload> {
+  override async messageUrl (messageId: string): Promise<UrlLinkPayload> {
     log.verbose('PuppetMock', 'messageUrl(%s)', messageId)
     // const attachment = this.mocker.MockMessage.loadAttachment(messageId)
     // if (attachment instanceof UrlLink) {
     //   return attachment.payload
     // }
     return {
-      title : 'mock title for ' + messageId,
-      url   : 'https://mock.url',
+      title: 'mock title for ' + messageId,
+      url: 'https://mock.url',
     }
   }
 
@@ -325,54 +361,103 @@ class PuppetMock extends Puppet {
     //   return attachment.payload
     // }
     return {
-      title : 'mock title for ' + messageId,
+      title: 'mock title for ' + messageId,
     }
   }
 
-  override async messageRawPayloadParser (payload: MessagePayload) { return payload }
-  override async messageRawPayload (id: string): Promise<MessagePayload> {
-    log.verbose('PuppetMock', 'messageRawPayload(%s)', id)
-    return this.mocker.messagePayload(id)
+  override async messageRawPayloadParser (smsPayload: any): Promise<MessagePayload> {
+    const payload: MessagePayload = {
+      fromId: smsPayload.senderAddress,
+      id: smsPayload.messageId,
+      text: smsPayload.messageList[0].contentText,
+      timestamp: Date.now(),
+      toId: smsPayload.destinationAddress[0],
+      type: MessageType.Text,
+    }
+    log.info('in messageRawPayloadParser')
+    return payload
+  }
+
+  override async messageRawPayload (id: string): Promise<any> {
+    log.verbose('PuppetWalnut', 'messageRawPayload(%s)', id)
+    return this.messageStore[id]
   }
 
   async #messageSend (
     conversationId: string,
     something: string | FileBox, // | Attachment
   ): Promise<void> {
-    log.verbose('PuppetMock', 'messageSend(%s, %s)', conversationId, something)
-    if (!this.id) {
-      throw new Error('no this.id')
+    log.verbose('PuppetWalnut', 'messageSend(%s, %s)', conversationId, something)
+    if (typeof something !== 'string') {
+      return
     }
-
-    const user = this.mocker.ContactMock.load(this.id)
-    let conversation
-
-    if (/@/.test(conversationId)) {
-      // FIXME: extend a new puppet method messageRoomSendText, etc, for Room message?
-      conversation = this.mocker.RoomMock.load(conversationId)
-    } else {
-      conversation = this.mocker.ContactMock.load(conversationId)
+    const token = await getAccessToken()
+    const accessToken = 'accessToken ' + token
+    const URL = `http://${url}/bot/v1/sip:${sipID}@botplatform.rcs.chinaunicom.cn/messages`
+    const options = {
+      method: 'POST',
+      uri: URL,
+      // eslint-disable-next-line sort-keys
+      headers: {
+        'content-type': 'application/json',
+        // eslint-disable-next-line sort-keys
+        Authorization: accessToken,
+      },
+      // eslint-disable-next-line sort-keys
+      body: {
+        contributionId: '7f6505f0ss014012225a31b46d6d3c912',
+        conversationId: 'f1907c6b123d41c33238a0c3ce304efe',
+        messageId: this.smsid,
+        // eslint-disable-next-line sort-keys
+        messageList: [
+          {
+            contentEncoding: 'UTF-8',
+            contentText: something,
+            contentType: 'text/plain',
+          },
+        ],
+        // eslint-disable-next-line sort-keys
+        destinationAddress: [
+          'tel:+8613911833788',
+        ],
+        senderAddress: 'sip:20210401@botplatform.rcs.chinaunicom.cn',
+        serviceCapability: [
+          {
+            capabilityId: 'ChatbotSA',
+            version: '+g.gsma.rcs.botversion="#=1"',
+          },
+        ],
+      },
+      json: true,
     }
-    user.say(something).to(conversation)
+    await rp(options)
+      // eslint-disable-next-line promise/always-return
+      .then((res: any) => {
+        log.verbose(res)
+      })
+      .catch((err: any) => {
+        // eslint-disable-next-line no-console
+        log.verbose(err)
+      })
   }
 
   override async messageSendText (
     conversationId: string,
-    text     : string,
+    text: string,
   ): Promise<void> {
     return this.#messageSend(conversationId, text)
   }
 
   override async messageSendFile (
     conversationId: string,
-    file     : FileBox,
+    file: FileBox,
   ): Promise<void> {
     return this.#messageSend(conversationId, file)
   }
 
   override async messageSendContact (
     conversationId: string,
-    contactId : string,
+    contactId: string,
   ): Promise<void> {
     log.verbose('PuppetMock', 'messageSendUrl(%s, %s)', conversationId, contactId)
 
@@ -383,7 +468,7 @@ class PuppetMock extends Puppet {
   override async messageSendUrl (
     conversationId: string,
     urlLinkPayload: UrlLinkPayload,
-  ) : Promise<void> {
+  ): Promise<void> {
     log.verbose('PuppetMock', 'messageSendUrl(%s, %s)', conversationId, JSON.stringify(urlLinkPayload))
 
     // const url = new UrlLink(urlLinkPayload)
@@ -401,7 +486,7 @@ class PuppetMock extends Puppet {
 
   override async messageForward (
     conversationId: string,
-    messageId : string,
+    messageId: string,
   ): Promise<void> {
     log.verbose('PuppetMock', 'messageForward(%s, %s)',
       conversationId,
@@ -417,17 +502,17 @@ class PuppetMock extends Puppet {
   override async roomRawPayloadParser (payload: RoomPayload) { return payload }
   override async roomRawPayload (id: string): Promise<RoomPayload> {
     log.verbose('PuppetMock', 'roomRawPayload(%s)', id)
-    return this.mocker.roomPayload(id)
+    throw new Error('Method not implemented.')
   }
 
   override async roomList (): Promise<string[]> {
     log.verbose('PuppetMock', 'roomList()')
-    return [...this.mocker.cacheRoomPayload.keys()]
+    throw new Error('Method not implemented.')
   }
 
   override async roomDel (
-    roomId    : string,
-    contactId : string,
+    roomId: string,
+    contactId: string,
   ): Promise<void> {
     log.verbose('PuppetMock', 'roomDel(%s, %s)', roomId, contactId)
   }
@@ -445,14 +530,14 @@ class PuppetMock extends Puppet {
   }
 
   override async roomAdd (
-    roomId    : string,
-    contactId : string,
+    roomId: string,
+    contactId: string,
   ): Promise<void> {
     log.verbose('PuppetMock', 'roomAdd(%s, %s)', roomId, contactId)
   }
 
-  override async roomTopic (roomId: string)                : Promise<string>
-  override async roomTopic (roomId: string, topic: string) : Promise<void>
+  override async roomTopic(roomId: string): Promise<string>
+  override async roomTopic(roomId: string, topic: string): Promise<void>
 
   override async roomTopic (
     roomId: string,
@@ -468,8 +553,8 @@ class PuppetMock extends Puppet {
   }
 
   override async roomCreate (
-    contactIdList : string[],
-    topic         : string,
+    contactIdList: string[],
+    topic: string,
   ): Promise<string> {
     log.verbose('PuppetMock', 'roomCreate(%s, %s)', contactIdList, topic)
 
@@ -485,30 +570,30 @@ class PuppetMock extends Puppet {
     return roomId + ' mock qrcode'
   }
 
-  override async roomMemberList (roomId: string) : Promise<string[]> {
+  override async roomMemberList (roomId: string): Promise<string[]> {
     log.verbose('PuppetMock', 'roomMemberList(%s)', roomId)
     return []
   }
 
-  override async roomMemberRawPayload (roomId: string, contactId: string): Promise<RoomMemberPayload>  {
+  override async roomMemberRawPayload (roomId: string, contactId: string): Promise<RoomMemberPayload> {
     log.verbose('PuppetMock', 'roomMemberRawPayload(%s, %s)', roomId, contactId)
     return {
-      avatar    : 'mock-avatar-data',
-      id        : 'xx',
-      name      : 'mock-name',
-      roomAlias : 'yy',
+      avatar: 'mock-avatar-data',
+      id: 'xx',
+      name: 'mock-name',
+      roomAlias: 'yy',
     }
   }
 
-  override async roomMemberRawPayloadParser (rawPayload: RoomMemberPayload): Promise<RoomMemberPayload>  {
+  override async roomMemberRawPayloadParser (rawPayload: RoomMemberPayload): Promise<RoomMemberPayload> {
     log.verbose('PuppetMock', 'roomMemberRawPayloadParser(%s)', rawPayload)
     return rawPayload
   }
 
-  override async roomAnnounce (roomId: string)                : Promise<string>
-  override async roomAnnounce (roomId: string, text: string)  : Promise<void>
+  override async roomAnnounce(roomId: string): Promise<string>
+  override async roomAnnounce(roomId: string, text: string): Promise<void>
 
-  override async roomAnnounce (roomId: string, text?: string) : Promise<void | string> {
+  override async roomAnnounce (roomId: string, text?: string): Promise<void | string> {
     if (text) {
       return
     }
@@ -561,14 +646,14 @@ class PuppetMock extends Puppet {
   }
 
   override async friendshipAdd (
-    contactId : string,
-    hello     : string,
+    contactId: string,
+    hello: string,
   ): Promise<void> {
     log.verbose('PuppetMock', 'friendshipAdd(%s, %s)', contactId, hello)
   }
 
   override async friendshipAccept (
-    friendshipId : string,
+    friendshipId: string,
   ): Promise<void> {
     log.verbose('PuppetMock', 'friendshipAccept(%s)', friendshipId)
   }
@@ -607,5 +692,5 @@ class PuppetMock extends Puppet {
 
 }
 
-export { PuppetMock }
-export default PuppetMock
+export { PuppetWalnut }
+export default PuppetWalnut

@@ -24,19 +24,16 @@ import {
   EventMessagePayload,
 }                         from 'wechaty-puppet'
 import {
-  PuppetMock,
-  mock,
+  PuppetWalnut,
 }               from '../src/mod'
-
-const mocker = new mock.Mocker()
-mocker.use(mock.SimpleEnvironment())
 
 /**
  *
  * 1. Declare your Bot!
  *
  */
-const puppet = new PuppetMock({ mocker })
+// const puppet = new Puppet5gmsg()
+const puppet = new PuppetWalnut({ sms:'+861234' })
 
 /**
  *
@@ -56,7 +53,7 @@ puppet
  *
  */
 puppet.start()
-  .catch(async e => {
+  .catch(async (e: any) => {
     console.error('Bot start() fail:', e)
     await puppet.stop()
     process.exit(-1)
@@ -81,6 +78,7 @@ function onScan (payload: EventScanPayload) {
       encodeURIComponent(payload.qrcode),
     ].join('')
     console.info(`[${payload.status}] ${qrcodeImageUrl}\nScan QR Code above to log in: `)
+
   } else {
     console.info(`[${payload.status}]`)
   }
@@ -112,6 +110,19 @@ function onError (payload: EventErrorPayload) {
  */
 async function onMessage (payload: EventMessagePayload) {
   const msgPayload = await puppet.messagePayload(payload.messageId)
+  if (/ding/i.test(msgPayload.text || '')) {
+    console.info('ding success')
+    await puppet.messageSendText(
+     msgPayload.fromId!,
+     'dong',
+    )
+  } else {
+    console.info('ding not found')
+    await puppet.messageSendText(
+      msgPayload.fromId!,
+      'ding please',
+    )
+  }
   console.info(JSON.stringify(msgPayload))
 }
 

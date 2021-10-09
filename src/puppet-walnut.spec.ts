@@ -2,13 +2,13 @@
 
 import test  from 'blue-tape'
 
-import { PuppetMock } from './puppet-mock'
+import { PuppetWalnut } from './puppet-walnut'
 
-class PuppetMockTest extends PuppetMock {
+class PuppetWalnutTest extends PuppetWalnut {
 }
 
-test('PuppetMock perfect restart testing', async (t) => {
-  const puppet = new PuppetMockTest()
+test('PuppetWalnut perfect restart testing', async (t) => {
+  const puppet = new PuppetWalnutTest({ sms: '12345' })
   try {
 
     for (let i = 0; i < 3; i++) {
@@ -21,7 +21,7 @@ test('PuppetMock perfect restart testing', async (t) => {
       t.pass('start/stop-ed at #' + i)
     }
 
-    t.pass('PuppetMock() perfect restart pass.')
+    t.pass('PuppetWalnut() perfect restart pass.')
   } catch (e) {
     t.fail(e)
   }

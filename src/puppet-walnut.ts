@@ -138,6 +138,7 @@ class PuppetWalnut extends Puppet {
         app.listen(port, () => {
           console.log('服务开启在端口' + port)
         })
+        return port
       })
       .catch((err:any) => {
         log.info(err)
@@ -440,6 +441,7 @@ class PuppetWalnut extends Puppet {
       // eslint-disable-next-line promise/always-return
       .then((res: any) => {
         log.verbose(res)
+        return res
       })
       .catch((err: any) => {
         // eslint-disable-next-line no-console

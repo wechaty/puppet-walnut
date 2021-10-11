@@ -124,6 +124,7 @@ class PuppetWalnut extends Puppet {
       .post('/sms/messageNotification/sip:20210401@botplatform.rcs.chinaunicom.cn/messages', async (ctx: any) => {
         const payload = ctx.request.body
         this.smsid = payload.messageId
+        
         this.messageStore[payload.messageId] = payload
 
         this.emit('message', { messageId: payload.messageId })

@@ -49,7 +49,7 @@ import {
   VERSION,
 } from './config'
 
-export type Puppet5gmsgOptions = PuppetOptions & {
+export type PuppetWalnutOptions = PuppetOptions & {
   sms?: string
 }
 
@@ -62,6 +62,7 @@ const url = 'maap.5g-msg.com:30001'
 const sipID = '20210401'
 const app = new Koa()
 const router = new Router()
+const portfinder = require('portfinder')
 
 class PuppetWalnut extends Puppet {
 
@@ -73,7 +74,7 @@ class PuppetWalnut extends Puppet {
   smsid:string
   private messageStore : { [id:string]:any}
   constructor (
-    public override options: Puppet5gmsgOptions = {},
+    public override options: PuppetWalnutOptions = {},
   ) {
     super(options)
     log.verbose('PuppetWalnut', 'constructor("%s")', JSON.stringify(options))
@@ -132,10 +133,15 @@ class PuppetWalnut extends Puppet {
 
     app.use(router.routes())
     app.use(router.allowedMethods())
-
-    app.listen(5000, () => {
-      log.verbose('服务开启在5000端口')
-    })
+    portfinder.getPortPromise()
+      .then((port:any) => {
+        app.listen(port, () => {
+          console.log('服务开启在端口' + port)
+        })
+      })
+      .catch((err:any) => {
+        log.info(err)
+      })
     this.state.on(true)
     /**
      * Start mocker after the puppet fully turned ON.

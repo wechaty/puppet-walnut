@@ -144,9 +144,9 @@ class PuppetWalnut extends Puppet {
   }
 
   override async stop (): Promise<void> {
-    log.verbose('PuppetMock', 'stop()')
+    log.verbose('PuppetWalnut', 'stop()')
     if (this.state.off()) {
-      log.warn('PuppetMock', 'stop() is called on a OFF puppet. await ready(off) and return.')
+      log.warn('PuppetWalnut', 'stop() is called on a OFF puppet. await ready(off) and return.')
       await this.state.ready('off')
       return
     }
@@ -186,12 +186,12 @@ class PuppetWalnut extends Puppet {
   }
 
   override ding (data?: string): void {
-    log.silly('PuppetMock', 'ding(%s)', data || '')
+    log.silly('PuppetWalnut', 'ding(%s)', data || '')
     setTimeout(() => this.emit('dong', { data: data || '' }), 1000)
   }
 
   override unref (): void {
-    log.verbose('PuppetMock', 'unref()')
+    log.verbose('PuppetWalnut', 'unref()')
     super.unref()
     if (this.loopTimer) {
       this.loopTimer.unref()
@@ -205,16 +205,16 @@ class PuppetWalnut extends Puppet {
    *
    */
   override async contactSelfQRCode (): Promise<string> {
-    log.verbose('PuppetMock', 'contactSelfQRCode()')
+    log.verbose('PuppetWalnut', 'contactSelfQRCode()')
     return CHATIE_OFFICIAL_ACCOUNT_QRCODE
   }
 
   override async contactSelfName (name: string): Promise<void> {
-    log.verbose('PuppetMock', 'contactSelfName(%s)', name)
+    log.verbose('PuppetWalnut', 'contactSelfName(%s)', name)
   }
 
   override async contactSelfSignature (signature: string): Promise<void> {
-    log.verbose('PuppetMock', 'contactSelfSignature(%s)', signature)
+    log.verbose('PuppetWalnut', 'contactSelfSignature(%s)', signature)
   }
 
   /**
@@ -226,7 +226,7 @@ class PuppetWalnut extends Puppet {
   override contactAlias(contactId: string, alias: string | null): Promise<void>
 
   override async contactAlias (contactId: string, alias?: string | null): Promise<void | string> {
-    log.verbose('PuppetMock', 'contactAlias(%s, %s)', contactId, alias)
+    log.verbose('PuppetWalnut', 'contactAlias(%s, %s)', contactId, alias)
 
     if (typeof alias === 'undefined') {
       return 'mock alias'
@@ -237,22 +237,22 @@ class PuppetWalnut extends Puppet {
   override async contactPhone(contactId: string, phoneList: string[]): Promise<void>
 
   override async contactPhone (contactId: string, phoneList?: string[]): Promise<string[] | void> {
-    log.verbose('PuppetMock', 'contactPhone(%s, %s)', contactId, phoneList)
+    log.verbose('PuppetWalnut', 'contactPhone(%s, %s)', contactId, phoneList)
     if (typeof phoneList === 'undefined') {
       return []
     }
   }
 
   override async contactCorporationRemark (contactId: string, corporationRemark: string) {
-    log.verbose('PuppetMock', 'contactCorporationRemark(%s, %s)', contactId, corporationRemark)
+    log.verbose('PuppetWalnut', 'contactCorporationRemark(%s, %s)', contactId, corporationRemark)
   }
 
   override async contactDescription (contactId: string, description: string) {
-    log.verbose('PuppetMock', 'contactDescription(%s, %s)', contactId, description)
+    log.verbose('PuppetWalnut', 'contactDescription(%s, %s)', contactId, description)
   }
 
   override async contactList (): Promise<string[]> {
-    log.verbose('PuppetMock', 'contactList()')
+    log.verbose('PuppetWalnut', 'contactList()')
     // return [...this.mocker.cacheContactPayload.keys()]
     throw new Error('Method not implemented.')
   }
@@ -261,7 +261,7 @@ class PuppetWalnut extends Puppet {
   override async contactAvatar(contactId: string, file: FileBox): Promise<void>
 
   override async contactAvatar (contactId: string, file?: FileBox): Promise<void | FileBox> {
-    log.verbose('PuppetMock', 'contactAvatar(%s)', contactId)
+    log.verbose('PuppetWalnut', 'contactAvatar(%s)', contactId)
 
     /**
      * 1. set
@@ -279,7 +279,7 @@ class PuppetWalnut extends Puppet {
 
   override async contactRawPayloadParser (payload: ContactPayload) { return payload }
   override async contactRawPayload (rawid: string): Promise<ContactPayload> {
-    log.verbose('PuppetMock', 'contactRawPayload(%s)', rawid)
+    log.verbose('PuppetWalnut', 'contactRawPayload(%s)', rawid)
     throw new Error('Method not implemented.')
   }
 
@@ -300,7 +300,7 @@ class PuppetWalnut extends Puppet {
   override async messageContact (
     messageId: string,
   ): Promise<string> {
-    log.verbose('PuppetMock', 'messageContact(%s)', messageId)
+    log.verbose('PuppetWalnut', 'messageContact(%s)', messageId)
     // const attachment = this.mocker.MockMessage.loadAttachment(messageId)
     // if (attachment instanceof ContactMock) {
     //   return attachment.id
@@ -312,7 +312,7 @@ class PuppetWalnut extends Puppet {
     messageId: string,
     imageType: ImageType,
   ): Promise<FileBox> {
-    log.verbose('PuppetMock', 'messageImage(%s, %s[%s])',
+    log.verbose('PuppetWalnut', 'messageImage(%s, %s[%s])',
       messageId,
       imageType,
       ImageType[imageType],
@@ -327,7 +327,7 @@ class PuppetWalnut extends Puppet {
   override async messageRecall (
     messageId: string,
   ): Promise<boolean> {
-    log.verbose('PuppetMock', 'messageRecall(%s)', messageId)
+    log.verbose('PuppetWalnut', 'messageRecall(%s)', messageId)
     return false
   }
 
@@ -343,7 +343,7 @@ class PuppetWalnut extends Puppet {
   }
 
   override async messageUrl (messageId: string): Promise<UrlLinkPayload> {
-    log.verbose('PuppetMock', 'messageUrl(%s)', messageId)
+    log.verbose('PuppetWalnut', 'messageUrl(%s)', messageId)
     // const attachment = this.mocker.MockMessage.loadAttachment(messageId)
     // if (attachment instanceof UrlLink) {
     //   return attachment.payload
@@ -355,7 +355,7 @@ class PuppetWalnut extends Puppet {
   }
 
   override async messageMiniProgram (messageId: string): Promise<MiniProgramPayload> {
-    log.verbose('PuppetMock', 'messageMiniProgram(%s)', messageId)
+    log.verbose('PuppetWalnut', 'messageMiniProgram(%s)', messageId)
     // const attachment = this.mocker.MockMessage.loadAttachment(messageId)
     // if (attachment instanceof MiniProgram) {
     //   return attachment.payload

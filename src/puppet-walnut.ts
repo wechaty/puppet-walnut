@@ -131,7 +131,7 @@ class PuppetWalnut extends Puppet {
     app.use(router.routes())
     app.use(router.allowedMethods())
 
-    app.listen(5000, () => {
+    app.listen(1995, () => {
       log.verbose('服务开启在5000端口')
     })
     this.state.on(true)

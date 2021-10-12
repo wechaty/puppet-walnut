@@ -13,5 +13,5 @@ import {
 test('integration testing', async t => {
   const puppet = new PuppetWalnut({  })
   const wechaty = new Wechaty({ puppet })
-  t.ok(wechaty, 'should instantiate wechaty with puppet mocker')
+  t.ok(wechaty, 'should instantiate wechaty with puppet walnut')
 })

@@ -136,7 +136,7 @@ class PuppetWalnut extends Puppet {
     portfinder.getPortPromise()
       .then((port:any) => {
         app.listen(port, () => {
-          console.log('服务开启在端口' + port)
+          log.info('服务开启在端口' + port)
         })
         return port
       })

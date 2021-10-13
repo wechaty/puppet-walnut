@@ -67,7 +67,7 @@ class PuppetWalnut extends Puppet {
 
   static override readonly VERSION = VERSION
 
-  private loopTimer?: NodeJS.Timer
+  private loopTimer?: ReturnType<typeof setTimeout>
 
   sms: string
   smsid:string

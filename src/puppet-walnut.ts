@@ -63,7 +63,6 @@ const sipID = '20210401'
 const app = new Koa()
 const router = new Router()
 const portfinder = require('portfinder')
-
 class PuppetWalnut extends Puppet {
 
   static override readonly VERSION = VERSION
@@ -72,6 +71,7 @@ class PuppetWalnut extends Puppet {
 
   sms: string
   smsid:string
+  server:any
   private messageStore : { [id:string]:any}
   constructor (
     public override options: PuppetWalnutOptions = {},
@@ -135,7 +135,7 @@ class PuppetWalnut extends Puppet {
     app.use(router.allowedMethods())
     portfinder.getPortPromise()
       .then((port:any) => {
-        app.listen(port, () => {
+       this.server = app.listen(port, () => {
           log.info('服务开启在端口' + port)
         })
         return port
@@ -171,6 +171,7 @@ class PuppetWalnut extends Puppet {
     }
 
     // await some tasks...
+    this.server.close()
     this.state.off(true)
   }
 

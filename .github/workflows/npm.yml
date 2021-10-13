@@ -43,10 +43,10 @@ jobs:
         run: npm install
 
       - name: Generate Version
-        run: ./scripts/generate-version.sh
+        run: sh ./scripts/generate-version.sh
 
       - name: Pack Testing
-        run: ./scripts/npm-pack-testing.sh
+        run: sh ./scripts/npm-pack-testing.sh
 
   publish:
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/v'))

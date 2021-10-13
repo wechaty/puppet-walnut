@@ -85,7 +85,14 @@ class PuppetWalnut extends Puppet {
       const sms = '+861234'
       this.sms = sms
     }
-    this.smsid = '2fs1313b-1fe9-w14c-bc55-f5r41f30d73c'
+    const arr = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+    let str = ''
+    let pos = 0
+    for (let i = 0; i < 12; i++) {
+      pos = Math.round(Math.random() * (arr.length - 1))
+      str += arr[pos]
+    }
+    this.smsid = '2fs1313b-1fe9-w14c-bc55-' + str
     this.messageStore = {}
   }
 
@@ -109,7 +116,7 @@ class PuppetWalnut extends Puppet {
       log.verbose(`${ctx.method} ${ctx.url} - ${ms}ms`)
       await next()
     })
-    this.login('f1907c6b123d41c33238a0c3ce304efe')
+    void this.login('f1907c6b123d41c33238a0c3ce304efe')
     router.get('/sms/notifyPath', async (ctx: any) => {
       const echostr = ctx.request.header.echostr
       ctx.body = {
@@ -117,8 +124,7 @@ class PuppetWalnut extends Puppet {
         echoStr: echostr,
         msg: 'notifyPath',
       }
-      this.id='28871d8c83954bc78424ffcbff80285c'
-      log.info(this.id)
+      this.id = '28871d8c83954bc78424ffcbff80285c'
       ctx.set('appId', '28871d8c83954bc78424ffcbff80285c')
       ctx.set('echoStr', echostr)
     })
@@ -173,7 +179,7 @@ class PuppetWalnut extends Puppet {
 
     // await some tasks...
     this.server.close()
-    this.id=undefined
+    this.id = undefined
     this.state.off(true)
   }
 

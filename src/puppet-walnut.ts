@@ -85,7 +85,7 @@ class PuppetWalnut extends Puppet {
       const sms = '+861234'
       this.sms = sms
     }
-    this.smsid = '2sed2680-d680-4ba5-9f4a-3d0c918e3d97'
+    this.smsid = '2fs1313b-1fe9-w14c-bc55-f5r41f30d73c'
     this.messageStore = {}
   }
 
@@ -103,14 +103,13 @@ class PuppetWalnut extends Puppet {
       mltipart: true,
     }))
 
-    void this.login('f1907c6b123d41c33238a0c3ce304efe')
-
     app.use(async (ctx: any, next: any) => {
       const start = Date.now()
       const ms = Date.now() - start
       log.verbose(`${ctx.method} ${ctx.url} - ${ms}ms`)
       await next()
     })
+    this.login('f1907c6b123d41c33238a0c3ce304efe')
     router.get('/sms/notifyPath', async (ctx: any) => {
       const echostr = ctx.request.header.echostr
       ctx.body = {
@@ -118,6 +117,8 @@ class PuppetWalnut extends Puppet {
         echoStr: echostr,
         msg: 'notifyPath',
       }
+      this.id='28871d8c83954bc78424ffcbff80285c'
+      log.info(this.id)
       ctx.set('appId', '28871d8c83954bc78424ffcbff80285c')
       ctx.set('echoStr', echostr)
     })
@@ -172,6 +173,7 @@ class PuppetWalnut extends Puppet {
 
     // await some tasks...
     this.server.close()
+    this.id=undefined
     this.state.off(true)
   }
 

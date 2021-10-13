@@ -135,7 +135,7 @@ class PuppetWalnut extends Puppet {
     app.use(router.allowedMethods())
     portfinder.getPortPromise()
       .then((port:any) => {
-       this.server = app.listen(port, () => {
+        this.server = app.listen(port, () => {
           log.info('服务开启在端口' + port)
         })
         return port

@@ -50,15 +50,19 @@
     "@chatie/tsconfig": "^0.17.2",
     "@types/cuid": "^1.3.1",
     "@types/faker": "^5.5.7",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/eslint-plugin-tslint": "^5.0.0",
+    "@typescript-eslint/parser": "^5.0.0",
     "pkg-jq": "^0.2.11",
     "shx": "^0.3.3",
     "tstest": "^0.4.10",
-    "typescript": "4.3",
+    "typescript": "^4.3.5",
     "wechaty": "^0.65.6",
     "wechaty-puppet": "^0.41.3"
   },
   "dependencies": {
     "cuid": "^2.1.8",
+    "eslint": "^8.0.0",
     "faker": "^5.5.3",
     "koa": "^2.13.1",
     "koa-body": "^4.2.0",
@@ -66,7 +70,8 @@
     "portfinder": "^1.0.28",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
-    "typed-emitter": "^1.3.1"
+    "typed-emitter": "^1.3.1",
+    "typescript-eslint": "0.0.1-alpha.0"
   },
   "publishConfig": {
     "access": "public",

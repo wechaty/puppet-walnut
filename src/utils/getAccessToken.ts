@@ -63,10 +63,6 @@ const getAccessToken = async () => {
   }
 }
 
-setInterval(async () => {
-  await updateAccessToken()
-}, (7200 - 300) * 1000)
-
 // updateAccessToken()
 // console.log(getAccessToken())
 module.exports = getAccessToken

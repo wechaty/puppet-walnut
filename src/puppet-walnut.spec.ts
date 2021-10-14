@@ -1,5 +1,4 @@
 #!/usr/bin/env -S node
-
 import test  from 'tstest'
 
 import { PuppetWalnut } from './puppet-walnut'
@@ -18,7 +17,9 @@ import { PuppetWalnut } from './puppet-walnut'
 
 test.skip('PuppetWalnut perfect restart testing', async (t) => {
   const puppet = new PuppetWalnut({ sms: '12345' })
-  await puppet.start()
-  await puppet.stop()
-  t.pass('perfect restart succeed at #')
+  for (let n = 0; n < 3; n++) {
+    await puppet.start()
+    await puppet.stop()
+    t.pass('perfect restart succeed at #' + n)
+  }
 })

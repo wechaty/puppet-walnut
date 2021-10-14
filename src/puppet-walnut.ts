@@ -110,7 +110,7 @@ class PuppetWalnut extends Puppet {
       await next()
     })
     void this.login(this.conversationId)
-    this.router = router.get('/sms/notifyPath', async (ctx: any) => {
+    router.get('/sms/notifyPath', async (ctx: any) => {
       const echostr = ctx.request.header.echostr
       ctx.body = {
         appId: this.appId,
@@ -122,14 +122,14 @@ class PuppetWalnut extends Puppet {
       ctx.set('echoStr', echostr)
     })
 
-    router.post('/sms/messageNotification/sip:20210401@botplatform.rcs.chinaunicom.cn/messages', async (ctx: any) => {
-      const payload = ctx.request.body
-      this.smsid = payload.messageId
-      this.messageStore[payload.messageId] = payload
+      .post('/sms/messageNotification/sip:20210401@botplatform.rcs.chinaunicom.cn/messages', async (ctx: any) => {
+        const payload = ctx.request.body
+        this.smsid = payload.messageId
+        this.messageStore[payload.messageId] = payload
 
-      this.emit('message', { messageId: payload.messageId })
+        this.emit('message', { messageId: payload.messageId })
 
-    })
+      })
 
     app.use(router.routes())
     app.use(router.allowedMethods())

@@ -165,7 +165,6 @@ class PuppetWalnut extends Puppet {
     // await some tasks...
     this.server.close()
     router.close()
-    this.id = undefined
     this.state.off(true)
   }
 

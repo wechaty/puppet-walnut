@@ -1,6 +1,6 @@
 {
   "name": "wechaty-puppet-walnut",
-  "version": "0.1.16",
+  "version": "0.1.17",
   "description": "Puppet Walnut for Wechaty",
   "directories": {
     "test": "tests"

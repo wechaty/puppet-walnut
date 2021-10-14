@@ -67,7 +67,6 @@ class PuppetWalnut extends Puppet {
   sms: string
   smsid:string
   server:any
-  router:any
   appId: string = process.env['WECHATY_PUPPET_WALNUT_APPID'] !
   conversationId: string = process.env['WECHATY_PUPPET_WALNUT_CONVERSATIONID'] !
   phone: string = process.env['WECHATY_PUPPET_WALNUT_PHONE'] !
@@ -165,7 +164,7 @@ class PuppetWalnut extends Puppet {
 
     // await some tasks...
     this.server.close()
-    this.router.close()
+    router.close()
     this.id = undefined
     this.state.off(true)
   }

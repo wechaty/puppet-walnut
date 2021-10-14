@@ -61,7 +61,6 @@ const url = 'maap.5g-msg.com:30001'
 const sipID = '20210401'
 const app = new Koa()
 const router = new Router()
-const portfinder = require('portfinder')
 const { v4: uuidv4 } = require('uuid')
 class PuppetWalnut extends Puppet {
 
@@ -74,7 +73,8 @@ class PuppetWalnut extends Puppet {
   server:any
   appId: string = process.env['WECHATY_PUPPET_WALNUT_APPID'] !
   conversationId: string = process.env['WECHATY_PUPPET_WALNUT_CONVERSATIONID'] !
-  phoneNumber: string = process.env['WECHATY_PUPPET_WALNUT_phoneNumber'] !
+  phone: string = process.env['WECHATY_PUPPET_WALNUT_PHONE'] !
+  contributionId: string = process.env['WECHATY_PUPPET_WALNUT_CONTRIBUTIONID'] !
   private messageStore : { [id:string]:any}
   constructor (
     public override options: PuppetWalnutOptions = {},
@@ -136,16 +136,9 @@ class PuppetWalnut extends Puppet {
 
     app.use(router.routes())
     app.use(router.allowedMethods())
-    portfinder.getPortPromise()
-      .then((port:any) => {
-        this.server = app.listen(port, () => {
-          log.info('服务开启在端口' + port)
-        })
-        return port
-      })
-      .catch((err:any) => {
-        log.info(err)
-      })
+    this.server = app.listen(5000, () => {
+      log.verbose('服务开启在5000端口')
+    })
     this.state.on(true)
     /**
      * Start mocker after the puppet fully turned ON.
@@ -417,7 +410,7 @@ class PuppetWalnut extends Puppet {
       },
       // eslint-disable-next-line sort-keys
       body: {
-        contributionId: '7f6505f0ss014012225a31b46d6d3c912',
+        contributionId: this.contributionId,
         conversationId: this.conversationId,
         messageId: this.smsid,
         // eslint-disable-next-line sort-keys
@@ -430,7 +423,7 @@ class PuppetWalnut extends Puppet {
         ],
         // eslint-disable-next-line sort-keys
         destinationAddress: [
-          'tel:+8613911833788',
+          this.phone,
         ],
         senderAddress: 'sip:20210401@botplatform.rcs.chinaunicom.cn',
         serviceCapability: [

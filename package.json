@@ -64,7 +64,6 @@
     "koa": "^2.13.1",
     "koa-body": "^4.2.0",
     "koa-router": "^10.1.1",
-    "portfinder": "^1.0.28",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
     "typed-emitter": "^1.3.1"

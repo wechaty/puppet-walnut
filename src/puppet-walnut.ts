@@ -67,6 +67,7 @@ class PuppetWalnut extends Puppet {
   sms: string
   smsid:string
   server:any
+  router:any
   appId: string = process.env['WECHATY_PUPPET_WALNUT_APPID'] !
   conversationId: string = process.env['WECHATY_PUPPET_WALNUT_CONVERSATIONID'] !
   phone: string = process.env['WECHATY_PUPPET_WALNUT_PHONE'] !
@@ -109,7 +110,7 @@ class PuppetWalnut extends Puppet {
       await next()
     })
     void this.login(this.conversationId)
-    router.get('/sms/notifyPath', async (ctx: any) => {
+    this.router = router.get('/sms/notifyPath', async (ctx: any) => {
       const echostr = ctx.request.header.echostr
       ctx.body = {
         appId: this.appId,
@@ -121,14 +122,14 @@ class PuppetWalnut extends Puppet {
       ctx.set('echoStr', echostr)
     })
 
-      .post('/sms/messageNotification/sip:20210401@botplatform.rcs.chinaunicom.cn/messages', async (ctx: any) => {
-        const payload = ctx.request.body
-        this.smsid = payload.messageId
-        this.messageStore[payload.messageId] = payload
+    router.post('/sms/messageNotification/sip:20210401@botplatform.rcs.chinaunicom.cn/messages', async (ctx: any) => {
+      const payload = ctx.request.body
+      this.smsid = payload.messageId
+      this.messageStore[payload.messageId] = payload
 
-        this.emit('message', { messageId: payload.messageId })
+      this.emit('message', { messageId: payload.messageId })
 
-      })
+    })
 
     app.use(router.routes())
     app.use(router.allowedMethods())
@@ -164,6 +165,7 @@ class PuppetWalnut extends Puppet {
 
     // await some tasks...
     this.server.close()
+    this.router.close()
     this.id = undefined
     this.state.off(true)
   }

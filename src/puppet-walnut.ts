@@ -39,13 +39,11 @@ import {
   MiniProgramPayload,
 
   log,
-  PayloadType,
   MessageType,
+  FriendshipAddOptions,
 } from 'wechaty-puppet'
 
 import {
-  CHATIE_OFFICIAL_ACCOUNT_QRCODE,
-  qrCodeForChatie,
   VERSION,
 } from './config'
 
@@ -65,8 +63,6 @@ const { v4: uuidv4 } = require('uuid')
 class PuppetWalnut extends Puppet {
 
   static override readonly VERSION = VERSION
-
-  private loopTimer?: ReturnType<typeof setTimeout>
 
   sms: string
   smsid:string
@@ -195,38 +191,23 @@ class PuppetWalnut extends Puppet {
     setTimeout(() => this.emit('dong', { data: data || '' }), 1000)
   }
 
-  override unref (): void {
-    log.verbose('PuppetWalnut', 'unref()')
-    super.unref()
-    if (this.loopTimer) {
-      this.loopTimer.unref()
-    }
-  }
-
-  /**
-   *
-   * ContactSelf
-   *
-   *
-   */
-  override async contactSelfQRCode (): Promise<string> {
-    log.verbose('PuppetWalnut', 'contactSelfQRCode()')
-    return CHATIE_OFFICIAL_ACCOUNT_QRCODE
-  }
-
-  override async contactSelfName (name: string): Promise<void> {
-    log.verbose('PuppetWalnut', 'contactSelfName(%s)', name)
-  }
-
-  override async contactSelfSignature (signature: string): Promise<void> {
-    log.verbose('PuppetWalnut', 'contactSelfSignature(%s)', signature)
-  }
-
   /**
    *
    * Contact
    *
    */
+  contactSelfName (_name: string): Promise<void> {
+    throw new Error('Method not implemented.')
+  }
+
+  contactSelfQRCode (): Promise<string> {
+    throw new Error('Method not implemented.')
+  }
+
+  contactSelfSignature (_signature: string): Promise<void> {
+    throw new Error('Method not implemented.')
+  }
+
   override contactAlias(contactId: string): Promise<string>
   override contactAlias(contactId: string, alias: string | null): Promise<void>
 
@@ -293,83 +274,6 @@ class PuppetWalnut extends Puppet {
    * Conversation
    *
    */
-  override async conversationReadMark (conversationId: string, hasRead?: boolean): Promise<void> {
-    log.verbose('PuppetService', 'conversationRead(%s, %s)', conversationId, hasRead)
-  }
-
-  /**
-   *
-   * Message
-   *
-   */
-  override async messageContact (
-    messageId: string,
-  ): Promise<string> {
-    log.verbose('PuppetWalnut', 'messageContact(%s)', messageId)
-    // const attachment = this.mocker.MockMessage.loadAttachment(messageId)
-    // if (attachment instanceof ContactMock) {
-    //   return attachment.id
-    // }
-    return ''
-  }
-
-  override async messageImage (
-    messageId: string,
-    imageType: ImageType,
-  ): Promise<FileBox> {
-    log.verbose('PuppetWalnut', 'messageImage(%s, %s[%s])',
-      messageId,
-      imageType,
-      ImageType[imageType],
-    )
-    // const attachment = this.mocker.MockMessage.loadAttachment(messageId)
-    // if (attachment instanceof FileBox) {
-    //   return attachment
-    // }
-    return FileBox.fromQRCode('fake-qrcode')
-  }
-
-  override async messageRecall (
-    messageId: string,
-  ): Promise<boolean> {
-    log.verbose('PuppetWalnut', 'messageRecall(%s)', messageId)
-    return false
-  }
-
-  override async messageFile (id: string): Promise<FileBox> {
-    // const attachment = this.mocker.MockMessage.loadAttachment(id)
-    // if (attachment instanceof FileBox) {
-    //   return attachment
-    // }
-    return FileBox.fromBase64(
-      'cRH9qeL3XyVnaXJkppBuH20tf5JlcG9uFX1lL2IvdHRRRS9kMMQxOPLKNYIzQQ==',
-      'mock-file' + id + '.txt',
-    )
-  }
-
-  override async messageUrl (messageId: string): Promise<UrlLinkPayload> {
-    log.verbose('PuppetWalnut', 'messageUrl(%s)', messageId)
-    // const attachment = this.mocker.MockMessage.loadAttachment(messageId)
-    // if (attachment instanceof UrlLink) {
-    //   return attachment.payload
-    // }
-    return {
-      title: 'mock title for ' + messageId,
-      url: 'https://mock.url',
-    }
-  }
-
-  override async messageMiniProgram (messageId: string): Promise<MiniProgramPayload> {
-    log.verbose('PuppetWalnut', 'messageMiniProgram(%s)', messageId)
-    // const attachment = this.mocker.MockMessage.loadAttachment(messageId)
-    // if (attachment instanceof MiniProgram) {
-    //   return attachment.payload
-    // }
-    return {
-      title: 'mock title for ' + messageId,
-    }
-  }
-
   override async messageRawPayloadParser (smsPayload: any): Promise<MessagePayload> {
     const payload: MessagePayload = {
       fromId: smsPayload.senderAddress,
@@ -379,7 +283,6 @@ class PuppetWalnut extends Puppet {
       toId: smsPayload.destinationAddress[0],
       type: MessageType.Text,
     }
-    log.info('in messageRawPayloadParser')
     return payload
   }
 
@@ -454,246 +357,166 @@ class PuppetWalnut extends Puppet {
     return this.#messageSend(conversationId, text)
   }
 
-  override async messageSendFile (
-    conversationId: string,
-    file: FileBox,
-  ): Promise<void> {
-    return this.#messageSend(conversationId, file)
-  }
-
-  override async messageSendContact (
-    conversationId: string,
-    contactId: string,
-  ): Promise<void> {
-    log.verbose('PuppetMock', 'messageSendUrl(%s, %s)', conversationId, contactId)
-
-    // const contact = this.mocker.MockContact.load(contactId)
-    // return this.messageSend(conversationId, contact)
-  }
-
-  override async messageSendUrl (
-    conversationId: string,
-    urlLinkPayload: UrlLinkPayload,
-  ): Promise<void> {
-    log.verbose('PuppetMock', 'messageSendUrl(%s, %s)', conversationId, JSON.stringify(urlLinkPayload))
-
-    // const url = new UrlLink(urlLinkPayload)
-    // return this.messageSend(conversationId, url)
-  }
-
-  override async messageSendMiniProgram (
-    conversationId: string,
-    miniProgramPayload: MiniProgramPayload,
-  ): Promise<void> {
-    log.verbose('PuppetMock', 'messageSendMiniProgram(%s, %s)', conversationId, JSON.stringify(miniProgramPayload))
-    // const miniProgram = new MiniProgram(miniProgramPayload)
-    // return this.messageSend(conversationId, miniProgram)
-  }
-
-  override async messageForward (
-    conversationId: string,
-    messageId: string,
-  ): Promise<void> {
-    log.verbose('PuppetMock', 'messageForward(%s, %s)',
-      conversationId,
-      messageId,
-    )
-  }
-
-  /**
-   *
-   * Room
-   *
-   */
-  override async roomRawPayloadParser (payload: RoomPayload) { return payload }
-  override async roomRawPayload (id: string): Promise<RoomPayload> {
-    log.verbose('PuppetMock', 'roomRawPayload(%s)', id)
+  async messageSendContact (_conversationId: string, _contactId: string): Promise<string | void> {
     throw new Error('Method not implemented.')
   }
 
-  override async roomList (): Promise<string[]> {
-    log.verbose('PuppetMock', 'roomList()')
+  async messageSendFile (_conversationId: string, _file: FileBox): Promise<string | void> {
     throw new Error('Method not implemented.')
   }
 
-  override async roomDel (
-    roomId: string,
-    contactId: string,
-  ): Promise<void> {
-    log.verbose('PuppetMock', 'roomDel(%s, %s)', roomId, contactId)
+  async messageSendMiniProgram (_conversationId: string, _miniProgramPayload: MiniProgramPayload): Promise<string | void> {
+    throw new Error('Method not implemented.')
   }
 
-  override async roomAvatar (roomId: string): Promise<FileBox> {
-    log.verbose('PuppetMock', 'roomAvatar(%s)', roomId)
-
-    const payload = await this.roomPayload(roomId)
-
-    if (payload.avatar) {
-      return FileBox.fromUrl(payload.avatar)
-    }
-    log.warn('PuppetMock', 'roomAvatar() avatar not found, use the chatie default.')
-    return qrCodeForChatie()
+  async messageSendUrl (_conversationId: string, _urlLinkPayload: UrlLinkPayload): Promise<string | void> {
+    throw new Error('Method not implemented.')
   }
 
-  override async roomAdd (
-    roomId: string,
-    contactId: string,
-  ): Promise<void> {
-    log.verbose('PuppetMock', 'roomAdd(%s, %s)', roomId, contactId)
+  tagContactAdd (_tagId: string, _contactId: string): Promise<void> {
+    throw new Error('Method not implemented.')
   }
 
-  override async roomTopic(roomId: string): Promise<string>
-  override async roomTopic(roomId: string, topic: string): Promise<void>
-
-  override async roomTopic (
-    roomId: string,
-    topic?: string,
-  ): Promise<void | string> {
-    log.verbose('PuppetMock', 'roomTopic(%s, %s)', roomId, topic)
-
-    if (typeof topic === 'undefined') {
-      return 'mock room topic'
-    }
-
-    await this.dirtyPayload(PayloadType.Room, roomId)
+  tagContactDelete (_tagId: string): Promise<void> {
+    throw new Error('Method not implemented.')
   }
 
-  override async roomCreate (
-    contactIdList: string[],
-    topic: string,
-  ): Promise<string> {
-    log.verbose('PuppetMock', 'roomCreate(%s, %s)', contactIdList, topic)
-
-    return 'mock_room_id'
+  tagContactList(contactId: string): Promise<string[]>
+  tagContactList(): Promise<string[]>
+  tagContactList (_contactId?: any): Promise<string[]> {
+    throw new Error('Method not implemented.')
   }
 
-  override async roomQuit (roomId: string): Promise<void> {
-    log.verbose('PuppetMock', 'roomQuit(%s)', roomId)
+  tagContactRemove (_tagId: string, _contactId: string): Promise<void> {
+    throw new Error('Method not implemented.')
   }
 
-  override async roomQRCode (roomId: string): Promise<string> {
-    log.verbose('PuppetMock', 'roomQRCode(%s)', roomId)
-    return roomId + ' mock qrcode'
+  friendshipAccept (_friendshipId: string): Promise<void> {
+    throw new Error('Method not implemented.')
   }
 
-  override async roomMemberList (roomId: string): Promise<string[]> {
-    log.verbose('PuppetMock', 'roomMemberList(%s)', roomId)
-    return []
+  friendshipAdd (_contactId: string, _option?: FriendshipAddOptions): Promise<void> {
+    throw new Error('Method not implemented.')
   }
 
-  override async roomMemberRawPayload (roomId: string, contactId: string): Promise<RoomMemberPayload> {
-    log.verbose('PuppetMock', 'roomMemberRawPayload(%s, %s)', roomId, contactId)
-    return {
-      avatar: 'mock-avatar-data',
-      id: 'xx',
-      name: 'mock-name',
-      roomAlias: 'yy',
-    }
+  friendshipSearchPhone (_phone: string): Promise<string> {
+    throw new Error('Method not implemented.')
   }
 
-  override async roomMemberRawPayloadParser (rawPayload: RoomMemberPayload): Promise<RoomMemberPayload> {
-    log.verbose('PuppetMock', 'roomMemberRawPayloadParser(%s)', rawPayload)
-    return rawPayload
+  friendshipSearchWeixin (_weixin: string): Promise<string> {
+    throw new Error('Method not implemented.')
   }
 
-  override async roomAnnounce(roomId: string): Promise<string>
-  override async roomAnnounce(roomId: string, text: string): Promise<void>
-
-  override async roomAnnounce (roomId: string, text?: string): Promise<void | string> {
-    if (text) {
-      return
-    }
-    return 'mock announcement for ' + roomId
+  protected friendshipRawPayload (_friendshipId: string): Promise<any> {
+    throw new Error('Method not implemented.')
   }
 
-  /**
-   *
-   * Room Invitation
-   *
-   */
-  override async roomInvitationAccept (roomInvitationId: string): Promise<void> {
-    log.verbose('PuppetMock', 'roomInvitationAccept(%s)', roomInvitationId)
+  protected friendshipRawPayloadParser (_rawPayload: any): Promise<FriendshipPayload> {
+    throw new Error('Method not implemented.')
   }
 
-  override async roomInvitationRawPayload (roomInvitationId: string): Promise<any> {
-    log.verbose('PuppetMock', 'roomInvitationRawPayload(%s)', roomInvitationId)
+  conversationReadMark (_conversationId: string, _hasRead?: boolean): Promise<boolean | void> {
+    throw new Error('Method not implemented.')
   }
 
-  override async roomInvitationRawPayloadParser (rawPayload: any): Promise<RoomInvitationPayload> {
-    log.verbose('PuppetMock', 'roomInvitationRawPayloadParser(%s)', JSON.stringify(rawPayload))
-    return rawPayload
+  messageContact (_messageId: string): Promise<string> {
+    throw new Error('Method not implemented.')
   }
 
-  /**
-   *
-   * Friendship
-   *
-   */
-  override async friendshipRawPayload (id: string): Promise<any> {
-    return { id } as any
+  messageFile (_messageId: string): Promise<FileBox> {
+    throw new Error('Method not implemented.')
   }
 
-  override async friendshipRawPayloadParser (rawPayload: any): Promise<FriendshipPayload> {
-    return rawPayload
+  messageImage (_messageId: string, _imageType: ImageType): Promise<FileBox> {
+    throw new Error('Method not implemented.')
   }
 
-  override async friendshipSearchPhone (
-    phone: string,
-  ): Promise<null | string> {
-    log.verbose('PuppetMock', 'friendshipSearchPhone(%s)', phone)
-    return null
+  messageMiniProgram (_messageId: string): Promise<MiniProgramPayload> {
+    throw new Error('Method not implemented.')
   }
 
-  override async friendshipSearchWeixin (
-    weixin: string,
-  ): Promise<null | string> {
-    log.verbose('PuppetMock', 'friendshipSearchWeixin(%s)', weixin)
-    return null
+  messageUrl (_messageId: string): Promise<UrlLinkPayload> {
+    throw new Error('Method not implemented.')
   }
 
-  override async friendshipAdd (
-    contactId: string,
-    hello: string,
-  ): Promise<void> {
-    log.verbose('PuppetMock', 'friendshipAdd(%s, %s)', contactId, hello)
+  messageForward (_conversationId: string, _messageId: string): Promise<string | void> {
+    throw new Error('Method not implemented.')
   }
 
-  override async friendshipAccept (
-    friendshipId: string,
-  ): Promise<void> {
-    log.verbose('PuppetMock', 'friendshipAccept(%s)', friendshipId)
+  messageRecall (_messageId: string): Promise<boolean> {
+    throw new Error('Method not implemented.')
   }
 
-  /**
-   *
-   * Tag
-   *
-   */
-  override async tagContactAdd (
-    tagId: string,
-    contactId: string,
-  ): Promise<void> {
-    log.verbose('PuppetMock', 'tagContactAdd(%s)', tagId, contactId)
+  roomInvitationAccept (_roomInvitationId: string): Promise<void> {
+    throw new Error('Method not implemented.')
   }
 
-  override async tagContactRemove (
-    tagId: string,
-    contactId: string,
-  ): Promise<void> {
-    log.verbose('PuppetMock', 'tagContactRemove(%s)', tagId, contactId)
+  protected roomInvitationRawPayload (_roomInvitationId: string): Promise<any> {
+    throw new Error('Method not implemented.')
   }
 
-  override async tagContactDelete (
-    tagId: string,
-  ): Promise<void> {
-    log.verbose('PuppetMock', 'tagContactDelete(%s)', tagId)
+  protected roomInvitationRawPayloadParser (_rawPayload: any): Promise<RoomInvitationPayload> {
+    throw new Error('Method not implemented.')
   }
 
-  override async tagContactList (
-    contactId?: string,
-  ): Promise<string[]> {
-    log.verbose('PuppetMock', 'tagContactList(%s)', contactId)
-    return []
+  roomAdd (_roomId: string, _contactId: string, _inviteOnly?: boolean): Promise<void> {
+    throw new Error('Method not implemented.')
+  }
+
+  roomAvatar (_roomId: string): Promise<FileBox> {
+    throw new Error('Method not implemented.')
+  }
+
+  roomCreate (_contactIdList: string[], _topic?: string): Promise<string> {
+    throw new Error('Method not implemented.')
+  }
+
+  roomDel (_roomId: string, _contactId: string): Promise<void> {
+    throw new Error('Method not implemented.')
+  }
+
+  roomList (): Promise<string[]> {
+    throw new Error('Method not implemented.')
+  }
+
+  roomQRCode (_roomId: string): Promise<string> {
+    throw new Error('Method not implemented.')
+  }
+
+  roomQuit (_roomId: string): Promise<void> {
+    throw new Error('Method not implemented.')
+  }
+
+  roomTopic(roomId: string): Promise<string>
+  roomTopic(roomId: string, topic: string): Promise<void>
+  roomTopic (_roomId: any, _topic?: any): Promise<void> | Promise<string> {
+    throw new Error('Method not implemented.')
+  }
+
+  protected roomRawPayload (_roomId: string): Promise<any> {
+    throw new Error('Method not implemented.')
+  }
+
+  protected roomRawPayloadParser (_rawPayload: any): Promise<RoomPayload> {
+    throw new Error('Method not implemented.')
+  }
+
+  roomAnnounce(roomId: string): Promise<string>
+  roomAnnounce(roomId: string, text: string): Promise<void>
+  roomAnnounce (_roomId: any, _text?: any): Promise<void> | Promise<string> {
+    throw new Error('Method not implemented.')
+  }
+
+  roomMemberList (_roomId: string): Promise<string[]> {
+    throw new Error('Method not implemented.')
+  }
+
+  protected roomMemberRawPayload (_roomId: string, _contactId: string): Promise<any> {
+    throw new Error('Method not implemented.')
+  }
+
+  protected roomMemberRawPayloadParser (_rawPayload: any): Promise<RoomMemberPayload> {
+    throw new Error('Method not implemented.')
   }
 
 }

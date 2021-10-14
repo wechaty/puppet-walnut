@@ -108,6 +108,7 @@ class PuppetWalnut extends Puppet {
       log.verbose(`${ctx.method} ${ctx.url} - ${ms}ms`)
       await next()
     })
+    this.id = this.appId
     void this.login(this.conversationId)
     router.get('/sms/notifyPath', async (ctx: any) => {
       const echostr = ctx.request.header.echostr
@@ -116,7 +117,6 @@ class PuppetWalnut extends Puppet {
         echoStr: echostr,
         msg: 'notifyPath',
       }
-      this.id = this.appId
       ctx.set('appId', this.appId)
       ctx.set('echoStr', echostr)
     })

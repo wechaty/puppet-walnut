@@ -7,7 +7,7 @@ import { PuppetWalnut } from './puppet-walnut'
 class PuppetWalnutTest extends PuppetWalnut {
 }
 
-test('Puppet5gmsg perfect restart testing', async (t) => {
+test.skip('Puppet5gmsg perfect restart testing', async (t) => {
   const puppet = new PuppetWalnutTest({ sms: '12345' })
   try {
 

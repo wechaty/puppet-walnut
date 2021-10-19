@@ -32,12 +32,6 @@ jobs:
     name: Pack
     needs: build
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-        node:
-          - 16
 
     steps:
       - uses: actions/checkout@v2

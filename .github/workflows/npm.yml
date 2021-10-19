@@ -15,10 +15,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.noden-version }}
+          node-version: ${{ matrix.noden }}
           cache: npm
           cache-dependency-path: package.json
 
@@ -32,20 +32,26 @@ jobs:
     name: Pack
     needs: build
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+        node:
+          - 16
 
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: 16
+          node-version: ${{ matrix.node}}
           cache: npm
           cache-dependency-path: package.json
 
       - name: Install Dependencies
         run: npm install
 
-      - name: Generate Package JSON
-        run: sh ./scripts/generate-package-json.sh
+      - name: Generate Version
+        run: sh ./scripts/generate-version.sh
 
       - name: Pack Testing
         run: sh ./scripts/npm-pack-testing.sh
@@ -67,8 +73,8 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Generate Package JSON
-        run: ./scripts/generate-package-json.sh
+      - name: Generate Version
+        run: ./scripts/generate-version.sh
 
       - name: Set Publish Config
         run: ./scripts/package-publish-config-tag.sh
@@ -96,3 +102,4 @@ jobs:
       - name: Is Not A Publish Branch
         if: steps.check-branch.outputs.match != 'true'
         run: echo 'Not A Publish Branch'
+        

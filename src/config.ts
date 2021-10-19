@@ -2,18 +2,10 @@ import {
   FileBox,
 }             from 'wechaty-puppet'
 
-import { packageJson } from './package-json'
+export const CHATIE_OFFICIAL_ACCOUNT_QRCODE = 'http://weixin.qq.com/r/qymXj7DEO_1ErfTs93y5'
 
-const CHATIE_OFFICIAL_ACCOUNT_QRCODE = 'http://weixin.qq.com/r/qymXj7DEO_1ErfTs93y5'
-
-function qrCodeForChatie (): FileBox {
+export function qrCodeForChatie (): FileBox {
   return FileBox.fromQRCode(CHATIE_OFFICIAL_ACCOUNT_QRCODE)
 }
 
-const VERSION = packageJson.version || '0.0.0'
-
-export {
-  VERSION,
-  CHATIE_OFFICIAL_ACCOUNT_QRCODE,
-  qrCodeForChatie,
-}
+export { VERSION } from './version'

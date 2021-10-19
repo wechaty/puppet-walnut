@@ -1,4 +1,4 @@
-import { VERSION }    from './config'
+import { VERSION }    from './version'
 import { PuppetWalnut } from './puppet-walnut'
 
 export {

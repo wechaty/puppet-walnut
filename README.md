@@ -23,9 +23,11 @@
 
 2. `WECHATY_PUPPET_WALNUT_APPKEY`：Chatbot的AppKey
 
+3. `WECHATY_PUPPET_WALNUT_SIPID`: Chatbot的sipId
+
 ### 运行示例代码
 
-`ts-node .\examples\ding-dong-bot.ts`
+`npm start`
 
 Learn more for building your first Wechaty bot at <https://github.com/wechaty/>
 

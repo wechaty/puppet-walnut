@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-SRC_VERSION_TS_FILE='src/package-json'
+SRC_VERSION_TS_FILE='src/package-json.ts'
 
 [ -f ${SRC_VERSION_TS_FILE} ] || {
   echo ${SRC_VERSION_TS_FILE}" not found"

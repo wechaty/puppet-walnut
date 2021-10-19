@@ -1,4 +1,4 @@
-import { VERSION }    from './version'
+import { VERSION }    from './config.js'
 import { PuppetWalnut } from './puppet-walnut'
 
 export {

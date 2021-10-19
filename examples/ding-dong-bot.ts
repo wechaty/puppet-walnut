@@ -32,7 +32,6 @@ import {
  * 1. Declare your Bot!
  *
  */
-// const puppet = new Puppet5gmsg()
 const puppet = new PuppetWalnut({ sms:'+861234' })
 
 /**
@@ -95,11 +94,6 @@ function onLogout (payload: EventLogoutPayload) {
 
 function onError (payload: EventErrorPayload) {
   console.error('Bot error:', payload.data)
-  /*
-  if (bot.logonoff()) {
-    bot.say('Wechaty error: ' + e.message).catch(console.error)
-  }
-  */
 }
 
 /**

@@ -46,20 +46,23 @@ import {
 import {
   VERSION,
 } from './config'
-
+// import { getAccessToken, startSyncingAccessToken } from './utils/get-access-token'
+import Koa  from 'koa'
+import Router from 'koa-router'
+import rp from 'request-promise'
+import { v4 as uuidv4 } from 'uuid'
 export type PuppetWalnutOptions = PuppetOptions & {
   sms?: string
 }
-const Koa = require('koa')
-const Router = require('koa-router')
-const koaBody = require('koa-body')
-const rp = require('request-promise')
-const getAccessToken = require('./utils/getAccessToken')
-const url = 'maap.5g-msg.com:30001'
-const sipID = '20210401'
+export interface AccessTokenPayload {
+  timestamp : number,
+  token     : string,
+}
+type StopperFn = () => void
 const app = new Koa()
 const router = new Router()
-const { v4: uuidv4 } = require('uuid')
+const koaBody = require('koa-body')
+const url = 'maap.5g-msg.com:30001'
 class PuppetWalnut extends Puppet {
 
   static override readonly VERSION = VERSION
@@ -68,10 +71,14 @@ class PuppetWalnut extends Puppet {
   smsid:string
   server:any
   appId: string = process.env['WECHATY_PUPPET_WALNUT_APPID'] !
-  conversationId: string = process.env['WECHATY_PUPPET_WALNUT_CONVERSATIONID'] !
-  phone: string = process.env['WECHATY_PUPPET_WALNUT_PHONE'] !
-  contributionId: string = process.env['WECHATY_PUPPET_WALNUT_CONTRIBUTIONID'] !
+  appKey = process.env['WECHATY_PUPPET_WALNUT_APPKEY'] !
+  sipId = process.env['WECHATY_PUPPET_WALNUT_SIPID'] !
+  conversationId: string
+  phone: string
+  contributionId: string
+  protected stopperFnList : StopperFn[]
   private messageStore : { [id:string]:any}
+  protected accessTokenPayload? : AccessTokenPayload
   constructor (
     public override options: PuppetWalnutOptions = {},
   ) {
@@ -85,6 +92,10 @@ class PuppetWalnut extends Puppet {
       this.sms = sms
     }
     this.smsid = uuidv4()
+    this.conversationId = ''
+    this.phone = ''
+    this.contributionId = ''
+    this.stopperFnList = []
     this.messageStore = {}
   }
 
@@ -108,7 +119,7 @@ class PuppetWalnut extends Puppet {
       log.verbose(`${ctx.method} ${ctx.url} - ${ms}ms`)
       await next()
     })
-    this.id = this.appId
+    // this.id = this.appId
     void this.login(this.conversationId)
     router.get('/sms/notifyPath', async (ctx: any) => {
       const echostr = ctx.request.header.echostr
@@ -121,9 +132,12 @@ class PuppetWalnut extends Puppet {
       ctx.set('echoStr', echostr)
     })
 
-      .post('/sms/messageNotification/sip:20210401@botplatform.rcs.chinaunicom.cn/messages', async (ctx: any) => {
+      .post(`/sms/messageNotification/sip:${this.sipId}@botplatform.rcs.chinaunicom.cn/messages`, async (ctx: any) => {
         const payload = ctx.request.body
         this.smsid = payload.messageId
+        this.contributionId = payload.contributionId
+        this.conversationId = payload.conversationId
+        this.phone = payload.senderAddress
         this.messageStore[payload.messageId] = payload
 
         this.emit('message', { messageId: payload.messageId })
@@ -135,6 +149,15 @@ class PuppetWalnut extends Puppet {
     this.server = app.listen(5000, () => {
       log.verbose('服务开启在5000端口')
     })
+
+    const succeed = await this.updateAccessToken()
+    if (!succeed) {
+      log.error('OfficialAccount', 'start() updateAccessToken() failed.')
+    }
+
+    const stopper = await this.startSyncingAccessToken()
+    this.stopperFnList.push(stopper)
+
     this.state.on(true)
     /**
      * Start mocker after the puppet fully turned ON.
@@ -161,10 +184,14 @@ class PuppetWalnut extends Puppet {
     if (this.logonoff()) {
       await this.logout()
     }
-
+    while (this.stopperFnList.length > 0) {
+      const stopper = this.stopperFnList.pop()
+      if (stopper) {
+        await stopper()
+      }
+    }
     // await some tasks...
     this.server.close()
-    router.close()
     this.state.off(true)
   }
 
@@ -189,6 +216,86 @@ class PuppetWalnut extends Puppet {
   override ding (data?: string): void {
     log.silly('PuppetWalnut', 'ding(%s)', data || '')
     setTimeout(() => this.emit('dong', { data: data || '' }), 1000)
+  }
+
+  async updateAccessToken (): Promise<boolean> {
+    log.verbose('puppetWalnut', 'updateAccessToken()')
+    const options = {
+      method: 'POST',
+      uri: `http://maap.5g-msg.com:30001/bot/v1/sip:${this.sipId}@botplatform.rcs.chinaunicom.cn/accessToken`,
+      // eslint-disable-next-line sort-keys
+      body: {
+        appId:this.appId,
+        appKey:this.appKey,
+      },
+      headers: {
+        'content-type': 'application/json',
+      },
+      json: true,
+    }
+    await rp(options)
+      .then((body: any) => {
+        // eslint-disable-next-line promise/always-return
+        if (body.accessToken) {
+          this.accessTokenPayload = {
+            timestamp : Date.now(),
+            token: body.accessToken,
+          }
+        } else {
+          void this.updateAccessToken()
+        }
+      })
+      .catch((err:any) => {
+        log.verbose(err)
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        this.updateAccessToken()
+      })
+    if (this.accessTokenPayload) {
+      const expireTimestamp = this.accessTokenPayload.timestamp + 7200 * 1000
+
+      if (expireTimestamp < Date.now()) {
+        // expired.
+        log.warn('puppetWalnut', 'updateAccessToken() token expired!')
+        this.accessTokenPayload = undefined
+      }
+      return true
+    }
+    return false
+
+  }
+
+  protected async startSyncingAccessToken (): Promise<StopperFn> {
+    log.verbose('puppetWalnut', 'startSyncingAccessToken()')
+
+    const marginSeconds = 5 * 60  // 5 minutes
+    const tryAgainSeconds = 60    // 1 minute
+
+    /**
+     * Huan(202102): Why we lost `NodeJS` ?
+     *
+     *  https://stackoverflow.com/a/56239226/1123955
+     */
+    let timer: undefined | ReturnType<typeof setTimeout>
+
+    const update: () => void = () => this.updateAccessToken()
+      .then(succeed => succeed
+        ? 7200 - marginSeconds
+        : tryAgainSeconds
+      )
+      .then(seconds => setTimeout(update, seconds * 1000))
+      // eslint-disable-next-line no-return-assign
+      .then(newTimer => timer = newTimer)
+      .catch(e => log.error('puppetWalnut', 'startSyncingAccessToken() update() rejection: %s', e))
+
+    if (!this.accessTokenPayload) {
+      await update()
+    } else {
+      /* token的有效期为7200秒 */
+      const seconds = 7200 - marginSeconds
+      timer = setTimeout(update, seconds * 1000)
+    }
+
+    return () => timer && clearTimeout(timer)
   }
 
   /**
@@ -299,9 +406,8 @@ class PuppetWalnut extends Puppet {
     if (typeof something !== 'string') {
       return
     }
-    const token = await getAccessToken()
-    const accessToken = 'accessToken ' + token
-    const URL = `http://${url}/bot/v1/sip:${sipID}@botplatform.rcs.chinaunicom.cn/messages`
+    const accessToken = 'accessToken ' + this.accessTokenPayload?.token
+    const URL = `http://${url}/bot/v1/sip:${this.sipId}@botplatform.rcs.chinaunicom.cn/messages`
     const options = {
       method: 'POST',
       uri: URL,

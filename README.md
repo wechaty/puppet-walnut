@@ -1,149 +1,114 @@
-# PUPPET-MOCK
+# PUPPET-WALNUT
 
 [![NPM Version](https://badge.fury.io/js/wechaty-puppet-mock.svg)](https://badge.fury.io/js/wechaty-puppet-mock)
 [![npm (tag)](https://img.shields.io/npm/v/wechaty-puppet-mock/next.svg)](https://www.npmjs.com/package/wechaty-puppet-mock?activeTab=versions)
 [![NPM](https://github.com/wechaty/wechaty-puppet-mock/workflows/NPM/badge.svg)](https://github.com/wechaty/wechaty-puppet-mock/actions?query=workflow%3ANPM)
 
-![chatie puppet](https://wechaty.github.io/wechaty-puppet-mock/images/mock.png)
-
-> Picture Credit: <https://softwareautotools.com/2017/03/01/mocking-explained-in-python/>
-
 [![Powered by Wechaty](https://img.shields.io/badge/Powered%20By-Wechaty-brightgreen.svg)](https://github.com/wechaty/wechaty)
 [![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-blue.svg)](https://www.typescriptlang.org/)
 
-Puppet Mocker & Starter Template for Wechaty, it is very useful when you:
+## 运行方法
 
-1. Want to test the Wechaty framework with a mock puppet, or
-1. You want to write your own Puppet implenmentation.
+### 安装依赖
 
-Then `PuppetMock` will helps you a lot.
+将代码clone到本地,执行`npm install`
 
-## USAGE
+### 在硬核桃5G消息开发者社区平台申请权限
 
-### Puppet Mock
+在5G消息开发者社区平台，申请Chatbot应用调测工具[5G消息开发者社区平台](https://www.5g-msg.com)
 
-```ts
-import { Wechaty }   from 'wechaty'
-import { PuppetMock } from 'wechaty-puppet-mock'
+### 配置系统环境变量
 
-const puppet  = new PuppetMock()
-const wechaty = new Wechaty({ puppet })
+1. `WECHATY_PUPPET_WALNUT_APPID`: Chatbot的AppId
 
-wechaty.start()
-```
+2. `WECHATY_PUPPET_WALNUT_APPKEY`：Chatbot的AppKey
 
-### Mocker & Environment
+### 运行示例代码
 
-```ts
-import {
-  PuppetMock,
-  Mocker,
-  SimpleEnvironment,
-}                     from 'wechaty-puppet-mock'
+`ts-node .\examples\ding-dong-bot.ts`
 
-const mocker = new Mocker()
-mocker.use(SimpleEnvironment())
+Learn more for building your first Wechaty bot at <https://github.com/wechaty/>
 
-const puppet = new PuppetMock({ mocker })
-const wechaty = new Wechaty({ puppet })
+## 项目介绍
 
-wechaty.start()
+“开源软件供应链点亮计划-暑期2021”（以下简称 暑期2021）是由中科院软件所与 openEuler 社区共同举办的一项面向高校学生的暑期活动，旨在鼓励在校学生积极参与开源软件的开发维护，促进国内优秀开源软件社区的蓬勃发展。
 
-// The Mocker will start perform the SimpleEnvironment...
-```
+根据项目的难易程度和完成情况，参与者还可获取“开源软件供应链点亮计划-暑期2021”活动奖金和奖杯。
 
-See: [SimpleEnvironment](src/mocker/environment.ts)
+官网：<https://summer.iscas.ac.cn>
 
-## API Reference
+## Wechaty
 
-### Mocker
+[Wechaty](https://wechaty.js.org) 是一个开源聊天机器人框架SDK，具有高度封装、高可用的特性，支持NodeJs, Python, Go 和Java 等多语言版本。在过去的5年中，服务了数万名开发者，收获了 Github 的 9600 Star。同时配置了完整的DevOps体系并持续按照Apache 的方式管理技术社区。
 
-```ts
-import { Wechaty }  from 'wechaty'
-import { PuppetMock, mock }   from 'wechaty-puppet-mock'
+## 项目名称
 
-const mocker = new mock.Mocker()
-const puppet = new PuppetMock({ mocker })
-const bot = new Wechaty({ puppet })
+开发支持电信运营商 5G Chatbot / RCS 的 Wechaty 接入 Puppet 模块  
 
-await bot.start()
+## 背景介绍
 
-mocker.scan('https://github.com/wechaty', 1)
+Wechaty 社区目前已经支持微信、Whatsapp、企业微信、飞书等常见流行即时通讯工具，并且能够通过多语言 SDK （比如 Python Wechaty） 进行调用。
 
-const user = mocker.createContact()
-mocker.login(user)
+5G Chatbot (RCS) 是近期中国电信运营商基于 5G 的消息战略落地平台，未来的 5G 手机将会内置 RCS 消息的处理能力。我们在本次 Summer 2021 的项目中，Wechaty 希望可以实现对RCS Chatbot 的支持。可以将 RCS 协议封装成为 `wechaty-puppet-walnut` 供 Wechaty 开发者方便接入 RCS 平台，使其成为 Wechaty 可以使用的社区生态模块。
 
-const contact = mocker.createContact()
-const room = mocker.createRoom()
+## 需求介绍
 
-user.say('Hello').to(contact)
-contact.say('World').to(user)
-```
+使用 <https://github.com/wechaty/wechaty-puppet-official-account> 项目作为模版，将核心代码文件 <https://github.com/wechaty/wechaty-puppet-official-account/blob/master/src/puppet-oa.ts> 中的微信公众平台调用，全部替换（封装）为 RCS 模块的调用。
 
-## HELPER UTILITIES
+这里有一个专门讲解如何开发 Wechaty Puppet Provider 的 workshop 视频，它以 `wechaty-puppet-official-account` 作为例子，做了从0到1的入门讲解：[Wechaty Workshop for Puppet Makers: How to make a Puppet for Wechaty](https://wechaty.js.org/2020/08/05/wechaty-puppet-maker/)。通过观看这一个小时的视频，应该可以系统性的了解如何完成构建一个 Wechaty Puppet Provider 模块。
 
-### StateSwitch
+在初期开发中，能够实现文本消息的接收和发送，即可完成原型验证 POC 。
 
-```ts
-this.state.on('pending')
-this.state.on(true)
-this.state.off('pending')
-this.state.off(true)
+还可以参考以下链接：
 
-await this.state.ready('on')
-await this.state.ready('off')
+1. TypeScript Puppet Official Documentation: <https://wechaty.github.io/wechaty-puppet/typedoc/classes/puppet.html>
+2. Wechaty Puppet Specification: <https://wechaty.js.org/docs/specs/puppet>
+3. <https://github.com/wechaty/wechaty-puppet-mock>
 
-```
+## 导师联系方式
 
-### Watchdog
+1. [李佳芮](https://wechaty.js.org/contributors/lijiarui/): Wechaty co-creator, Founder & CEO of Juzi.BOT (rui@chatie.io)
+2. 康嘉: 硬核桃社区<https://www.5g-msg.com/> PM
+3. [李卓桓](https://wechaty.js.org/contributors/huan)：Wechaty creator, Tencent TVP of Chatbot (huan@chatie.io)
 
-```ts
-```
+## 项目产出目标
 
-### MemoryCard
+1. 每日代码 commit
+2. 每周提交一份 report （回复本 issue）
+3. 每两周一次在线会议
+4. 发布 Git Repo `wechaty-puppet-walnut`
+5. 可以通过 Wechaty 加载 wechaty-puppet-walnut 模块，并通过 5G Chatbot / RCS 底层，实现文本消息的收发功能
+6. 提供一个 `examples/ding-dong-bot.ts` ，完成“接收到文字消息`ding`时，自动回复消息`dong`\"的功能
+7. 配置 GitHub Actions 实现自动化测试* （可选）
 
-```ts
-await memory.set('config', { id: 1, key: 'xxx' })
-const config = await memory.get('config')
-console.log(config)
-// Output: { id: 1, key: 'xxx' }
-```
+## 项目技术栈
 
-## HISTORY
+1. TypeScript programming language
+2. Git
+3. REST API
+4. 5G Chatbot / Rich Communication Service
+5. 硬核桃社区 5G Chatbot SDK <https://www.5g-msg.com/#/bussinessInformation>
 
-### master
+## Links
 
-### v0.25 (July 13, 2020)
+- <https://github.com/wechaty/summer/issues/74>
 
-1. Rename `MockXXX` to `XXXMock` for keep the consistent naming style with `PuppetMock`.
-1. Export `mock` namespace and move all related modules under it.
+## 相关链接
 
-### v0.22 (June 4, 2020)
-
-`Mocker` Released. `Mocker` is a manager for controlling the behavior of the Puppet activities.
-
-1. Add `MockContact`, `MockRoom`, and `MockMessage` for `Mockers`
-1. Add `MockEnvironment` for mocking the server behaviors.
-1. Support `Wechaty#Contact.find()` from the `mocker.createContacts()`
-1. Support `Wechaty#Room.find()` from the `mocker.createRooms()`
-1. Support `message` event for `talker`, `listener`, and `room` of `MockMessage`
+- [Wechaty](https://wechaty.js.org/v/zh/)
+- [Koa](https://koa.bootcss.com/)
+- [TypeScripts中文手册](https://www.tslang.cn/docs/handbook/basic-types.html)
 
 ### v0.0.1 (Jun 27, 2018)
 
 Initial version.
 
-`PuppetMock` is a skelton Puppet without do anything, it will make testing easy when developing Wechaty
+## Maintainer
 
-## AUTHOR
-
-[Huan LI](http://linkedin.com/in/zixia) \<zixia@zixia.net\>
-
-<a href="https://stackexchange.com/users/265499">
-  <img src="https://stackexchange.com/users/flair/265499.png" width="208" height="58" alt="profile for zixia on Stack Exchange, a network of free, community-driven Q&amp;A sites" title="profile for zixia on Stack Exchange, a network of free, community-driven Q&amp;A sites">
-</a>
+- [Huan LI](https://github.com/huan) ([李卓桓](http://linkedin.com/in/zixia)), Tencent TVP of Chatbot, \<zixia@zixia.net\>
 
 ## COPYRIGHT & LICENSE
 
-* Code & Docs © 2018 Huan LI \<zixia@zixia.net\>
-* Code released under the Apache-2.0 License
-* Docs released under Creative Commons
+- Code & Docs © 2018 Huan LI \<zixia@zixia.net\>
+- Code released under the Apache-2.0 License
+- Docs released under Creative Commons

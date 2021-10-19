@@ -32,7 +32,6 @@ import {
  * 1. Declare your Bot!
  *
  */
-// const puppet = new Puppet5gmsg()
 const puppet = new PuppetWalnut({ sms:'+861234' })
 
 /**

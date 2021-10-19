@@ -46,20 +46,19 @@ import {
 import {
   VERSION,
 } from './config'
-
+import { getAccessToken, timer } from './utils/get-access-token'
+import Koa  from 'koa'
+import Router from 'koa-router'
+import rp from 'request-promise'
+import { v4 as uuidv4 } from 'uuid'
 export type PuppetWalnutOptions = PuppetOptions & {
   sms?: string
 }
-const Koa = require('koa')
-const Router = require('koa-router')
-const koaBody = require('koa-body')
-const rp = require('request-promise')
-const getAccessToken = require('./utils/getAccessToken')
-const url = 'maap.5g-msg.com:30001'
-const sipID = '20210401'
 const app = new Koa()
 const router = new Router()
-const { v4: uuidv4 } = require('uuid')
+const koaBody = require('koa-body')
+const url = 'maap.5g-msg.com:30001'
+const sipID = '20210401'
 class PuppetWalnut extends Puppet {
 
   static override readonly VERSION = VERSION
@@ -68,9 +67,9 @@ class PuppetWalnut extends Puppet {
   smsid:string
   server:any
   appId: string = process.env['WECHATY_PUPPET_WALNUT_APPID'] !
-  conversationId: string = process.env['WECHATY_PUPPET_WALNUT_CONVERSATIONID'] !
-  phone: string = process.env['WECHATY_PUPPET_WALNUT_PHONE'] !
-  contributionId: string = process.env['WECHATY_PUPPET_WALNUT_CONTRIBUTIONID'] !
+  conversationId: string
+  phone: string
+  contributionId: string
   private messageStore : { [id:string]:any}
   constructor (
     public override options: PuppetWalnutOptions = {},
@@ -85,6 +84,9 @@ class PuppetWalnut extends Puppet {
       this.sms = sms
     }
     this.smsid = uuidv4()
+    this.conversationId = ''
+    this.phone = ''
+    this.contributionId = ''
     this.messageStore = {}
   }
 
@@ -108,7 +110,7 @@ class PuppetWalnut extends Puppet {
       log.verbose(`${ctx.method} ${ctx.url} - ${ms}ms`)
       await next()
     })
-    this.id = this.appId
+    // this.id = this.appId
     void this.login(this.conversationId)
     router.get('/sms/notifyPath', async (ctx: any) => {
       const echostr = ctx.request.header.echostr
@@ -124,6 +126,9 @@ class PuppetWalnut extends Puppet {
       .post('/sms/messageNotification/sip:20210401@botplatform.rcs.chinaunicom.cn/messages', async (ctx: any) => {
         const payload = ctx.request.body
         this.smsid = payload.messageId
+        this.contributionId = payload.contributionId
+        this.conversationId = payload.conversationId
+        this.phone = payload.senderAddress
         this.messageStore[payload.messageId] = payload
 
         this.emit('message', { messageId: payload.messageId })
@@ -164,7 +169,7 @@ class PuppetWalnut extends Puppet {
 
     // await some tasks...
     this.server.close()
-    router.close()
+    clearInterval(timer)
     this.state.off(true)
   }
 

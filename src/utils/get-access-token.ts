@@ -1,14 +1,14 @@
+import fs from 'fs'
+import path from 'path'
+import rp from 'request-promise'
 import { log } from 'wechaty-puppet'
+const APPID = process.env['WECHATY_PUPPET_WALNUT_APPID'] !
+const APPKEY = process.env['WECHATY_PUPPET_WALNUT_APPKEY'] !
 
-const rp = require('request-promise')
-const APPID = '28871d8c83954bc78424ffcbff80285c'
-const APPKEY = '3b9cc5506af2466aa82eee4c04f86471'
 const url = 'maap.5g-msg.com:30001'
 const sipID = '20210401'
 const URL = `http://${url}/bot/v1/sip:${sipID}@botplatform.rcs.chinaunicom.cn/accessToken`
-const fs = require('fs')
-const path = require('path')
-const fileName = path.resolve(__dirname, './access_token.json')
+const fileName = path.resolve(__dirname, './access-token.json')
 
 const updateAccessToken = async () => {
   const options = {
@@ -63,6 +63,11 @@ const getAccessToken = async () => {
   }
 }
 
-// updateAccessToken()
-// console.log(getAccessToken())
-module.exports = getAccessToken
+const timer = setInterval(async () => {
+  await updateAccessToken()
+}, (7200 - 300) * 1000)
+
+export {
+  getAccessToken,
+  timer,
+}

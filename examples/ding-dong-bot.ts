@@ -94,11 +94,6 @@ function onLogout (payload: EventLogoutPayload) {
 
 function onError (payload: EventErrorPayload) {
   console.error('Bot error:', payload.data)
-  /*
-  if (bot.logonoff()) {
-    bot.say('Wechaty error: ' + e.message).catch(console.error)
-  }
-  */
 }
 
 /**

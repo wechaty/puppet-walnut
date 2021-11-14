@@ -75,16 +75,6 @@ Wechaty 社区目前已经支持微信、Whatsapp、企业微信、飞书等常�
 2. 康嘉: 硬核桃社区<https://www.5g-msg.com/> PM
 3. [李卓桓](https://wechaty.js.org/contributors/huan)：Wechaty creator, Tencent TVP of Chatbot (huan@chatie.io)
 
-## 项目产出目标
-
-1. 每日代码 commit
-2. 每周提交一份 report （回复本 issue）
-3. 每两周一次在线会议
-4. 发布 Git Repo `wechaty-puppet-walnut`
-5. 可以通过 Wechaty 加载 wechaty-puppet-walnut 模块，并通过 5G Chatbot / RCS 底层，实现文本消息的收发功能
-6. 提供一个 `examples/ding-dong-bot.ts` ，完成“接收到文字消息`ding`时，自动回复消息`dong`\"的功能
-7. 配置 GitHub Actions 实现自动化测试* （可选）
-
 ## 项目技术栈
 
 1. TypeScript programming language
@@ -95,7 +85,13 @@ Wechaty 社区目前已经支持微信、Whatsapp、企业微信、飞书等常�
 
 ## Links
 
-- <https://github.com/wechaty/summer/issues/74>
+- 开源软件供应链点亮计划-暑期2021 - 支持电信运营商 5G Chatbot / RCS 项目
+  - [开源软件供应链点亮计划 - 暑期2021](https://summer.iscas.ac.cn/)
+  - [项目说明：开发支持电信运营商 5G Chatbot / RCS 的 Wechaty 接入 Puppet 模块](https://github.com/wechaty/summer/issues/74)
+  - [OSPP 2021-期初报告-开发支持电信运营商5G Chatbot/RCS的 Wechaty接入Puppet模块](https://wechaty.js.org/2021/07/15/ospp-plan-5g-chatbot-puppet/)
+  - [OSPP 2021-期中报告-开发支持电信运营商 5G Chatbot / RCS 的 Wechaty 接入 Puppet 模块](https://wechaty.js.org/2021/08/30/ospp-mid-term-5g-chatbot-puppet/)
+  - [OSPP 2021-结项报告-开发支持电信运营商 5G Chatbot / RCS 的 Wechaty 接入 Puppet 模块](https://wechaty.js.org/2021/10/07/ospp-final-term-5g-chatbot-puppet/)
+- [支持5G消息的 puppet-walnut 接入介绍](https://wechaty.js.org/2021/11/07/how-to-develop-wechaty-puppet-module-supporting-5g-messages/)
 - [中国电信-中国联通 5G 消息业务平台行业客户接入接口技术规范 V1.0.4](https://github.com/wechaty/puppet-walnut/blob/main/docs/5g-message-service-platform-industry-customer-access-interface-specification.pdf)
 
 ## 相关链接

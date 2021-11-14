@@ -1,5 +1,7 @@
 # PUPPET-WALNUT
 
+![PUPPET-WALNUT](https://github.com/wechaty/puppet-walnut/blob/main/docs/images/puppet-walnut.webp)
+
 [![NPM Version](https://badge.fury.io/js/wechaty-puppet-mock.svg)](https://badge.fury.io/js/wechaty-puppet-mock)
 [![npm (tag)](https://img.shields.io/npm/v/wechaty-puppet-mock/next.svg)](https://www.npmjs.com/package/wechaty-puppet-mock?activeTab=versions)
 [![NPM](https://github.com/wechaty/wechaty-puppet-mock/workflows/NPM/badge.svg)](https://github.com/wechaty/wechaty-puppet-mock/actions?query=workflow%3ANPM)

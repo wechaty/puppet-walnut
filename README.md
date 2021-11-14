@@ -94,6 +94,7 @@ Wechaty 社区目前已经支持微信、Whatsapp、企业微信、飞书等常�
 ## Links
 
 - <https://github.com/wechaty/summer/issues/74>
+- [中国电信-中国联通 5G 消息业务平台行业客户接入接口技术规范 V1.0.4](https://github.com/wechaty/puppet-walnut/blob/main/docs/5g-message-service-platform-industry-customer-access-interface-specification.pdf)
 
 ## 相关链接
 

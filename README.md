@@ -69,6 +69,8 @@ Wechaty 社区目前已经支持微信、Whatsapp、企业微信、飞书等常�
 2. Wechaty Puppet Specification: <https://wechaty.js.org/docs/specs/puppet>
 3. <https://github.com/wechaty/wechaty-puppet-mock>
 
+## 开发计划
+
 ## 导师联系方式
 
 1. [李佳芮](https://wechaty.js.org/contributors/lijiarui/): Wechaty co-creator, Founder & CEO of Juzi.BOT (rui@chatie.io)

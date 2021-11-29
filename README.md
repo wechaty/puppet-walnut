@@ -102,6 +102,12 @@ Wechaty 社区目前已经支持微信、Whatsapp、企业微信、飞书等常�
 - [Koa](https://koa.bootcss.com/)
 - [TypeScripts中文手册](https://www.tslang.cn/docs/handbook/basic-types.html)
 
+## History
+
+### main v1.11 (Nov 29, 2021)
+
+1. Adapt to Wechaty v1.11
+
 ### v0.0.1 (Jun 27, 2018)
 
 Initial version.

@@ -1,7 +1,7 @@
-#!/usr/bin/env -S node
-import test  from 'tstest'
+#!/usr/bin/env -S node --no-warnings --loader ts-node/esm
+import { test } from 'tstest'
 
-import { PuppetWalnut } from './puppet-walnut'
+import { PuppetWalnut } from './puppet-walnut.js'
 
 /**
  *   zrn-fight - https://github.com/zrn-fight
@@ -15,7 +15,7 @@ import { PuppetWalnut } from './puppet-walnut'
  *
  */
 
-test.skip('PuppetWalnut perfect restart testing', async (t) => {
+test.skip('PuppetWalnut perfect restart testing', async t => {
   const puppet = new PuppetWalnut({ sms: '12345' })
   for (let n = 0; n < 3; n++) {
     await puppet.start()

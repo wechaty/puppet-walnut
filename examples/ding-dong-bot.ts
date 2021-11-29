@@ -16,16 +16,10 @@
  *   limitations under the License.
  *
  */
-import {
-  EventLogoutPayload,
-  EventLoginPayload,
-  EventScanPayload,
-  EventErrorPayload,
-  EventMessagePayload,
-}                         from 'wechaty-puppet'
+import type * as PUPPET from 'wechaty-puppet'
 import {
   PuppetWalnut,
-}               from '../src/mod'
+}               from '../src/mod.js'
 
 /**
  *
@@ -70,7 +64,7 @@ puppet.start()
  *  `scan`, `login`, `logout`, `error`, and `message`
  *
  */
-function onScan (payload: EventScanPayload) {
+function onScan (payload: PUPPET.payloads.EventScan) {
   if (payload.qrcode) {
     const qrcodeImageUrl = [
       'https://wechaty.js.org/qrcode/',
@@ -83,16 +77,16 @@ function onScan (payload: EventScanPayload) {
   }
 }
 
-function onLogin (payload: EventLoginPayload) {
+function onLogin (payload: PUPPET.payloads.EventLogin) {
   console.info(`${payload.contactId} login`)
   puppet.messageSendText(payload.contactId, 'Wechaty login').catch(console.error)
 }
 
-function onLogout (payload: EventLogoutPayload) {
+function onLogout (payload: PUPPET.payloads.EventLogout) {
   console.info(`${payload.contactId} logouted`)
 }
 
-function onError (payload: EventErrorPayload) {
+function onError (payload: PUPPET.payloads.EventError) {
   console.error('Bot error:', payload.data)
 }
 
@@ -102,7 +96,7 @@ function onError (payload: EventErrorPayload) {
  *    dealing with Messages.
  *
  */
-async function onMessage (payload: EventMessagePayload) {
+async function onMessage (payload: PUPPET.payloads.EventMessage) {
   const msgPayload = await puppet.messagePayload(payload.messageId)
   if (/ding/i.test(msgPayload.text || '')) {
     console.info('ding success')

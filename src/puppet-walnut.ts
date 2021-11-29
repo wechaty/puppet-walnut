@@ -16,13 +16,14 @@
  *   limitations under the License.
  *
  */
-import * as PUPPET  from 'wechaty-puppet';
-import {initSever} from "./sever/sever";
-import {config, VERSION} from "./config";
-import {updateToken} from "./help/request";
-import {messageParse} from "./help/prase";
-import type {message} from "./help/struct";
-import {send} from "./help/message";
+import * as PUPPET  from 'wechaty-puppet'
+import { log }  from 'wechaty-puppet'
+import { initSever } from './sever/sever'
+import { config, VERSION } from './config'
+import { updateToken } from './help/request'
+import { messageParse } from './help/prase'
+import type { message } from './help/struct'
+import { send } from './help/message'
 
 export type PuppetWalnutOptions = PUPPET.PuppetOptions & {
   sipId: string,
@@ -37,8 +38,8 @@ class PuppetWalnut extends PUPPET.Puppet {
   cacheMessagePayload : Map<string, PUPPET.payload.Message>
   cacheContactPayload : Map<string, PUPPET.payload.Contact>
 
-  constructor(options: PuppetWalnutOptions) {
-    super();
+  constructor (options: PuppetWalnutOptions) {
+    super()
     config.sipId = options.sipId
     config.appId = options.appId
     config.appKey = options.appKey
@@ -46,24 +47,25 @@ class PuppetWalnut extends PUPPET.Puppet {
     config.base = `http://${config.serverRoot}/bot/${config.apiVersion}/${config.chatbotId}`
     this.cacheMessagePayload = new Map()
     this.cacheContactPayload = new Map()
-    PUPPET.log.verbose('Puppet5g', 'constructor("%s")', JSON.stringify(options))
+    log.verbose('Puppet5g', 'constructor("%s")', JSON.stringify(options))
   }
 
-  onStart(): Promise<void> {
+  onStart (): Promise<void> {
 
-    initSever(this).then(() => {
-      PUPPET.log.info('Puppet5g-Sever', `Server running on port ${config.port}`);
+    void initSever(this).then(() => {
+      log.info('Puppet5g-Sever', `Server running on port ${config.port}`)
+      return null
     })
 
     updateToken()
 
     this.login(config.chatbotId)
 
-    return Promise.resolve(undefined);
+    return Promise.resolve(undefined)
   }
 
-  onStop(): Promise<void> {
-    return Promise.resolve(undefined);
+  onStop (): Promise<void> {
+    return Promise.resolve(undefined)
   }
 
   /**
@@ -71,24 +73,24 @@ class PuppetWalnut extends PUPPET.Puppet {
    * Message
    *
    */
-  override async messageRawPayloadParser(payload: PUPPET.payload.Message) {
+  override async messageRawPayloadParser (payload: PUPPET.payload.Message) {
     return payload
   }
 
-  override async messageRawPayload(id: string): Promise<PUPPET.payload.Message> {
-    PUPPET.log.verbose('Puppet5g', 'messageRawPayload(%s)', id)
+  override async messageRawPayload (id: string): Promise<PUPPET.payload.Message> {
+    log.verbose('Puppet5g', 'messageRawPayload(%s)', id)
     return this.cacheMessagePayload.get(id)!
   }
 
-  override async messageSendText(to: string, msg: string) {
+  override async messageSendText (to: string, msg: string) {
     send(to, msg)
-    PUPPET.log.info(`send message to ${to}: `,msg)
+    PUPPET.log.info(`send message to ${to}: `, msg)
   }
 
-  onMessage(message: message){
+  onMessage (message: message) {
     const msg: PUPPET.payload.Message = messageParse(message)
     this.cacheMessagePayload.set(message.messageId, msg)
-    this.emit("message", {messageId: message.messageId})
+    this.emit('message', { messageId: message.messageId })
   }
 
   /**
@@ -98,9 +100,10 @@ class PuppetWalnut extends PUPPET.Puppet {
    */
   override async contactRawPayloadParser (payload: PUPPET.payload.Contact) { return payload }
   override async contactRawPayload (id: string): Promise<PUPPET.payload.Contact> {
-    PUPPET.log.verbose('Puppet5g', 'contactRawPayload(%s)', id)
+    log.verbose('Puppet5g', 'contactRawPayload(%s)', id)
     return this.cacheContactPayload.get(id)!
   }
+
 }
 
 export default PuppetWalnut

@@ -1,5 +1,5 @@
 import { VERSION }    from './version'
-import { PuppetWalnut } from './puppet-walnut'
+import PuppetWalnut from './puppet-walnut'
 
 export {
   VERSION,

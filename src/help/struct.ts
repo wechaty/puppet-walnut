@@ -15,5 +15,3 @@ interface messageList {
     contentText: string,
     contentType: string
 }
-
-

@@ -55,6 +55,7 @@
     "@types/node": "^16.10.5",
     "@types/request-promise": "^4.1.48",
     "@types/uuid": "^8.3.1",
+    "@typescript-eslint/eslint-plugin-tslint": "^5.4.0",
     "pkg-jq": "^0.2.11",
     "shx": "^0.3.3",
     "tstest": "^0.4.10",
@@ -63,9 +64,9 @@
     "wechaty-puppet": "^1.0.1"
   },
   "dependencies": {
+    "axios": "^0.24.0",
     "cuid": "^2.1.8",
     "faker": "^5.5.3",
-    "axios": "^0.24.0",
     "koa": "^2.13.4",
     "koa-body": "^4.2.0",
     "koa-router": "^10.1.1",

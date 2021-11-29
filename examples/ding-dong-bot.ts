@@ -16,10 +16,10 @@
  *   limitations under the License.
  *
  */
-import {log} from "wechaty-puppet";
-import {local} from "../local";
-import {Message, WechatyBuilder} from "wechaty";
-import PuppetWalnut from "../src/puppet-walnut";
+import { log } from 'wechaty-puppet'
+import { local } from '../local'
+import { Message, WechatyBuilder } from 'wechaty'
+import PuppetWalnut from '../src/puppet-walnut'
 
 /**
  *
@@ -27,13 +27,13 @@ import PuppetWalnut from "../src/puppet-walnut";
  *
  */
 const puppet = new PuppetWalnut({
-  sipId: local.sipId,
   appId: local.appId,
-  appKey: local.appKey
+  appKey: local.appKey,
+  sipId: local.sipId,
 })
 const bot = WechatyBuilder.build({
   name: 'myBot',
-  puppet: puppet
+  puppet: puppet,
 })
 log.level('info')
 
@@ -44,7 +44,6 @@ log.level('info')
  */
 bot
   .on('message', onMessage)
-
 
 /**
  *
@@ -73,8 +72,8 @@ bot.start()
  */
 async function onMessage (msg: Message) {
   console.log(`receive message: ${msg.text()}`)
-  if(msg.text() === 'ding'){
-    await msg.talker().say("dong")
+  if (msg.text() === 'ding') {
+    await msg.talker().say('dong')
   }
 }
 

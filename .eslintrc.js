@@ -1,5 +1,6 @@
 
 const rules = {
+  'sort-keys': 'off'
 }
 
 module.exports = {

@@ -1,11 +1,14 @@
-import {
-  FileBox,
-}             from 'wechaty-puppet'
+const config = {
+  port: 3000,
+  sipId: '',
+  appId: '',
+  appKey: '',
+  base: '',
+  chatbotId: '',
+  serverRoot: 'maap.5g-msg.com:30001',
+  apiVersion: 'v1'
+};
 
-export const CHATIE_OFFICIAL_ACCOUNT_QRCODE = 'http://weixin.qq.com/r/qymXj7DEO_1ErfTs93y5'
-
-export function qrCodeForChatie (): FileBox {
-  return FileBox.fromQRCode(CHATIE_OFFICIAL_ACCOUNT_QRCODE)
-}
+export { config };
 
 export { VERSION } from './version'

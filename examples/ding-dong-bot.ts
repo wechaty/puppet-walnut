@@ -16,42 +16,42 @@
  *   limitations under the License.
  *
  */
-import {
-  EventLogoutPayload,
-  EventLoginPayload,
-  EventScanPayload,
-  EventErrorPayload,
-  EventMessagePayload,
-}                         from 'wechaty-puppet'
-import {
-  PuppetWalnut,
-}               from '../src/mod'
+import {log} from "wechaty-puppet";
+import {local} from "../local";
+import {Message, WechatyBuilder} from "wechaty";
+import PuppetWalnut from "../src/puppet-walnut";
 
 /**
  *
  * 1. Declare your Bot!
  *
  */
-const puppet = new PuppetWalnut({ sms:'+861234' })
+const puppet = new PuppetWalnut({
+  sipId: local.sipId,
+  appId: local.appId,
+  appKey: local.appKey
+})
+const bot = WechatyBuilder.build({
+  name: 'myBot',
+  puppet: puppet
+})
+log.level('info')
 
 /**
  *
  * 2. Register event handlers for Bot
  *
  */
-puppet
-  .on('logout', onLogout)
-  .on('login',  onLogin)
-  .on('scan',   onScan)
-  .on('error',  onError)
+bot
   .on('message', onMessage)
+
 
 /**
  *
  * 3. Start the bot!
  *
  */
-puppet.start()
+bot.start()
   .catch(async (e: any) => {
     console.error('Bot start() fail:', e)
     await puppet.stop()
@@ -60,64 +60,22 @@ puppet.start()
 
 /**
  *
- * 4. You are all set. ;-]
- *
- */
-
-/**
- *
- * 5. Define Event Handler Functions for:
+ * 4. Define Event Handler Functions for:
  *  `scan`, `login`, `logout`, `error`, and `message`
  *
  */
-function onScan (payload: EventScanPayload) {
-  if (payload.qrcode) {
-    const qrcodeImageUrl = [
-      'https://wechaty.js.org/qrcode/',
-      encodeURIComponent(payload.qrcode),
-    ].join('')
-    console.info(`[${payload.status}] ${qrcodeImageUrl}\nScan QR Code above to log in: `)
-
-  } else {
-    console.info(`[${payload.status}]`)
-  }
-}
-
-function onLogin (payload: EventLoginPayload) {
-  console.info(`${payload.contactId} login`)
-  puppet.messageSendText(payload.contactId, 'Wechaty login').catch(console.error)
-}
-
-function onLogout (payload: EventLogoutPayload) {
-  console.info(`${payload.contactId} logouted`)
-}
-
-function onError (payload: EventErrorPayload) {
-  console.error('Bot error:', payload.data)
-}
 
 /**
  *
- * 6. The most important handler is for:
+ * 5. The most important handler is for:
  *    dealing with Messages.
  *
  */
-async function onMessage (payload: EventMessagePayload) {
-  const msgPayload = await puppet.messagePayload(payload.messageId)
-  if (/ding/i.test(msgPayload.text || '')) {
-    console.info('ding success')
-    await puppet.messageSendText(
-     msgPayload.fromId!,
-     'dong',
-    )
-  } else {
-    console.info('ding not found')
-    await puppet.messageSendText(
-      msgPayload.fromId!,
-      'ding please',
-    )
+async function onMessage (msg: Message) {
+  console.log(`receive message: ${msg.text()}`)
+  if(msg.text() === 'ding'){
+    await msg.talker().say("dong")
   }
-  console.info(JSON.stringify(msgPayload))
 }
 
 /**

@@ -17,41 +17,23 @@
  *
  */
 import path from 'path'
+import * as PUPPET from 'wechaty-puppet'
+import { log } from 'wechaty-puppet'
 import {
-  ContactPayload,
-
   FileBox,
-
-  FriendshipPayload,
-
-  ImageType,
-
-  MessagePayload,
-
-  Puppet,
-  PuppetOptions,
-
-  RoomInvitationPayload,
-  RoomMemberPayload,
-  RoomPayload,
-
-  UrlLinkPayload,
-  MiniProgramPayload,
-
-  log,
-  MessageType,
-  FriendshipAddOptions,
-} from 'wechaty-puppet'
+  type FileBoxInterface,
+}                           from 'file-box'
+import koaBody from 'koa-body'
 
 import {
   VERSION,
-} from './config'
+}             from './config.js'
 // import { getAccessToken, startSyncingAccessToken } from './utils/get-access-token'
 import Koa  from 'koa'
 import Router from 'koa-router'
 import rp from 'request-promise'
 import { v4 as uuidv4 } from 'uuid'
-export type PuppetWalnutOptions = PuppetOptions & {
+export type PuppetWalnutOptions = PUPPET.PuppetOptions & {
   sms?: string
 }
 export interface AccessTokenPayload {
@@ -61,9 +43,8 @@ export interface AccessTokenPayload {
 type StopperFn = () => void
 const app = new Koa()
 const router = new Router()
-const koaBody = require('koa-body')
 const url = 'maap.5g-msg.com:30001'
-class PuppetWalnut extends Puppet {
+class PuppetWalnut extends PUPPET.Puppet {
 
   static override readonly VERSION = VERSION
 
@@ -99,18 +80,11 @@ class PuppetWalnut extends Puppet {
     this.messageStore = {}
   }
 
-  override async start (): Promise<void> {
-    if (this.state.on()) {
-      log.warn('PuppetWalnut', 'start() is called on a ON puppet. await ready(on) and return.')
-      await this.state.ready('on')
-      return
-    }
-    this.state.on('pending')
-
-    // Do some async initializing tasks
+  override async onStart (): Promise<void> {
+    log.verbose('PuppetWalnut', 'onStart()')
 
     app.use(koaBody({
-      mltipart: true,
+      multipart: true,
     }))
 
     app.use(async (ctx: any, next: any) => {
@@ -119,8 +93,9 @@ class PuppetWalnut extends Puppet {
       log.verbose(`${ctx.method} ${ctx.url} - ${ms}ms`)
       await next()
     })
-    // this.id = this.appId
-    void this.login(this.conversationId)
+
+    this.login(this.conversationId)
+
     router.get('/sms/notifyPath', async (ctx: any) => {
       const echostr = ctx.request.header.echostr
       ctx.body = {
@@ -131,7 +106,6 @@ class PuppetWalnut extends Puppet {
       ctx.set('appId', this.appId)
       ctx.set('echoStr', echostr)
     })
-
       .post(`/sms/messageNotification/sip:${this.sipId}@botplatform.rcs.chinaunicom.cn/messages`, async (ctx: any) => {
         const payload = ctx.request.body
         this.smsid = payload.messageId
@@ -152,65 +126,25 @@ class PuppetWalnut extends Puppet {
 
     const succeed = await this.updateAccessToken()
     if (!succeed) {
-      log.error('OfficialAccount', 'start() updateAccessToken() failed.')
+      log.error('PuppetWalnut', 'onStart() updateAccessToken() failed.')
     }
 
     const stopper = await this.startSyncingAccessToken()
     this.stopperFnList.push(stopper)
-
-    this.state.on(true)
-    /**
-     * Start mocker after the puppet fully turned ON.
-     */
-    // setImmediate(() => this.mocker.start())
   }
 
-  override async stop (): Promise<void> {
-    log.verbose('PuppetWalnut', 'stop()')
-    if (this.state.off()) {
-      log.warn('PuppetWalnut', 'stop() is called on a OFF puppet. await ready(off) and return.')
-      await this.state.ready('off')
-      return
-    }
+  override async onStop (): Promise<void> {
+    log.verbose('PuppetWalnut', 'onStop()')
 
-    this.state.off('pending')
-
-    // if (this.loopTimer) {
-    //   clearInterval(this.loopTimer)
-    // }
-
-    // this.mocker.stop()
-
-    if (this.logonoff()) {
+    if (this.isLoggedIn) {
       await this.logout()
     }
-    while (this.stopperFnList.length > 0) {
-      const stopper = this.stopperFnList.pop()
-      if (stopper) {
-        await stopper()
-      }
-    }
+
+    this.stopperFnList.forEach(setImmediate)
+    this.stopperFnList.length = 0
+
     // await some tasks...
     this.server.close()
-    this.state.off(true)
-  }
-
-  override login (contactId: string): Promise<void> {
-    log.verbose('PuppetWalnut', 'login()')
-    return super.login(contactId)
-  }
-
-  override async logout (): Promise<void> {
-    log.verbose('PuppetWalnut', 'logout()')
-
-    if (!this.id) {
-      throw new Error('logout before login?')
-    }
-
-    this.emit('logout', { contactId: this.id, data: 'test' }) // before we will throw above by logonoff() when this.user===undefined
-    this.id = undefined
-
-    // TODO: do the logout job
   }
 
   override ding (data?: string): void {
@@ -280,7 +214,7 @@ class PuppetWalnut extends Puppet {
     const update: () => void = () => this.updateAccessToken()
       .then(succeed => succeed
         ? 7200 - marginSeconds
-        : tryAgainSeconds
+        : tryAgainSeconds,
       )
       .then(seconds => setTimeout(update, seconds * 1000))
       // eslint-disable-next-line no-return-assign
@@ -303,15 +237,15 @@ class PuppetWalnut extends Puppet {
    * Contact
    *
    */
-  contactSelfName (_name: string): Promise<void> {
+  override contactSelfName (_name: string): Promise<void> {
     throw new Error('Method not implemented.')
   }
 
-  contactSelfQRCode (): Promise<string> {
+  override contactSelfQRCode (): Promise<string> {
     throw new Error('Method not implemented.')
   }
 
-  contactSelfSignature (_signature: string): Promise<void> {
+  override contactSelfSignature (_signature: string): Promise<void> {
     throw new Error('Method not implemented.')
   }
 
@@ -350,10 +284,10 @@ class PuppetWalnut extends Puppet {
     throw new Error('Method not implemented.')
   }
 
-  override async contactAvatar(contactId: string): Promise<FileBox>
-  override async contactAvatar(contactId: string, file: FileBox): Promise<void>
+  override async contactAvatar(contactId: string): Promise<FileBoxInterface>
+  override async contactAvatar(contactId: string, file: FileBoxInterface): Promise<void>
 
-  override async contactAvatar (contactId: string, file?: FileBox): Promise<void | FileBox> {
+  override async contactAvatar (contactId: string, file?: FileBoxInterface): Promise<void | FileBoxInterface> {
     log.verbose('PuppetWalnut', 'contactAvatar(%s)', contactId)
 
     /**
@@ -370,8 +304,8 @@ class PuppetWalnut extends Puppet {
     return FileBox.fromFile(WECHATY_ICON_PNG)
   }
 
-  override async contactRawPayloadParser (payload: ContactPayload) { return payload }
-  override async contactRawPayload (rawid: string): Promise<ContactPayload> {
+  override async contactRawPayloadParser (payload: PUPPET.payloads.Contact) { return payload }
+  override async contactRawPayload (rawid: string): Promise<PUPPET.payloads.Contact> {
     log.verbose('PuppetWalnut', 'contactRawPayload(%s)', rawid)
     throw new Error('Method not implemented.')
   }
@@ -381,14 +315,14 @@ class PuppetWalnut extends Puppet {
    * Conversation
    *
    */
-  override async messageRawPayloadParser (smsPayload: any): Promise<MessagePayload> {
-    const payload: MessagePayload = {
+  override async messageRawPayloadParser (smsPayload: any): Promise<PUPPET.payloads.Message> {
+    const payload: PUPPET.payloads.Message = {
       fromId: smsPayload.senderAddress,
       id: smsPayload.messageId,
       text: smsPayload.messageList[0].contentText,
       timestamp: Date.now(),
       toId: smsPayload.destinationAddress[0],
-      type: MessageType.Text,
+      type: PUPPET.types.Message.Text,
     }
     return payload
   }
@@ -400,7 +334,7 @@ class PuppetWalnut extends Puppet {
 
   async #messageSend (
     conversationId: string,
-    something: string | FileBox, // | Attachment
+    something: string | FileBoxInterface, // | Attachment
   ): Promise<void> {
     log.verbose('PuppetWalnut', 'messageSend(%s, %s)', conversationId, something)
     if (typeof something !== 'string') {
@@ -463,165 +397,165 @@ class PuppetWalnut extends Puppet {
     return this.#messageSend(conversationId, text)
   }
 
-  async messageSendContact (_conversationId: string, _contactId: string): Promise<string | void> {
+  override async messageSendContact (_conversationId: string, _contactId: string): Promise<string | void> {
     throw new Error('Method not implemented.')
   }
 
-  async messageSendFile (_conversationId: string, _file: FileBox): Promise<string | void> {
+  override async messageSendFile (_conversationId: string, _file: FileBoxInterface): Promise<string | void> {
     throw new Error('Method not implemented.')
   }
 
-  async messageSendMiniProgram (_conversationId: string, _miniProgramPayload: MiniProgramPayload): Promise<string | void> {
+  override async messageSendMiniProgram (_conversationId: string, _miniProgramPayload: PUPPET.payloads.MiniProgram): Promise<string | void> {
     throw new Error('Method not implemented.')
   }
 
-  async messageSendUrl (_conversationId: string, _urlLinkPayload: UrlLinkPayload): Promise<string | void> {
+  override async messageSendUrl (_conversationId: string, _urlLinkPayload: PUPPET.payloads.UrlLink): Promise<string | void> {
     throw new Error('Method not implemented.')
   }
 
-  tagContactAdd (_tagId: string, _contactId: string): Promise<void> {
+  override tagContactAdd (_tagId: string, _contactId: string): Promise<void> {
     throw new Error('Method not implemented.')
   }
 
-  tagContactDelete (_tagId: string): Promise<void> {
+  override tagContactDelete (_tagId: string): Promise<void> {
     throw new Error('Method not implemented.')
   }
 
-  tagContactList(contactId: string): Promise<string[]>
-  tagContactList(): Promise<string[]>
-  tagContactList (_contactId?: any): Promise<string[]> {
+  override tagContactList(contactId: string): Promise<string[]>
+  override tagContactList(): Promise<string[]>
+  override tagContactList (_contactId?: any): Promise<string[]> {
     throw new Error('Method not implemented.')
   }
 
-  tagContactRemove (_tagId: string, _contactId: string): Promise<void> {
+  override tagContactRemove (_tagId: string, _contactId: string): Promise<void> {
     throw new Error('Method not implemented.')
   }
 
-  friendshipAccept (_friendshipId: string): Promise<void> {
+  override friendshipAccept (_friendshipId: string): Promise<void> {
     throw new Error('Method not implemented.')
   }
 
-  friendshipAdd (_contactId: string, _option?: FriendshipAddOptions): Promise<void> {
+  override friendshipAdd (_contactId: string, _option?: PUPPET.types.FriendshipAddOptions): Promise<void> {
     throw new Error('Method not implemented.')
   }
 
-  friendshipSearchPhone (_phone: string): Promise<string> {
+  override friendshipSearchPhone (_phone: string): Promise<string> {
     throw new Error('Method not implemented.')
   }
 
-  friendshipSearchWeixin (_weixin: string): Promise<string> {
+  override friendshipSearchWeixin (_weixin: string): Promise<string> {
     throw new Error('Method not implemented.')
   }
 
-  protected friendshipRawPayload (_friendshipId: string): Promise<any> {
+  override friendshipRawPayload (_friendshipId: string): Promise<any> {
     throw new Error('Method not implemented.')
   }
 
-  protected friendshipRawPayloadParser (_rawPayload: any): Promise<FriendshipPayload> {
+  override friendshipRawPayloadParser (_rawPayload: any): Promise<PUPPET.payloads.Friendship> {
     throw new Error('Method not implemented.')
   }
 
-  conversationReadMark (_conversationId: string, _hasRead?: boolean): Promise<boolean | void> {
+  override conversationReadMark (_conversationId: string, _hasRead?: boolean): Promise<boolean | void> {
     throw new Error('Method not implemented.')
   }
 
-  messageContact (_messageId: string): Promise<string> {
+  override messageContact (_messageId: string): Promise<string> {
     throw new Error('Method not implemented.')
   }
 
-  messageFile (_messageId: string): Promise<FileBox> {
+  override messageFile (_messageId: string): Promise<FileBoxInterface> {
     throw new Error('Method not implemented.')
   }
 
-  messageImage (_messageId: string, _imageType: ImageType): Promise<FileBox> {
+  override messageImage (_messageId: string, _imageType: PUPPET.types.Image): Promise<FileBoxInterface> {
     throw new Error('Method not implemented.')
   }
 
-  messageMiniProgram (_messageId: string): Promise<MiniProgramPayload> {
+  override messageMiniProgram (_messageId: string): Promise<PUPPET.payloads.MiniProgram> {
     throw new Error('Method not implemented.')
   }
 
-  messageUrl (_messageId: string): Promise<UrlLinkPayload> {
+  override messageUrl (_messageId: string): Promise<PUPPET.payloads.UrlLink> {
     throw new Error('Method not implemented.')
   }
 
-  messageForward (_conversationId: string, _messageId: string): Promise<string | void> {
+  override messageForward (_conversationId: string, _messageId: string): Promise<string | void> {
     throw new Error('Method not implemented.')
   }
 
-  messageRecall (_messageId: string): Promise<boolean> {
+  override messageRecall (_messageId: string): Promise<boolean> {
     throw new Error('Method not implemented.')
   }
 
-  roomInvitationAccept (_roomInvitationId: string): Promise<void> {
+  override roomInvitationAccept (_roomInvitationId: string): Promise<void> {
     throw new Error('Method not implemented.')
   }
 
-  protected roomInvitationRawPayload (_roomInvitationId: string): Promise<any> {
+  override roomInvitationRawPayload (_roomInvitationId: string): Promise<any> {
     throw new Error('Method not implemented.')
   }
 
-  protected roomInvitationRawPayloadParser (_rawPayload: any): Promise<RoomInvitationPayload> {
+  override roomInvitationRawPayloadParser (_rawPayload: any): Promise<PUPPET.payloads.RoomInvitation> {
     throw new Error('Method not implemented.')
   }
 
-  roomAdd (_roomId: string, _contactId: string, _inviteOnly?: boolean): Promise<void> {
+  override roomAdd (_roomId: string, _contactId: string, _inviteOnly?: boolean): Promise<void> {
     throw new Error('Method not implemented.')
   }
 
-  roomAvatar (_roomId: string): Promise<FileBox> {
+  override roomAvatar (_roomId: string): Promise<FileBoxInterface> {
     throw new Error('Method not implemented.')
   }
 
-  roomCreate (_contactIdList: string[], _topic?: string): Promise<string> {
+  override roomCreate (_contactIdList: string[], _topic?: string): Promise<string> {
     throw new Error('Method not implemented.')
   }
 
-  roomDel (_roomId: string, _contactId: string): Promise<void> {
+  override roomDel (_roomId: string, _contactId: string): Promise<void> {
     throw new Error('Method not implemented.')
   }
 
-  roomList (): Promise<string[]> {
+  override roomList (): Promise<string[]> {
     throw new Error('Method not implemented.')
   }
 
-  roomQRCode (_roomId: string): Promise<string> {
+  override roomQRCode (_roomId: string): Promise<string> {
     throw new Error('Method not implemented.')
   }
 
-  roomQuit (_roomId: string): Promise<void> {
+  override roomQuit (_roomId: string): Promise<void> {
     throw new Error('Method not implemented.')
   }
 
-  roomTopic(roomId: string): Promise<string>
-  roomTopic(roomId: string, topic: string): Promise<void>
-  roomTopic (_roomId: any, _topic?: any): Promise<void> | Promise<string> {
+  override roomTopic(roomId: string): Promise<string>
+  override roomTopic(roomId: string, topic: string): Promise<void>
+  override roomTopic (_roomId: any, _topic?: any): Promise<void> | Promise<string> {
     throw new Error('Method not implemented.')
   }
 
-  protected roomRawPayload (_roomId: string): Promise<any> {
+  override roomRawPayload (_roomId: string): Promise<any> {
     throw new Error('Method not implemented.')
   }
 
-  protected roomRawPayloadParser (_rawPayload: any): Promise<RoomPayload> {
+  override roomRawPayloadParser (_rawPayload: any): Promise<PUPPET.payloads.Room> {
     throw new Error('Method not implemented.')
   }
 
-  roomAnnounce(roomId: string): Promise<string>
-  roomAnnounce(roomId: string, text: string): Promise<void>
-  roomAnnounce (_roomId: any, _text?: any): Promise<void> | Promise<string> {
+  override roomAnnounce(roomId: string): Promise<string>
+  override roomAnnounce(roomId: string, text: string): Promise<void>
+  override roomAnnounce (_roomId: any, _text?: any): Promise<void> | Promise<string> {
     throw new Error('Method not implemented.')
   }
 
-  roomMemberList (_roomId: string): Promise<string[]> {
+  override roomMemberList (_roomId: string): Promise<string[]> {
     throw new Error('Method not implemented.')
   }
 
-  protected roomMemberRawPayload (_roomId: string, _contactId: string): Promise<any> {
+  override roomMemberRawPayload (_roomId: string, _contactId: string): Promise<any> {
     throw new Error('Method not implemented.')
   }
 
-  protected roomMemberRawPayloadParser (_rawPayload: any): Promise<RoomMemberPayload> {
+  override roomMemberRawPayloadParser (_rawPayload: any): Promise<PUPPET.payloads.RoomMember> {
     throw new Error('Method not implemented.')
   }
 

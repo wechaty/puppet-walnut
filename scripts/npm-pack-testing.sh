@@ -1,6 +1,14 @@
 #!/usr/bin/env bash
 set -e
 
+VERSION=$(npx pkg-jq -r .version)
+
+if npx --package @chatie/semver semver-is-prod "$VERSION"; then
+  NPM_TAG=latest
+else
+  NPM_TAG=next
+fi
+
 npm run dist
 npm pack
 
@@ -12,9 +20,8 @@ cp tests/fixtures/smoke-testing.ts "$TMPDIR"
 cd $TMPDIR
 
 npm init -y
-npm install ./*-*.*.*.tgz \
+npm install --production ./*-*.*.*.tgz \
   @chatie/tsconfig@$NPM_TAG \
-  \
   "wechaty-puppet@$NPM_TAG" \
   "wechaty@$NPM_TAG" \
 
@@ -22,14 +29,15 @@ npm install ./*-*.*.*.tgz \
 # CommonJS
 #
 ./node_modules/.bin/tsc \
+  --target es6 \
+  --module CommonJS \
+  \
+  --moduleResolution node \
   --esModuleInterop \
   --lib esnext \
   --noEmitOnError \
   --noImplicitAny \
   --skipLibCheck \
-  --target es5 \
-  --module CommonJS \
-  --moduleResolution node \
   smoke-testing.ts
 
 echo
@@ -44,14 +52,15 @@ node smoke-testing.js
 echo "`jq '.type="module"' package.json`" > package.json
 
 ./node_modules/.bin/tsc \
+  --target es2020 \
+  --module es2020 \
+  \
+  --moduleResolution node \
   --esModuleInterop \
   --lib esnext \
   --noEmitOnError \
   --noImplicitAny \
   --skipLibCheck \
-  --target es2020 \
-  --module es2020 \
-  --moduleResolution node \
   smoke-testing.ts
 
 echo

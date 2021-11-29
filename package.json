@@ -58,8 +58,9 @@
     "@typescript-eslint/eslint-plugin-tslint": "^5.4.0",
     "pkg-jq": "^0.2.11",
     "shx": "^0.3.3",
+    "ts-node": "^10.4.0",
     "tstest": "^0.4.10",
-    "typescript": "4.3",
+    "typescript": "4.5",
     "wechaty": "^1.0.6",
     "wechaty-puppet": "^1.0.1"
   },

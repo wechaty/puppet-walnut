@@ -1,6 +1,6 @@
 {
   "name": "wechaty-puppet-walnut",
-  "version": "1.11.3",
+  "version": "1.11.4",
   "description": "Puppet Walnut for Wechaty",
   "type": "module",
   "exports": {

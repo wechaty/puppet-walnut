@@ -9,7 +9,7 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-        node:
+        node-version:
           - 16
 
     runs-on: ${{ matrix.os }}
@@ -102,4 +102,3 @@ jobs:
       - name: Is Not A Publish Branch
         if: steps.check-branch.outputs.match != 'true'
         run: echo 'Not A Publish Branch'
-        

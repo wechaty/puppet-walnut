@@ -18,7 +18,7 @@
  */
 import { log } from 'wechaty-puppet'
 import { local } from '../local'
-import { Message, WechatyBuilder } from 'wechaty'
+import { ContactSelf, Message, WechatyBuilder } from 'wechaty'
 import PuppetWalnut from '../src/puppet-walnut'
 
 /**
@@ -43,6 +43,7 @@ log.level('info')
  *
  */
 bot
+  .on('login', onLogin)
   .on('message', onMessage)
 
 /**
@@ -52,7 +53,7 @@ bot
  */
 bot.start()
   .catch(async (e: any) => {
-    console.error('Bot start() fail:', e)
+    log.error('Bot start() fail:', e)
     await puppet.stop()
     process.exit(-1)
   })
@@ -71,10 +72,14 @@ bot.start()
  *
  */
 async function onMessage (msg: Message) {
-  console.log(`receive message: ${msg.text()}`)
+  log.info(`receive message: ${msg.text()}`)
   if (msg.text() === 'ding') {
     await msg.talker().say('dong')
   }
+}
+
+async function onLogin (user: ContactSelf) {
+  log.info('bot login: ' + user.id)
 }
 
 /**

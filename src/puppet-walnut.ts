@@ -84,7 +84,7 @@ class PuppetWalnut extends PUPPET.Puppet {
 
   override async messageSendText (to: string, msg: string) {
     send(to, msg)
-    // log.info(`send message to ${to}: `, msg)
+    log.info(`send message to ${to}: `, msg)
   }
 
   onMessage (message: message) {

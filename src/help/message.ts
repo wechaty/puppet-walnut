@@ -25,7 +25,7 @@ export function send (to: string, msg: string) {
     conversationId: 'XSFDSFDFSAFDSAS^%',
     contributionId: 'SFF$#REGFY7&^%THT',
   }).then(res => {
-    log.info(res.data.messageId)
+    log.verbose(res.data.messageId)
     return null
   }
   )

@@ -47,13 +47,13 @@ class PuppetWalnut extends PUPPET.Puppet {
     config.base = `http://${config.serverRoot}/bot/${config.apiVersion}/${config.chatbotId}`
     this.cacheMessagePayload = new Map()
     this.cacheContactPayload = new Map()
-    log.verbose('Puppet5g', 'constructor("%s")', JSON.stringify(options))
+    log.verbose('PuppetWalnut', 'constructor("%s")', JSON.stringify(options))
   }
 
   onStart (): Promise<void> {
 
     void initSever(this).then(() => {
-      log.info('Puppet5g-Sever', `Server running on port ${config.port}`)
+      log.info('PuppetWalnut-Sever', `Server running on port ${config.port}`)
       return null
     })
 
@@ -78,13 +78,13 @@ class PuppetWalnut extends PUPPET.Puppet {
   }
 
   override async messageRawPayload (id: string): Promise<PUPPET.payload.Message> {
-    log.verbose('Puppet5g', 'messageRawPayload(%s)', id)
+    log.verbose('PuppetWalnut', 'messageRawPayload(%s)', id)
     return this.cacheMessagePayload.get(id)!
   }
 
   override async messageSendText (to: string, msg: string) {
     send(to, msg)
-    PUPPET.log.info(`send message to ${to}: `, msg)
+    // log.info(`send message to ${to}: `, msg)
   }
 
   onMessage (message: message) {
@@ -100,7 +100,7 @@ class PuppetWalnut extends PUPPET.Puppet {
    */
   override async contactRawPayloadParser (payload: PUPPET.payload.Contact) { return payload }
   override async contactRawPayload (id: string): Promise<PUPPET.payload.Contact> {
-    log.verbose('Puppet5g', 'contactRawPayload(%s)', id)
+    log.verbose('PuppetWalnut', 'contactRawPayload(%s)', id)
     return this.cacheContactPayload.get(id)!
   }
 

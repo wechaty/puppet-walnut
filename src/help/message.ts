@@ -27,7 +27,7 @@ export function send (to: string, msg: string) {
   }).then(res => {
     log.verbose(res.data.messageId)
     return null
-  }
+  },
   )
 
   // post(api.sendMessage, {
@@ -131,6 +131,6 @@ export function revoke () {
   }).then(res => {
     log.info(res.data)
     return null
-  }
+  },
   )
 }

@@ -2,7 +2,7 @@
 import test  from 'tstest'
 
 import PuppetWalnut from './puppet-walnut.js'
-import { local } from '../local'
+import { local } from '../local.ts'
 
 /**
  *   zrn-fight - https://github.com/zrn-fight

@@ -1,3 +1,9 @@
+interface messageList {
+  contentEncoding: string,
+  contentText: string,
+  contentType: string
+}
+
 export interface message {
     contributionId: string,
     conversationId: string,
@@ -8,10 +14,4 @@ export interface message {
     messageItem: string,
     messageList: messageList[],
     senderAddress: string
-}
-
-interface messageList {
-    contentEncoding: string,
-    contentText: string,
-    contentType: string
 }

@@ -54,5 +54,5 @@ axios.interceptors.response.use(
   }, function (error) {
     log.info(error)
     return Promise.reject(error)
-  }
+  },
 )

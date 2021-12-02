@@ -60,14 +60,24 @@ bot.start()
 
 /**
  *
- * 4. Define Event Handler Functions for:
- *  `scan`, `login`, `logout`, `error`, and `message`
+ * 4. You are all set. ;-]
  *
  */
 
 /**
  *
- * 5. The most important handler is for:
+ * 5. Define Event Handler Functions for:
+ *  `scan`, `login`, `logout`, `error`, and `message`
+ *
+ */
+
+async function onLogin (user: ContactSelf) {
+  log.info('bot login: ' + user.id)
+}
+
+/**
+ *
+ * 6. The most important handler is for:
  *    dealing with Messages.
  *
  */
@@ -76,10 +86,6 @@ async function onMessage (msg: Message) {
   if (msg.text() === 'ding') {
     await msg.talker().say('dong')
   }
-}
-
-async function onLogin (user: ContactSelf) {
-  log.info('bot login: ' + user.id)
 }
 
 /**

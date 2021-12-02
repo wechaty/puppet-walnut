@@ -1,7 +1,7 @@
 #!/usr/bin/env -S node
 import test  from 'tstest'
 
-import PuppetWalnut from './puppet-walnut'
+import PuppetWalnut from './puppet-walnut.js'
 import { local } from '../local'
 
 /**
@@ -16,7 +16,7 @@ import { local } from '../local'
  *
  */
 
-test.skip('PuppetWalnut perfect restart testing', async (t) => {
+test.skip('PuppetWalnut perfect restart testing', async t => {
   const puppet = new PuppetWalnut({
     appId: local.appId,
     appKey: local.appKey,

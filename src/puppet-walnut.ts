@@ -18,12 +18,12 @@
  */
 import * as PUPPET  from 'wechaty-puppet'
 import { log }  from 'wechaty-puppet'
-import { initSever } from './sever/sever.ts'
-import { config, VERSION } from './config.ts'
-import { updateToken } from './help/request.ts'
-import { messageParse } from './help/prase.ts'
-import type { message } from './help/struct.ts'
-import { send } from './help/message.ts'
+import { initSever } from './sever/sever.js'
+import { config, VERSION } from './config.js'
+import { updateToken } from './help/request.js'
+import { messageParse } from './help/prase.js'
+import type { message } from './help/struct.js'
+import { send } from './help/message.js'
 
 export type PuppetWalnutOptions = PUPPET.PuppetOptions & {
   sipId: string,
@@ -35,8 +35,8 @@ class PuppetWalnut extends PUPPET.Puppet {
 
   static override readonly VERSION = VERSION
 
-  cacheMessagePayload : Map<string, PUPPET.payload.Message>
-  cacheContactPayload : Map<string, PUPPET.payload.Contact>
+  cacheMessagePayload : Map<string, PUPPET.payloads.Message>
+  cacheContactPayload : Map<string, PUPPET.payloads.Contact>
 
   constructor (options: PuppetWalnutOptions) {
     super()
@@ -73,11 +73,11 @@ class PuppetWalnut extends PUPPET.Puppet {
    * Message
    *
    */
-  override async messageRawPayloadParser (payload: PUPPET.payload.Message) {
+  override async messageRawPayloadParser (payload: PUPPET.payloads.Message) {
     return payload
   }
 
-  override async messageRawPayload (id: string): Promise<PUPPET.payload.Message> {
+  override async messageRawPayload (id: string): Promise<PUPPET.payloads.Message> {
     log.verbose('PuppetWalnut', 'messageRawPayload(%s)', id)
     return this.cacheMessagePayload.get(id)!
   }
@@ -88,7 +88,7 @@ class PuppetWalnut extends PUPPET.Puppet {
   }
 
   onMessage (message: message) {
-    const msg: PUPPET.payload.Message = messageParse(message)
+    const msg: PUPPET.payloads.Message = messageParse(message)
     this.cacheMessagePayload.set(message.messageId, msg)
     this.emit('message', { messageId: message.messageId })
   }
@@ -98,8 +98,8 @@ class PuppetWalnut extends PUPPET.Puppet {
    * Contact
    *
    */
-  override async contactRawPayloadParser (payload: PUPPET.payload.Contact) { return payload }
-  override async contactRawPayload (id: string): Promise<PUPPET.payload.Contact> {
+  override async contactRawPayloadParser (payload: PUPPET.payloads.Contact) { return payload }
+  override async contactRawPayload (id: string): Promise<PUPPET.payloads.Contact> {
     log.verbose('PuppetWalnut', 'contactRawPayload(%s)', id)
     return this.cacheContactPayload.get(id)!
   }

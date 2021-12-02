@@ -1,7 +1,7 @@
 import axios from 'axios'
-import { api } from './Api.ts'
+import { api } from './Api.js'
 import { log }  from 'wechaty-puppet'
-import { config } from '../config.ts'
+import { config } from '../config.js'
 
 const headers = {
   authorization: 'accessToken ',

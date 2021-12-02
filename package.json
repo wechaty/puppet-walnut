@@ -56,7 +56,8 @@
     "@types/koa": "^2.13.4",
     "@types/koa-router": "^7.4.4",
     "@types/request-promise": "^4.1.48",
-    "@types/uuid": "^8.3.3"
+    "@types/uuid": "^8.3.3",
+    "tstest": "^0.4.10"
   },
   "peerDependencies": {
     "wechaty": "^1.0.6",

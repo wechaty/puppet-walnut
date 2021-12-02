@@ -1,7 +1,7 @@
 import Router from 'koa-router'
 import type { message } from '../help/struct'
 import { log }  from 'wechaty-puppet'
-import PuppetWalnut from '../puppet-walnut.ts'
+import type PuppetWalnut from '../puppet-walnut.js'
 const router = new Router()
 
 router.get('/sms/notifyPath', async (ctx: any) => {

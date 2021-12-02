@@ -1,6 +1,12 @@
 
 const rules = {
-  'sort-keys': 'off'
+  'sort-keys': 'off',
+  "@typescript-eslint/no-misused-promises": [
+    "error",
+    {
+      "checksVoidReturn": false
+    }
+  ]
 }
 
 module.exports = {

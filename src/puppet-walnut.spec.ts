@@ -1,8 +1,8 @@
-#!/usr/bin/env -S node
+#!/usr/bin/env -S node --no-warnings --loader ts-node/esm
 import test  from 'tstest'
 
 import PuppetWalnut from './puppet-walnut.js'
-import { local } from '../local.ts'
+import { local } from '../local.js'
 
 /**
  *   zrn-fight - https://github.com/zrn-fight

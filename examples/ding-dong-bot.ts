@@ -17,9 +17,9 @@
  *
  */
 import { log } from 'wechaty-puppet'
-import { local } from '../local'
+import { local } from '../local.ts'
 import { ContactSelf, Message, WechatyBuilder } from 'wechaty'
-import PuppetWalnut from '../src/puppet-walnut'
+import PuppetWalnut from '../src/puppet-walnut.ts'
 
 /**
  *

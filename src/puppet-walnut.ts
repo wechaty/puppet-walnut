@@ -18,12 +18,12 @@
  */
 import * as PUPPET  from 'wechaty-puppet'
 import { log }  from 'wechaty-puppet'
-import { initSever } from './sever/sever'
-import { config, VERSION } from './config'
-import { updateToken } from './help/request'
-import { messageParse } from './help/prase'
-import type { message } from './help/struct'
-import { send } from './help/message'
+import { initSever } from './sever/sever.ts'
+import { config, VERSION } from './config.ts'
+import { updateToken } from './help/request.ts'
+import { messageParse } from './help/prase.ts'
+import type { message } from './help/struct.ts'
+import { send } from './help/message.ts'
 
 export type PuppetWalnutOptions = PUPPET.PuppetOptions & {
   sipId: string,

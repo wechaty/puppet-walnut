@@ -1,4 +1,3 @@
-export const CHATIE_OFFICIAL_ACCOUNT_QRCODE = 'http://weixin.qq.com/r/qymXj7DEO_1ErfTs93y5'
 const config = {
   // The base url of the sever
   base: '',

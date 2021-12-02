@@ -1,7 +1,7 @@
-import { post } from './request'
-import { api } from './Api'
+import { post } from './request.ts'
+import { api } from './Api.ts'
 import stringRandom from 'string-random'
-import { config } from '../config'
+import { config } from '../config.ts'
 import { log } from 'wechaty-puppet'
 
 export function send (to: string, msg: string) {

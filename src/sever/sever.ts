@@ -1,9 +1,9 @@
 import Koa from 'koa'
-import { logger } from './logging'
-import routers from './routers'
-import { config } from '../config'
+import { logger } from './logging.ts'
+import routers from './routers.ts'
+import { config } from '../config.ts'
 import koaBody from 'koa-body'
-import PuppetWalnut from '../puppet-walnut'
+import type PuppetWalnut from '../puppet-walnut'
 
 const app = new Koa()
 

@@ -16,14 +16,16 @@
  *   limitations under the License.
  *
  */
-import * as PUPPET  from 'wechaty-puppet'
-import { log }  from 'wechaty-puppet'
+import * as PUPPET from 'wechaty-puppet'
+import { log } from 'wechaty-puppet'
+import type { FileBoxInterface } from 'file-box'
+import { FileBox } from 'file-box'
 import { initSever } from './sever/sever.js'
 import { config, VERSION } from './config.js'
 import { updateToken } from './help/request.js'
 import { messageParse } from './help/prase.js'
-import type { message } from './help/struct.js'
 import { send } from './help/message.js'
+import * as path from 'path'
 
 export type PuppetWalnutOptions = PUPPET.PuppetOptions & {
   sipId: string,
@@ -50,7 +52,7 @@ class PuppetWalnut extends PUPPET.Puppet {
     log.verbose('PuppetWalnut', 'constructor("%s")', JSON.stringify(options))
   }
 
-  onStart (): Promise<void> {
+  override async onStart (): Promise<void> {
 
     void initSever(this).then(() => {
       log.info('PuppetWalnut-Sever', `Server running on port ${config.port}`)
@@ -64,8 +66,88 @@ class PuppetWalnut extends PUPPET.Puppet {
     return Promise.resolve(undefined)
   }
 
-  onStop (): Promise<void> {
+  override async onStop (): Promise<void> {
+    log.verbose('PuppetWalnut', 'onStop()')
+    if (this.isLoggedIn) {
+      await this.logout()
+    }
+
+    // this.stopperFnList.forEach(setImmediate)
+    // this.stopperFnList.length = 0
+    //
+    // // await some tasks...
+    // this.server.close()
     return Promise.resolve(undefined)
+  }
+
+  /**
+   *
+   * Contact
+   *
+   */
+  override contactSelfName (_name: string): Promise<void> {
+    throw new Error('Method not implemented.')
+  }
+
+  override contactSelfQRCode (): Promise<string> {
+    throw new Error('Method not implemented.')
+  }
+
+  override contactSelfSignature (_signature: string): Promise<void> {
+    throw new Error('Method not implemented.')
+  }
+
+  override contactAlias(contactId: string): Promise<string>
+  override contactAlias(contactId: string, alias: string | null): Promise<void>
+
+  override async contactAlias (contactId: string, alias?: string | null): Promise<void | string> {
+    log.verbose('PuppetWalnut', 'contactAlias(%s, %s)', contactId, alias)
+
+    if (typeof alias === 'undefined') {
+      return 'mock alias'
+    }
+  }
+
+  override async contactPhone(contactId: string): Promise<string[]>
+  override async contactPhone(contactId: string, phoneList: string[]): Promise<void>
+
+  override async contactPhone (contactId: string, phoneList?: string[]): Promise<string[] | void> {
+    log.verbose('PuppetWalnut', 'contactPhone(%s, %s)', contactId, phoneList)
+    if (typeof phoneList === 'undefined') {
+      return []
+    }
+  }
+
+  override async contactCorporationRemark (contactId: string, corporationRemark: string) {
+    log.verbose('PuppetWalnut', 'contactCorporationRemark(%s, %s)', contactId, corporationRemark)
+  }
+
+  override async contactDescription (contactId: string, description: string) {
+    log.verbose('PuppetWalnut', 'contactDescription(%s, %s)', contactId, description)
+  }
+
+  override async contactList (): Promise<string[]> {
+    log.verbose('PuppetWalnut', 'contactList()')
+    // return [...this.mocker.cacheContactPayload.keys()]
+    throw new Error('Method not implemented.')
+  }
+
+  override async contactAvatar(contactId: string): Promise<FileBoxInterface>
+  override async contactAvatar(contactId: string, file: FileBoxInterface): Promise<void>
+
+  override async contactAvatar (contactId: string, file?: FileBoxInterface): Promise<void | FileBoxInterface> {
+    log.verbose('PuppetWalnut', 'contactAvatar(%s)', contactId)
+    if (file) {
+      return
+    }
+    const WECHATY_ICON_PNG = path.resolve('../../docs/images/wechaty-icon.png')
+    return FileBox.fromFile(WECHATY_ICON_PNG)
+  }
+
+  override async contactRawPayloadParser (payload: PUPPET.payloads.Contact) { return payload }
+  override async contactRawPayload (rawid: string): Promise<PUPPET.payloads.Contact> {
+    log.verbose('PuppetWalnut', 'contactRawPayload(%s)', rawid)
+    throw new Error('Method not implemented.')
   }
 
   /**
@@ -73,18 +155,20 @@ class PuppetWalnut extends PUPPET.Puppet {
    * Message
    *
    */
-  override async messageRawPayloadParser (payload: PUPPET.payloads.Message) {
-    return payload
+  override async messageRawPayloadParser (smsPayload: any): Promise<PUPPET.payloads.Message> {
+    return {
+      fromId: smsPayload.senderAddress,
+      id: smsPayload.messageId,
+      text: smsPayload.messageList[0].contentText,
+      timestamp: Date.now(),
+      toId: smsPayload.destinationAddress[0],
+      type: PUPPET.types.Message.Text,
+    }
   }
 
-  override async messageRawPayload (id: string): Promise<PUPPET.payloads.Message> {
-    log.verbose('PuppetWalnut', 'messageRawPayload(%s)', id)
-    return this.cacheMessagePayload.get(id)!
-  }
-
-  override async messageSendText (to: string, msg: string) {
+  override async messageSendText (to: string, msg: string | FileBoxInterface): Promise<void> {
+    log.verbose('PuppetWalnut', 'messageSend(%s, %s)', to, msg)
     send(to, msg)
-    log.info(`send message to ${to}: `, msg)
   }
 
   onMessage (message: message) {

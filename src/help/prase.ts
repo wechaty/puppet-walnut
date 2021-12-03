@@ -1,7 +1,7 @@
 import * as PUPPET  from 'wechaty-puppet'
-import type { message } from './struct'
+import type { Message } from './struct'
 
-export function messageParse (message: message): PUPPET.payloads.Message {
+export function messageParse (message: Message): PUPPET.payloads.Message {
   return {
     id: message.messageId,
     timestamp: Date.parse(new Date().toString()),

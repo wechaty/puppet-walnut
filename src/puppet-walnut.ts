@@ -23,7 +23,7 @@ import { FileBox } from 'file-box'
 import { initSever } from './sever/sever.js'
 import { config, VERSION } from './config.js'
 import { updateToken } from './help/request.js'
-import { messageParse } from './help/prase.js'
+import type { Message } from './help/struct.js'
 import { send } from './help/message.js'
 import * as path from 'path'
 
@@ -155,26 +155,20 @@ class PuppetWalnut extends PUPPET.Puppet {
    * Message
    *
    */
-  override async messageRawPayloadParser (smsPayload: any): Promise<PUPPET.payloads.Message> {
+  override async messageRawPayloadParser (message: Message): Promise<PUPPET.payloads.Message> {
     return {
-      fromId: smsPayload.senderAddress,
-      id: smsPayload.messageId,
-      text: smsPayload.messageList[0].contentText,
-      timestamp: Date.now(),
-      toId: smsPayload.destinationAddress[0],
+      id: message.messageId,
+      timestamp: Date.parse(new Date().toString()),
       type: PUPPET.types.Message.Text,
+      text: message.messageList[0]!.contentText,
+      fromId: message.senderAddress.replace('tel:+86', ''),
+      toId: message.destinationAddress,
     }
   }
 
   override async messageSendText (to: string, msg: string | FileBoxInterface): Promise<void> {
     log.verbose('PuppetWalnut', 'messageSend(%s, %s)', to, msg)
     send(to, msg)
-  }
-
-  onMessage (message: message) {
-    const msg: PUPPET.payloads.Message = messageParse(message)
-    this.cacheMessagePayload.set(message.messageId, msg)
-    this.emit('message', { messageId: message.messageId })
   }
 
   /**

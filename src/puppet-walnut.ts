@@ -166,6 +166,11 @@ class PuppetWalnut extends PUPPET.Puppet {
     }
   }
 
+  override async messageRawPayload (id: string): Promise<PUPPET.payloads.Message> {
+    log.verbose('PuppetWalnut', 'messageRawPayload(%s)', id)
+    return this.cacheMessagePayload.get(id)!
+  }
+
   override async messageSendText (to: string, msg: string | FileBoxInterface): Promise<void> {
     log.verbose('PuppetWalnut', 'messageSend(%s, %s)', to, msg)
     send(to, msg)

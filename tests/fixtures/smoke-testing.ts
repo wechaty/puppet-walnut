@@ -4,9 +4,14 @@ import {
   PuppetWalnut,
   VERSION,
 }                 from 'wechaty-puppet-walnut'
+import {local} from "../../local.js";
 
 async function main () {
-  const puppet = new PuppetWalnut({ sms: '12345' })
+  const puppet = new PuppetWalnut({
+    appId: local.appId,
+    appKey: local.appKey,
+    sipId: local.sipId,
+  })
 
   if (VERSION === '0.0.0') {
     throw new Error('version should not be 0.0.0 when prepare for publishing')

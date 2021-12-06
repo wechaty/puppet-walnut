@@ -1,10 +1,10 @@
-interface messageList {
+interface MessageList {
   contentEncoding: string,
   contentText: string,
   contentType: string
 }
 
-export interface message {
+export interface WalnutMessagePayload {
     contributionId: string,
     conversationId: string,
     dateTime: string,
@@ -12,6 +12,6 @@ export interface message {
     messageFileSize: number,
     messageId: string,
     messageItem: string,
-    messageList: messageList[],
+    messageList: MessageList[],
     senderAddress: string
 }

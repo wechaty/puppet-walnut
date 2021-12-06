@@ -16,7 +16,7 @@ interface LogData {
 }
 
 function outputLog (data: Partial<LogData>, thrownError: any) {
-  log.verbose('Puppet5g-Sever', `${data.statusCode} ${data.method} ${data.url} - ${data.responseTime}ms`)
+  log.verbose('PuppetWalnut-Sever', `${data.statusCode} ${data.method} ${data.url} - ${data.responseTime}ms`)
   if (thrownError) {
     console.error(thrownError)
   }

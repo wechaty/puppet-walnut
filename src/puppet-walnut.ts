@@ -16,14 +16,17 @@
  *   limitations under the License.
  *
  */
-import * as PUPPET  from 'wechaty-puppet'
-import { log }  from 'wechaty-puppet'
+import * as PUPPET from 'wechaty-puppet'
+import { log } from 'wechaty-puppet'
+import type { FileBoxInterface } from 'file-box'
+import { FileBox } from 'file-box'
 import { initSever } from './sever/sever.js'
 import { config, VERSION } from './config.js'
 import { updateToken } from './help/request.js'
-import { messageParse } from './help/prase.js'
-import type { message } from './help/struct.js'
+import type { WalnutMessagePayload } from './help/struct.js'
 import { send } from './help/message.js'
+import * as path from 'path'
+import CacheManager from "./cache/cacheManager.js";
 
 export type PuppetWalnutOptions = PUPPET.PuppetOptions & {
   sipId: string,
@@ -34,9 +37,7 @@ export type PuppetWalnutOptions = PUPPET.PuppetOptions & {
 class PuppetWalnut extends PUPPET.Puppet {
 
   static override readonly VERSION = VERSION
-
-  cacheMessagePayload : Map<string, PUPPET.payloads.Message>
-  cacheContactPayload : Map<string, PUPPET.payloads.Contact>
+  public cacheManager?: CacheManager
 
   constructor (options: PuppetWalnutOptions) {
     super()
@@ -45,17 +46,19 @@ class PuppetWalnut extends PUPPET.Puppet {
     config.appKey = options.appKey
     config.chatbotId = `sip:${config.sipId}@botplatform.rcs.chinaunicom.cn`
     config.base = `http://${config.serverRoot}/bot/${config.apiVersion}/${config.chatbotId}`
-    this.cacheMessagePayload = new Map()
-    this.cacheContactPayload = new Map()
     log.verbose('PuppetWalnut', 'constructor("%s")', JSON.stringify(options))
-  }
-
-  onStart (): Promise<void> {
 
     void initSever(this).then(() => {
       log.info('PuppetWalnut-Sever', `Server running on port ${config.port}`)
       return null
     })
+
+    CacheManager.init(config.sipId).then(() => {
+      this.cacheManager = CacheManager.Instance
+    })
+  }
+
+  override async onStart (): Promise<void> {
 
     updateToken()
 
@@ -64,8 +67,88 @@ class PuppetWalnut extends PUPPET.Puppet {
     return Promise.resolve(undefined)
   }
 
-  onStop (): Promise<void> {
+  override async onStop (): Promise<void> {
+    log.verbose('PuppetWalnut', 'onStop()')
+    if (this.isLoggedIn) {
+      await this.logout()
+    }
+
+    // this.stopperFnList.forEach(setImmediate)
+    // this.stopperFnList.length = 0
+    //
+    // // await some tasks...
+    // this.server.close()
     return Promise.resolve(undefined)
+  }
+
+  /**
+   *
+   * Contact
+   *
+   */
+  override contactSelfName (_name: string): Promise<void> {
+    throw new Error('Method not implemented.')
+  }
+
+  override contactSelfQRCode (): Promise<string> {
+    throw new Error('Method not implemented.')
+  }
+
+  override contactSelfSignature (_signature: string): Promise<void> {
+    throw new Error('Method not implemented.')
+  }
+
+  override contactAlias(contactId: string): Promise<string>
+  override contactAlias(contactId: string, alias: string | null): Promise<void>
+
+  override async contactAlias (contactId: string, alias?: string | null): Promise<void | string> {
+    log.verbose('PuppetWalnut', 'contactAlias(%s, %s)', contactId, alias)
+
+    if (typeof alias === 'undefined') {
+      return 'mock alias'
+    }
+  }
+
+  override async contactPhone(contactId: string): Promise<string[]>
+  override async contactPhone(contactId: string, phoneList: string[]): Promise<void>
+
+  override async contactPhone (contactId: string, phoneList?: string[]): Promise<string[] | void> {
+    log.verbose('PuppetWalnut', 'contactPhone(%s, %s)', contactId, phoneList)
+    if (typeof phoneList === 'undefined') {
+      return []
+    }
+  }
+
+  override async contactCorporationRemark (contactId: string, corporationRemark: string) {
+    log.verbose('PuppetWalnut', 'contactCorporationRemark(%s, %s)', contactId, corporationRemark)
+  }
+
+  override async contactDescription (contactId: string, description: string) {
+    log.verbose('PuppetWalnut', 'contactDescription(%s, %s)', contactId, description)
+  }
+
+  override async contactList (): Promise<string[]> {
+    log.verbose('PuppetWalnut', 'contactList()')
+    // return [...this.mocker.cacheContactPayload.keys()]
+    throw new Error('Method not implemented.')
+  }
+
+  override async contactAvatar(contactId: string): Promise<FileBoxInterface>
+  override async contactAvatar(contactId: string, file: FileBoxInterface): Promise<void>
+
+  override async contactAvatar (contactId: string, file?: FileBoxInterface): Promise<void | FileBoxInterface> {
+    log.verbose('PuppetWalnut', 'contactAvatar(%s)', contactId)
+    if (file) {
+      return
+    }
+    const WECHATY_ICON_PNG = path.resolve('../../docs/images/wechaty-icon.png')
+    return FileBox.fromFile(WECHATY_ICON_PNG)
+  }
+
+  override async contactRawPayloadParser (payload: PUPPET.payloads.Contact) { return payload }
+  override async contactRawPayload (rawid: string): Promise<PUPPET.payloads.Contact> {
+    log.verbose('PuppetWalnut', 'contactRawPayload(%s)', rawid)
+    throw new Error('Method not implemented.')
   }
 
   /**
@@ -73,24 +156,25 @@ class PuppetWalnut extends PUPPET.Puppet {
    * Message
    *
    */
-  override async messageRawPayloadParser (payload: PUPPET.payloads.Message) {
-    return payload
+  override async messageRawPayloadParser (rawPayload: WalnutMessagePayload): Promise<PUPPET.payloads.Message> {
+    return {
+      id: rawPayload.messageId,
+      timestamp: Date.parse(new Date().toString()),
+      type: PUPPET.types.Message.Text,
+      text: rawPayload.messageList[0]!.contentText,
+      fromId: rawPayload.senderAddress.replace('tel:+86', ''),
+      toId: rawPayload.destinationAddress,
+    }
   }
 
-  override async messageRawPayload (id: string): Promise<PUPPET.payloads.Message> {
-    log.verbose('PuppetWalnut', 'messageRawPayload(%s)', id)
-    return this.cacheMessagePayload.get(id)!
+  override async messageRawPayload (messageId: string): Promise<WalnutMessagePayload | undefined> {
+    log.verbose('PuppetWalnut', 'messageRawPayload(%s)', messageId)
+    return this.cacheManager?.getMessage(messageId)
   }
 
-  override async messageSendText (to: string, msg: string) {
+  override async messageSendText (to: string, msg: string | FileBoxInterface): Promise<void> {
+    log.verbose('PuppetWalnut', 'messageSend(%s, %s)', to, msg)
     send(to, msg)
-    log.info(`send message to ${to}: `, msg)
-  }
-
-  onMessage (message: message) {
-    const msg: PUPPET.payloads.Message = messageParse(message)
-    this.cacheMessagePayload.set(message.messageId, msg)
-    this.emit('message', { messageId: message.messageId })
   }
 
   /**
@@ -99,9 +183,9 @@ class PuppetWalnut extends PUPPET.Puppet {
    *
    */
   override async contactRawPayloadParser (payload: PUPPET.payloads.Contact) { return payload }
-  override async contactRawPayload (id: string): Promise<PUPPET.payloads.Contact> {
-    log.verbose('PuppetWalnut', 'contactRawPayload(%s)', id)
-    return this.cacheContactPayload.get(id)!
+  override async contactRawPayload (contactId: string): Promise<WalnutMessagePayload | undefined> {
+    log.verbose('PuppetWalnut', 'contactRawPayload(%s)', contactId)
+    return this.cacheManager?.getContact(contactId)
   }
 
 }

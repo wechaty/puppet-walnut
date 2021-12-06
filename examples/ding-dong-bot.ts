@@ -35,7 +35,7 @@ const bot = WechatyBuilder.build({
   name: 'myBot',
   puppet: puppet,
 })
-log.level('info')
+log.level('verbose')
 
 /**
  *

@@ -23,9 +23,10 @@ import { FileBox } from 'file-box'
 import { initSever } from './sever/sever.js'
 import { config, VERSION } from './config.js'
 import { updateToken } from './help/request.js'
-import type { Message } from './help/struct.js'
+import type { WalnutMessagePayload } from './help/struct.js'
 import { send } from './help/message.js'
 import * as path from 'path'
+import CacheManager from "./cache/cacheManager.js";
 
 export type PuppetWalnutOptions = PUPPET.PuppetOptions & {
   sipId: string,
@@ -36,9 +37,7 @@ export type PuppetWalnutOptions = PUPPET.PuppetOptions & {
 class PuppetWalnut extends PUPPET.Puppet {
 
   static override readonly VERSION = VERSION
-
-  cacheMessagePayload : Map<string, Message>
-  cacheContactPayload : Map<string, PUPPET.payloads.Contact>
+  public cacheManager?: CacheManager
 
   constructor (options: PuppetWalnutOptions) {
     super()
@@ -47,17 +46,19 @@ class PuppetWalnut extends PUPPET.Puppet {
     config.appKey = options.appKey
     config.chatbotId = `sip:${config.sipId}@botplatform.rcs.chinaunicom.cn`
     config.base = `http://${config.serverRoot}/bot/${config.apiVersion}/${config.chatbotId}`
-    this.cacheMessagePayload = new Map()
-    this.cacheContactPayload = new Map()
     log.verbose('PuppetWalnut', 'constructor("%s")', JSON.stringify(options))
-  }
-
-  override async onStart (): Promise<void> {
 
     void initSever(this).then(() => {
       log.info('PuppetWalnut-Sever', `Server running on port ${config.port}`)
       return null
     })
+
+    CacheManager.init(config.sipId).then(() => {
+      this.cacheManager = CacheManager.Instance
+    })
+  }
+
+  override async onStart (): Promise<void> {
 
     updateToken()
 
@@ -155,7 +156,7 @@ class PuppetWalnut extends PUPPET.Puppet {
    * Message
    *
    */
-  override async messageRawPayloadParser (rawPayload: Message): Promise<PUPPET.payloads.Message> {
+  override async messageRawPayloadParser (rawPayload: WalnutMessagePayload): Promise<PUPPET.payloads.Message> {
     return {
       id: rawPayload.messageId,
       timestamp: Date.parse(new Date().toString()),
@@ -166,9 +167,9 @@ class PuppetWalnut extends PUPPET.Puppet {
     }
   }
 
-  override async messageRawPayload (messageId: string): Promise<Message> {
+  override async messageRawPayload (messageId: string): Promise<WalnutMessagePayload | undefined> {
     log.verbose('PuppetWalnut', 'messageRawPayload(%s)', messageId)
-    return this.cacheMessagePayload.get(messageId)!
+    return this.cacheManager?.getMessage(messageId)
   }
 
   override async messageSendText (to: string, msg: string | FileBoxInterface): Promise<void> {
@@ -182,9 +183,9 @@ class PuppetWalnut extends PUPPET.Puppet {
    *
    */
   override async contactRawPayloadParser (payload: PUPPET.payloads.Contact) { return payload }
-  override async contactRawPayload (id: string): Promise<PUPPET.payloads.Contact> {
-    log.verbose('PuppetWalnut', 'contactRawPayload(%s)', id)
-    return this.cacheContactPayload.get(id)!
+  override async contactRawPayload (contactId: string): Promise<WalnutMessagePayload | undefined> {
+    log.verbose('PuppetWalnut', 'contactRawPayload(%s)', contactId)
+    return this.cacheManager?.getContact(contactId)
   }
 
 }

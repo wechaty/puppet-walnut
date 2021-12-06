@@ -4,7 +4,7 @@ interface MessageList {
   contentType: string
 }
 
-export interface Message {
+export interface WalnutMessagePayload {
     contributionId: string,
     conversationId: string,
     dateTime: string,

@@ -1,5 +1,5 @@
 import Router from 'koa-router'
-import type { Message } from '../help/struct'
+import type { WalnutMessagePayload } from '../help/struct'
 import { log }  from 'wechaty-puppet'
 import type PuppetWalnut from '../puppet-walnut.js'
 const router = new Router()
@@ -10,8 +10,8 @@ router.get('/sms/notifyPath', async (ctx: any) => {
 
 router.post('/sms/messageNotification/sip:20210401@botplatform.rcs.chinaunicom.cn/messages', async (ctx: any) => {
   const puppet: PuppetWalnut = ctx.puppet
-  const message: Message = ctx.request.body
-  puppet.cacheMessagePayload.set(message.messageId, message)
+  const message: WalnutMessagePayload = ctx.request.body
+  puppet.cacheManager?.setMessage(message.messageId, message)
   puppet.emit('message', { messageId: message.messageId })
   ctx.response.body = {
     messageId: message.messageId,

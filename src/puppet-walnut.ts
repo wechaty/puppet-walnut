@@ -156,7 +156,6 @@ class PuppetWalnut extends PUPPET.Puppet {
    *
    */
   override async messageRawPayloadParser (rawPayload: Message): Promise<PUPPET.payloads.Message> {
-    console.log("11111111111111111111111111111111111111111111111111")
     return {
       id: rawPayload.messageId,
       timestamp: Date.parse(new Date().toString()),
@@ -169,7 +168,6 @@ class PuppetWalnut extends PUPPET.Puppet {
 
   override async messageRawPayload (messageId: string): Promise<Message> {
     log.verbose('PuppetWalnut', 'messageRawPayload(%s)', messageId)
-    console.log("22222222222222222222222222222222222222222222222222")
     return this.cacheMessagePayload.get(messageId)!
   }
 

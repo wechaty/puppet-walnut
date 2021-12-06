@@ -11,8 +11,7 @@ router.get('/sms/notifyPath', async (ctx: any) => {
 router.post('/sms/messageNotification/sip:20210401@botplatform.rcs.chinaunicom.cn/messages', async (ctx: any) => {
   const puppet: PuppetWalnut = ctx.puppet
   const message: Message = ctx.request.body
-  const msg = await puppet.messageRawPayloadParser(message)
-  puppet.cacheMessagePayload.set(message.messageId, msg)
+  puppet.cacheMessagePayload.set(message.messageId, message)
   puppet.emit('message', { messageId: message.messageId })
   ctx.response.body = {
     messageId: message.messageId,

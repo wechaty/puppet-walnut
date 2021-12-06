@@ -37,7 +37,7 @@ class PuppetWalnut extends PUPPET.Puppet {
 
   static override readonly VERSION = VERSION
 
-  cacheMessagePayload : Map<string, PUPPET.payloads.Message>
+  cacheMessagePayload : Map<string, Message>
   cacheContactPayload : Map<string, PUPPET.payloads.Contact>
 
   constructor (options: PuppetWalnutOptions) {
@@ -155,20 +155,22 @@ class PuppetWalnut extends PUPPET.Puppet {
    * Message
    *
    */
-  override async messageRawPayloadParser (message: Message): Promise<PUPPET.payloads.Message> {
+  override async messageRawPayloadParser (rawPayload: Message): Promise<PUPPET.payloads.Message> {
+    console.log("11111111111111111111111111111111111111111111111111")
     return {
-      id: message.messageId,
+      id: rawPayload.messageId,
       timestamp: Date.parse(new Date().toString()),
       type: PUPPET.types.Message.Text,
-      text: message.messageList[0]!.contentText,
-      fromId: message.senderAddress.replace('tel:+86', ''),
-      toId: message.destinationAddress,
+      text: rawPayload.messageList[0]!.contentText,
+      fromId: rawPayload.senderAddress.replace('tel:+86', ''),
+      toId: rawPayload.destinationAddress,
     }
   }
 
-  override async messageRawPayload (id: string): Promise<PUPPET.payloads.Message> {
-    log.verbose('PuppetWalnut', 'messageRawPayload(%s)', id)
-    return this.cacheMessagePayload.get(id)!
+  override async messageRawPayload (messageId: string): Promise<Message> {
+    log.verbose('PuppetWalnut', 'messageRawPayload(%s)', messageId)
+    console.log("22222222222222222222222222222222222222222222222222")
+    return this.cacheMessagePayload.get(messageId)!
   }
 
   override async messageSendText (to: string, msg: string | FileBoxInterface): Promise<void> {

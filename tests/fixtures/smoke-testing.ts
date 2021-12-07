@@ -2,15 +2,15 @@
 
 import {
   PuppetWalnut,
-  VERSION,
+  VERSION
 }                 from 'wechaty-puppet-walnut'
-import {local} from '../../src/local.js';
+
 
 async function main () {
   const puppet = new PuppetWalnut({
-    appId: local.appId,
-    appKey: local.appKey,
-    sipId: local.sipId,
+    sipId: '20210401',
+    appId: '28871d8c83954bc78424ffcbff80285c',
+    appKey: '3b9cc5506af2466aa82eee4c04f86471',
   })
 
   if (VERSION === '0.0.0') {

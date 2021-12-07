@@ -17,7 +17,7 @@
  *
  */
 import { log } from 'wechaty-puppet'
-import { local } from '../local.js'
+import { local } from '../src/local.js'
 import { ContactSelf, Message, WechatyBuilder } from 'wechaty'
 import PuppetWalnut from '../src/puppet-walnut.js'
 

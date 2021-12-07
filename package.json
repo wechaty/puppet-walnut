@@ -53,6 +53,7 @@
     "@chatie/git-scripts": "^0.6.2",
     "@chatie/semver": "^0.4.7",
     "@chatie/tsconfig": "^4.6.2",
+    "@types/fs-extra": "^9.0.13",
     "@types/koa": "^2.13.4",
     "@types/koa-router": "^7.4.4",
     "@types/request-promise": "^4.1.48",

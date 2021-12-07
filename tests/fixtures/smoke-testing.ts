@@ -4,7 +4,7 @@ import {
   PuppetWalnut,
   VERSION,
 }                 from 'wechaty-puppet-walnut'
-import {local} from "../../local.js";
+import {local} from '../../local.js';
 
 async function main () {
   const puppet = new PuppetWalnut({

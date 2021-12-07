@@ -69,6 +69,7 @@ export default class CacheManager {
    * Message Section
    * --------------------------------
    */
+
   public async getMessage (messageId: string): Promise<WalnutMessagePayload | undefined> {
     if (!this.cacheMessageRawPayload) {
       throw new Error(`${PRE} getMessage() has no cache.`)

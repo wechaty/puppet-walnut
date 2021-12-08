@@ -43,7 +43,7 @@ class PuppetWalnut extends PUPPET.Puppet {
   static baseUrl: string
   static chatbotId: string
   static instance: PuppetWalnut
-  static cacheManager: CacheManager
+  static cacheManager?: CacheManager
   static override readonly VERSION = VERSION
 
   constructor (options: PuppetWalnutOptions) {
@@ -151,7 +151,7 @@ class PuppetWalnut extends PUPPET.Puppet {
   override async contactRawPayloadParser (payload: PUPPET.payloads.Contact) { return payload }
   override async contactRawPayload (contactId: string): Promise<WalnutMessagePayload | undefined> {
     log.verbose('PuppetWalnut', 'contactRawPayload(%s)', contactId)
-    return PuppetWalnut.cacheManager.getContact(contactId)
+    return PuppetWalnut.cacheManager?.getContact(contactId)
   }
 
   /**
@@ -172,7 +172,7 @@ class PuppetWalnut extends PUPPET.Puppet {
 
   override async messageRawPayload (messageId: string): Promise<WalnutMessagePayload | undefined> {
     log.verbose('PuppetWalnut', 'messageRawPayload(%s)', messageId)
-    return PuppetWalnut.cacheManager.getMessage(messageId)
+    return PuppetWalnut.cacheManager?.getMessage(messageId)
   }
 
   override async messageSendText (to: string, msg: string): Promise<void> {

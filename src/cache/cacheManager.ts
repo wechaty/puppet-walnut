@@ -3,6 +3,7 @@ import path from 'path'
 import fs from 'fs-extra'
 import { log } from 'wechaty-puppet'
 import FlashStore from 'flash-store'
+import PuppetWalnut from '../puppet-walnut.js'
 import type { WalnutMessagePayload } from '../help/struct'
 
 const PRE = 'CacheManager'
@@ -32,9 +33,9 @@ export default class CacheManager {
     return this._instance
   }
 
-  public static async init (userId: string) {
+  public static async init () {
     log.verbose(PRE, 'init()')
-    this.baseDir = path.join(this.baseDir, path.sep, userId, path.sep)
+    this.baseDir = path.join(this.baseDir, path.sep, PuppetWalnut.sipId, path.sep)
     if (this._instance) {
       log.verbose(PRE, 'init() CacheManager has been initialized, no need to initialize again.')
       return
@@ -77,6 +78,7 @@ export default class CacheManager {
     if (!this.cacheMessageRawPayload) {
       throw new Error(`${PRE} getMessage() has no cache.`)
     }
+    log.verbose(PRE, `getMessage(${messageId})`)
     return await this.cacheMessageRawPayload.get(messageId)
   }
 
@@ -84,6 +86,7 @@ export default class CacheManager {
     if (!this.cacheMessageRawPayload || !messageId) {
       throw new Error(`${PRE} setMessage() has no cache.`)
     }
+    log.verbose(PRE, `setMessage(${messageId})`)
     await this.cacheMessageRawPayload.set(messageId, payload)
   }
 
@@ -94,15 +97,17 @@ export default class CacheManager {
    */
   public async getContact (contactId: string): Promise<WalnutMessagePayload | undefined> {
     if (!this.cacheContactRawPayload) {
-      throw new Error(`${PRE} getMessage() has no cache.`)
+      throw new Error(`${PRE} getContact() has no cache.`)
     }
+    log.verbose(PRE, `getContact(${contactId})`)
     return await this.cacheContactRawPayload.get(contactId)
   }
 
   public async setContact (contactId: string, payload: WalnutMessagePayload): Promise<void> {
     if (!this.cacheContactRawPayload || !contactId) {
-      throw new Error(`${PRE} setMessage() has no cache.`)
+      throw new Error(`${PRE} setContact() has no cache.`)
     }
+    log.verbose(PRE, `setContact(${contactId})`)
     await this.cacheContactRawPayload.set(contactId, payload)
   }
 

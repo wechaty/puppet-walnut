@@ -36,25 +36,34 @@ export type PuppetWalnutOptions = PUPPET.PuppetOptions & {
 
 class PuppetWalnut extends PUPPET.Puppet {
 
+  static port: number
+  static sipId: string
+  static appId: string
+  static appKey: string
+  static baseUrl: string
+  static chatbotId: string
+  static instance: PuppetWalnut
+  static cacheManager: CacheManager
   static override readonly VERSION = VERSION
-  public cacheManager?: CacheManager
 
   constructor (options: PuppetWalnutOptions) {
     super()
-    config.sipId = options.sipId
-    config.appId = options.appId
-    config.appKey = options.appKey
-    config.chatbotId = `sip:${config.sipId}@botplatform.rcs.chinaunicom.cn`
-    config.base = `http://${config.serverRoot}/bot/${config.apiVersion}/${config.chatbotId}`
+    PuppetWalnut.instance = this
+    PuppetWalnut.port = config.port
+    PuppetWalnut.sipId = process.env['WECHATY_PUPPET_WALNUT_SIPID'] !
+    PuppetWalnut.appId = process.env['WECHATY_PUPPET_WALNUT_APPID'] !
+    PuppetWalnut.appKey = process.env['WECHATY_PUPPET_WALNUT_APPKEY'] !
+    PuppetWalnut.chatbotId = `sip:${PuppetWalnut.sipId}@botplatform.rcs.chinaunicom.cn`
+    PuppetWalnut.baseUrl = `http://${config.serverRoot}/bot/${config.apiVersion}/${PuppetWalnut.chatbotId}`
     log.verbose('PuppetWalnut', 'constructor("%s")', JSON.stringify(options))
 
-    void initSever(this).then(() => {
-      log.info('PuppetWalnut-Sever', `Server running on port ${config.port}`)
+    void initSever().then(() => {
+      log.info('PuppetWalnut-Sever', `Server running on port ${PuppetWalnut.port}`)
       return null
     })
 
-    void CacheManager.init(config.sipId).then(() => {
-      this.cacheManager = CacheManager.Instance
+    void CacheManager.init().then(() => {
+      PuppetWalnut.cacheManager = CacheManager.Instance
       return null
     })
   }
@@ -63,7 +72,7 @@ class PuppetWalnut extends PUPPET.Puppet {
 
     updateToken()
 
-    this.login(config.chatbotId)
+    this.login(PuppetWalnut.chatbotId)
 
     return Promise.resolve(undefined)
   }
@@ -142,7 +151,7 @@ class PuppetWalnut extends PUPPET.Puppet {
   override async contactRawPayloadParser (payload: PUPPET.payloads.Contact) { return payload }
   override async contactRawPayload (contactId: string): Promise<WalnutMessagePayload | undefined> {
     log.verbose('PuppetWalnut', 'contactRawPayload(%s)', contactId)
-    return this.cacheManager?.getContact(contactId)
+    return PuppetWalnut.cacheManager.getContact(contactId)
   }
 
   /**
@@ -163,7 +172,7 @@ class PuppetWalnut extends PUPPET.Puppet {
 
   override async messageRawPayload (messageId: string): Promise<WalnutMessagePayload | undefined> {
     log.verbose('PuppetWalnut', 'messageRawPayload(%s)', messageId)
-    return this.cacheManager?.getMessage(messageId)
+    return PuppetWalnut.cacheManager.getMessage(messageId)
   }
 
   override async messageSendText (to: string, msg: string): Promise<void> {

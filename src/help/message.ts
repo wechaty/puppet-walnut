@@ -1,12 +1,12 @@
 import { post } from './request.js'
-import { api } from './Api.js'
-import stringRandom from 'string-random'
+import { API } from './Api.js'
+import { v4 as uuidV4 } from 'uuid'
 import { config } from '../config.js'
 import { log } from 'wechaty-puppet'
 
 export function send (to: string, msg: string) {
-  void post(api.sendMessage, {
-    messageId: stringRandom(20),
+  void post(API.sendMessage, {
+    messageId: uuidV4(),
     messageList: [
       {
         contentEncoding: 'utf8',
@@ -29,102 +29,10 @@ export function send (to: string, msg: string) {
     return null
   },
   )
-
-  // post(api.sendMessage, {
-  //         "messageId": stringRandom(20),
-  //         "messageList": [
-  //             {
-  //                 "contentType": "text/plain",
-  //                 "contentText": msg
-  //             },
-  //             {
-  //                 "contentType": "application/vnd.gsma.botsuggestion.v1.0+json",
-  //                 "contentText": {
-  //                     "suggestions": [
-  //                         {
-  //                             "reply": {
-  //                                 "displayText": "Yes",
-  //                                 "postback": {
-  //                                     "data": "set_by_chatbot_reply_yes"
-  //                                 }
-  //                             }
-  //                         },
-  //                         {
-  //                             "reply": {
-  //                                 "displayText": "No",
-  //                                 "postback": {
-  //                                     "data": "set_by_chatbot_reply_no"
-  //                                 }
-  //                             }
-  //                         },
-  //                         {
-  //                             "action": {
-  //                                 "urlAction": {
-  //                                     "openUrl": {
-  //                                         "url": "https://www.10010.com"
-  //                                     }
-  //                                 },
-  //                                 "displayText": "Open website or deep link",
-  //                                 "postback": {
-  //                                     "data": "set_by_chatbot_open_url"
-  //                                 }
-  //                             }
-  //                         },
-  //                         {
-  //                             "action": {
-  //                                 "dialerAction": {
-  //                                     "dialPhoneNumber": {
-  //                                         "phoneNumber": "+8617928222350"
-  //                                     }
-  //                                 },
-  //                                 "displayText": "Call a phone number",
-  //                                 "postback": {
-  //                                     "data": "set_by_chatbot_open_dialer"
-  //                                 }
-  //                             }
-  //                         }
-  //                     ]
-  //                 }
-  //             }
-  //         ],
-  //         "destinationAddress": [
-  //             `tel:+86${to}`
-  //         ],
-  //         "smsSupported": false,
-  //         "storeSupported": false,
-  //         "senderAddress": config.chatbotId,
-  //         "serviceCapability": [
-  //             {
-  //                 "capabilityId": "ChatbotSA",
-  //                 "version": "+g.gsma.rcs.botversion=\"#=1\""
-  //             }
-  //         ],
-  //         "conversationId": "XSFDSFDFSAFDSAS^%",
-  //         "contributionId": "SFF$#REGFY7&^%THT"
-  //     }
-  // )
-
-  // post(api.sendMessage, {
-  //         "messageId": stringRandom(20),
-  //         "messageList": [
-  //             {
-  //                 "contentType": "text/plain",
-  //                 "contentText": "geo:50.7311865,7.0914591;crs=gcj02;u=10;rcs-l=Qingfeng%20Steamed%20Dumpling%20Shop %20%F0%9F%8D%9A"
-  //             }
-  //         ],
-  //         "destinationAddress": [`tel:+86${to}`],
-  //         "smsSupported": false,
-  //         "storeSupported": false,
-  //         "senderAddress": config.chatbotId,
-  //         "serviceCapability": [{"capabilityId": "ChatbotSA", "version": "+g.gsma.rcs.botversion=\"#=1\""}],
-  //         "conversationId": "XSFDSFDFSAFDSAS^%",
-  //         "contributionId": "SFF$#REGFY7&^%THT"
-  //     }
-  // )
 }
 
 export function revoke () {
-  void post(api.revokeMessage, {
+  void post(API.revokeMessage, {
     destinationAddress: ['tel:+8613911833788'],
     messageId: 'VqHUSH8qbWFQDlqAGns',
     status: 'RevokeRequested',

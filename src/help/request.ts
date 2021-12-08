@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { api } from './Api.js'
+import { API } from './Api.js'
 import { log }  from 'wechaty-puppet'
 import { config } from '../config.js'
 
@@ -10,7 +10,7 @@ const headers = {
 
 export function updateToken () {
   void axios.request({
-    url: config.base + api.accessToken,
+    url: config.base + API.accessToken,
     method: 'POST',
     headers: headers,
     data: {
@@ -26,7 +26,7 @@ export function updateToken () {
   setTimeout(updateToken, 2 * 60 * 60 * 60 * 60)
 }
 
-export function get (params: {}, url: string) {
+export function get (url: string, params = {}) {
   return axios.request({
     url: config.base + url,
     method: 'GET',
@@ -37,7 +37,7 @@ export function get (params: {}, url: string) {
   })
 }
 
-export function post (url: string, params: {}) {
+export function post (url: string, params = {}) {
   return axios.request({
     url: config.base + url,
     method: 'POST',

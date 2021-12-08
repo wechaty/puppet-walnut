@@ -2,7 +2,7 @@
 
 import {
   PuppetWalnut,
-  VERSION
+  VERSION,
 }                 from 'wechaty-puppet-walnut'
 
 

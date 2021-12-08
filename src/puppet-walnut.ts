@@ -73,12 +73,6 @@ class PuppetWalnut extends PUPPET.Puppet {
     if (this.isLoggedIn) {
       await this.logout()
     }
-
-    // this.stopperFnList.forEach(setImmediate)
-    // this.stopperFnList.length = 0
-    //
-    // // await some tasks...
-    // this.server.close()
     return Promise.resolve(undefined)
   }
 
@@ -130,7 +124,6 @@ class PuppetWalnut extends PUPPET.Puppet {
 
   override async contactList (): Promise<string[]> {
     log.verbose('PuppetWalnut', 'contactList()')
-    // return [...this.mocker.cacheContactPayload.keys()]
     throw new Error('Method not implemented.')
   }
 

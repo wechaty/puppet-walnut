@@ -17,9 +17,12 @@ export default class CacheManager {
   private static _instance?: CacheManager
 
   private static baseDir = path.join(
-    os.homedir(), path.sep,
-    '.wechaty', path.sep,
-    'puppet-walnut-cache', path.sep,
+    os.homedir(),
+    path.sep,
+    '.wechaty',
+    path.sep,
+    'puppet-walnut-cache',
+    path.sep,
   )
 
   public static get Instance () {
@@ -31,7 +34,7 @@ export default class CacheManager {
 
   public static async init (userId: string) {
     log.verbose(PRE, 'init()')
-    this.baseDir = path.join(this.baseDir, path.sep, userId)
+    this.baseDir = path.join(this.baseDir, path.sep, userId, path.sep)
     if (this._instance) {
       log.verbose(PRE, 'init() CacheManager has been initialized, no need to initialize again.')
       return
@@ -122,53 +125,30 @@ export default class CacheManager {
 
     this.cacheMessageRawPayload = await CacheManager.initFlashStore(CacheManager.baseDir, 'messageRawPayload')
     this.cacheContactRawPayload = await CacheManager.initFlashStore(CacheManager.baseDir, 'contactRawPayload')
-    // this.cacheContactRawPayload        = puppetCache.genContactClient()
-    // this.cacheRoomMemberRawPayload     = puppetCache.genRoomMemberClient()
-    // this.cacheRoomRawPayload           = puppetCache.genRoomClient()
-    // this.cacheFriendshipRawPayload     = puppetCache.genFriendshipClient()
-    // this.cacheRoomInvitationRawPayload = puppetCache.genRoomInvitationClient()
-    // const contactTotal = this.cacheContactRawPayload?.size
 
-    // log.verbose(PRE, `initCache() inited ${contactTotal} Contacts,  cachedir="${baseDir}"`)
+    log.verbose(PRE, `initCache() cacheDir="${CacheManager.baseDir}"`)
   }
 
   private async releaseCache () {
     log.verbose(PRE, 'releaseCache()')
 
-    // if (this.cacheContactRawPayload
-    //   && this.cacheRoomMemberRawPayload
-    //   && this.cacheRoomRawPayload
-    //   && this.cacheFriendshipRawPayload
-    //   && this.cacheRoomInvitationRawPayload
-    //   && this.cacheImageMessageRawPayload
-    // ) {
-    //   log.silly(PRE, 'releaseCache() closing caches ...')
-    //
-    //   if (this.compactCacheTimer) {
-    //     clearTimeout(this.compactCacheTimer)
-    //     this.compactCacheTimer = undefined
-    //   }
-    //
-    //   await Promise.all([
-    //     this.cacheContactRawPayload.close(),
-    //     this.cacheRoomMemberRawPayload.close(),
-    //     this.cacheRoomRawPayload.close(),
-    //     this.cacheFriendshipRawPayload.close(),
-    //     this.cacheRoomInvitationRawPayload.close(),
-    //     this.cacheImageMessageRawPayload.close(),
-    //   ])
-    //
-    //   this.cacheContactRawPayload    = undefined
-    //   this.cacheRoomMemberRawPayload = undefined
-    //   this.cacheRoomRawPayload       = undefined
-    //   this.cacheFriendshipRawPayload = undefined
-    //   this.cacheRoomInvitationRawPayload = undefined
-    //   this.cacheImageMessageRawPayload = undefined
-    //
-    //   log.silly(PRE, 'releaseCache() cache closed.')
-    // } else {
-    //   log.verbose(PRE, 'releaseCache() cache not exist.')
-    // }
+    if (this.cacheMessageRawPayload
+      && this.cacheContactRawPayload
+    ) {
+      log.silly(PRE, 'releaseCache() closing caches ...')
+
+      await Promise.all([
+        this.cacheMessageRawPayload.close(),
+        this.cacheContactRawPayload.close(),
+      ])
+
+      this.cacheMessageRawPayload    = undefined
+      this.cacheContactRawPayload = undefined
+
+      log.silly(PRE, 'releaseCache() cache closed.')
+    } else {
+      log.verbose(PRE, 'releaseCache() cache not exist.')
+    }
   }
 
 }

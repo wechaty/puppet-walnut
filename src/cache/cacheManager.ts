@@ -4,7 +4,7 @@ import fs from 'fs-extra'
 import { log } from 'wechaty-puppet'
 import FlashStore from 'flash-store'
 import PuppetWalnut from '../puppet-walnut.js'
-import type { WalnutMessagePayload } from '../help/struct'
+import type { WalnutContactPayload, WalnutMessagePayload } from '../help/struct'
 
 const PRE = 'CacheManager'
 
@@ -35,13 +35,14 @@ export default class CacheManager {
 
   public static async init () {
     log.verbose(PRE, 'init()')
-    this.baseDir = path.join(this.baseDir, path.sep, PuppetWalnut.sipId, path.sep)
+    this.baseDir = path.join(this.baseDir, PuppetWalnut.sipId, path.sep)
     if (this._instance) {
       log.verbose(PRE, 'init() CacheManager has been initialized, no need to initialize again.')
       return
     }
     this._instance = new CacheManager()
     await this._instance.initCache()
+    return CacheManager.Instance
   }
 
   public static async release () {
@@ -54,8 +55,8 @@ export default class CacheManager {
     this._instance = undefined
   }
 
-  public static async initFlashStore (baseDir: string, name: string) {
-    const dir = path.join(baseDir, path.sep, name)
+  public static async initFlashStore (name: string) {
+    const dir = path.join(this.baseDir, name)
     return new FlashStore(dir)
   }
 
@@ -66,7 +67,7 @@ export default class CacheManager {
    */
 
   private cacheMessageRawPayload?: FlashStore<string, WalnutMessagePayload>
-  private cacheContactRawPayload?: FlashStore<string, WalnutMessagePayload>
+  private cacheContactRawPayload?: FlashStore<string, WalnutContactPayload>
 
   /**
    * -------------------------------
@@ -86,7 +87,7 @@ export default class CacheManager {
     if (!this.cacheMessageRawPayload || !messageId) {
       throw new Error(`${PRE} setMessage() has no cache.`)
     }
-    log.verbose(PRE, `setMessage(${messageId})`)
+    log.verbose(PRE, `setMessage(${messageId}): ${JSON.stringify(payload)}`)
     await this.cacheMessageRawPayload.set(messageId, payload)
   }
 
@@ -95,7 +96,7 @@ export default class CacheManager {
    * Contact Section
    * --------------------------------
    */
-  public async getContact (contactId: string): Promise<WalnutMessagePayload | undefined> {
+  public async getContact (contactId: string): Promise<WalnutContactPayload | undefined> {
     if (!this.cacheContactRawPayload) {
       throw new Error(`${PRE} getContact() has no cache.`)
     }
@@ -103,11 +104,11 @@ export default class CacheManager {
     return await this.cacheContactRawPayload.get(contactId)
   }
 
-  public async setContact (contactId: string, payload: WalnutMessagePayload): Promise<void> {
+  public async setContact (contactId: string, payload: WalnutContactPayload): Promise<void> {
     if (!this.cacheContactRawPayload || !contactId) {
       throw new Error(`${PRE} setContact() has no cache.`)
     }
-    log.verbose(PRE, `setContact(${contactId})`)
+    log.verbose(PRE, `setContact(${contactId}): ${JSON.stringify(payload)}`)
     await this.cacheContactRawPayload.set(contactId, payload)
   }
 
@@ -128,8 +129,10 @@ export default class CacheManager {
       await fs.mkdirp(CacheManager.baseDir)
     }
 
-    this.cacheMessageRawPayload = await CacheManager.initFlashStore(CacheManager.baseDir, 'messageRawPayload')
-    this.cacheContactRawPayload = await CacheManager.initFlashStore(CacheManager.baseDir, 'contactRawPayload')
+    this.cacheMessageRawPayload = await CacheManager.initFlashStore('messageRawPayload')
+    this.cacheContactRawPayload = await CacheManager.initFlashStore('contactRawPayload')
+
+    await this.cacheContactRawPayload.set(PuppetWalnut.chatbotId, { phone: PuppetWalnut.chatbotId })
 
     log.verbose(PRE, `initCache() cacheDir="${CacheManager.baseDir}"`)
   }
@@ -147,7 +150,7 @@ export default class CacheManager {
         this.cacheContactRawPayload.close(),
       ])
 
-      this.cacheMessageRawPayload    = undefined
+      this.cacheMessageRawPayload = undefined
       this.cacheContactRawPayload = undefined
 
       log.silly(PRE, 'releaseCache() cache closed.')

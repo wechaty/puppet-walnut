@@ -1,8 +1,8 @@
 import { post } from './request.js'
 import { API } from './Api.js'
 import { v4 as uuidV4 } from 'uuid'
-import { config } from '../config.js'
 import { log } from 'wechaty-puppet'
+import PuppetWalnut from '../puppet-walnut.js'
 
 export function send (to: string, msg: string) {
   void post(API.sendMessage, {
@@ -15,7 +15,7 @@ export function send (to: string, msg: string) {
       },
     ],
     destinationAddress: [`tel:+86${to}`],
-    senderAddress: config.chatbotId,
+    senderAddress: PuppetWalnut.chatbotId,
     serviceCapabilit: [
       {
         capabilityId: 'ChatbotSA',

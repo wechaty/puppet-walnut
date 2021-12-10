@@ -23,7 +23,7 @@ export function updateToken () {
     return null
   })
   // 定时两小时
-  setTimeout(updateToken, 2 * 60 * 60 * 60 * 60)
+  setTimeout(updateToken, 2 * 60 * 60 * 1000)
 }
 
 export function get (url: string, params = {}) {

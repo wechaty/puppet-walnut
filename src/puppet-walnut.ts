@@ -23,7 +23,7 @@ import { FileBox } from 'file-box'
 import { initSever } from './sever/sever.js'
 import { config, VERSION } from './config.js'
 import { updateToken } from './help/request.js'
-import type { WalnutMessagePayload } from './help/struct.js'
+import type { WalnutContactPayload, WalnutMessagePayload } from './help/struct.js'
 import { send } from './help/message.js'
 import * as path from 'path'
 import CacheManager from './cache/cacheManager.js'
@@ -56,19 +56,13 @@ class PuppetWalnut extends PUPPET.Puppet {
     PuppetWalnut.chatbotId = `sip:${PuppetWalnut.sipId}@botplatform.rcs.chinaunicom.cn`
     PuppetWalnut.baseUrl = `http://${config.serverRoot}/bot/${config.apiVersion}/${PuppetWalnut.chatbotId}`
     log.verbose('PuppetWalnut', 'constructor("%s")', JSON.stringify(options))
-
-    void initSever().then(() => {
-      log.info('PuppetWalnut-Sever', `Server running on port ${PuppetWalnut.port}`)
-      return null
-    })
-
-    void CacheManager.init().then(() => {
-      PuppetWalnut.cacheManager = CacheManager.Instance
-      return null
-    })
   }
 
   override async onStart (): Promise<void> {
+
+    await initSever()
+
+    PuppetWalnut.cacheManager = await CacheManager.init()
 
     updateToken()
 
@@ -148,8 +142,18 @@ class PuppetWalnut extends PUPPET.Puppet {
     return FileBox.fromFile(WECHATY_ICON_PNG)
   }
 
-  override async contactRawPayloadParser (payload: PUPPET.payloads.Contact) { return payload }
-  override async contactRawPayload (contactId: string): Promise<WalnutMessagePayload | undefined> {
+  override async contactRawPayloadParser (rawPayload: WalnutContactPayload): Promise<PUPPET.payloads.Contact> {
+    return {
+      id: '',
+      gender: PUPPET.types.ContactGender.Unknown,
+      type: PUPPET.types.Contact.Individual,
+      name: rawPayload.phone,
+      avatar: 'https://raw.githubusercontent.com/fabian4/puppet-walnut/dev/docs/images/avatar.jpg',
+      phone: [rawPayload.phone],
+    }
+  }
+
+  override async contactRawPayload (contactId: string): Promise<WalnutContactPayload | undefined> {
     log.verbose('PuppetWalnut', 'contactRawPayload(%s)', contactId)
     return PuppetWalnut.cacheManager?.getContact(contactId)
   }

@@ -27,11 +27,11 @@ export async function logger (ctx: Koa.Context, next: () => Promise<any>) {
   const start = new Date().getMilliseconds()
 
   const logData: Partial<LogData> = {
+    host: ctx.headers['host'],
     method: ctx.method,
-    url: ctx.url,
     query: ctx.querystring,
     remoteAddress: ctx.request.ip,
-    host: ctx.headers['host'],
+    url: ctx.url,
     userAgent: ctx.headers['user-agent'],
   }
 

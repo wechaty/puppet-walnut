@@ -1,22 +1,22 @@
 import axios from 'axios'
-import { API } from './Api.js'
+import { Api } from './api.js'
 import { log }  from 'wechaty-puppet'
 import PuppetWalnut from '../puppet-walnut.js'
 
 const headers = {
-  authorization: 'accessToken ',
   'Content-Type': 'application/json',
+  authorization: 'accessToken ',
 }
 
 export function updateToken () {
   void axios.request({
-    url: PuppetWalnut.baseUrl + API.accessToken,
-    method: 'POST',
-    headers: headers,
     data: {
       appId: PuppetWalnut.appId,
       appKey: PuppetWalnut.appKey,
     },
+    headers: headers,
+    method: 'POST',
+    url: PuppetWalnut.baseUrl + Api.accessToken,
   }).then(res => {
     headers.authorization = headers.authorization + res.data.accessToken
     log.info('update-token', `${headers['authorization']}`)
@@ -28,23 +28,23 @@ export function updateToken () {
 
 export function get (url: string, params = {}) {
   return axios.request({
-    url: PuppetWalnut.baseUrl + url,
-    method: 'GET',
-    headers: headers,
     data: {
       ...params,
     },
+    headers: headers,
+    method: 'GET',
+    url: PuppetWalnut.baseUrl + url,
   })
 }
 
 export function post (url: string, params = {}) {
   return axios.request({
-    url: PuppetWalnut.baseUrl + url,
-    method: 'POST',
-    headers: headers,
     data: {
       ...params,
     },
+    headers: headers,
+    method: 'POST',
+    url: PuppetWalnut.baseUrl + url,
   })
 }
 

@@ -1,11 +1,14 @@
 import { post } from './request.js'
-import { API } from './Api.js'
+import { Api } from './api.js'
 import { v4 as uuidV4 } from 'uuid'
 import { log } from 'wechaty-puppet'
 import PuppetWalnut from '../puppet-walnut.js'
 
 export function send (to: string, msg: string) {
-  void post(API.sendMessage, {
+  void post(Api.sendMessage, {
+    contributionId: 'SFF$#REGFY7&^%THT',
+    conversationId: 'XSFDSFDFSAFDSAS^%',
+    destinationAddress: [`tel:+86${to}`],
     messageId: uuidV4(),
     messageList: [
       {
@@ -14,7 +17,6 @@ export function send (to: string, msg: string) {
         contentType: 'text/plain',
       },
     ],
-    destinationAddress: [`tel:+86${to}`],
     senderAddress: PuppetWalnut.chatbotId,
     serviceCapabilit: [
       {
@@ -22,8 +24,6 @@ export function send (to: string, msg: string) {
         version: '+g.gsma.rcs.botversion="#=1"',
       },
     ],
-    conversationId: 'XSFDSFDFSAFDSAS^%',
-    contributionId: 'SFF$#REGFY7&^%THT',
   }).then(res => {
     log.verbose(res.data.messageId)
     return null
@@ -32,7 +32,7 @@ export function send (to: string, msg: string) {
 }
 
 export function revoke () {
-  void post(API.revokeMessage, {
+  void post(Api.revokeMessage, {
     destinationAddress: ['tel:+8613911833788'],
     messageId: 'VqHUSH8qbWFQDlqAGns',
     status: 'RevokeRequested',

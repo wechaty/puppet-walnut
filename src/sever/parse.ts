@@ -12,11 +12,11 @@ function parseMessage (ctx: any) {
   void PuppetWalnut.cacheManager?.setContact(message.senderAddress.replace('tel:+86', ''), { phone: message.senderAddress.replace('tel:+86', '') })
   PuppetWalnut.instance.emit('message', { messageId: message.messageId })
   ctx.response.body = {
-    messageId: message.messageId,
-    conversationId: message.conversationId,
     contributionId: message.contributionId,
+    conversationId: message.conversationId,
     errorCode: 0,
     errorMessage: '',
+    messageId: message.messageId,
   }
 }
 

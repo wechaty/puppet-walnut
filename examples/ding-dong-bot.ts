@@ -18,7 +18,7 @@
  */
 import { log } from 'wechaty-puppet'
 import { local } from '../local.js'
-import { ContactSelf, Message, WechatyBuilder } from 'wechaty'
+import type * as PUPPET from 'wechaty-puppet'
 import PuppetWalnut from '../src/puppet-walnut.js'
 
 /**
@@ -31,10 +31,6 @@ const puppet = new PuppetWalnut({
   appKey: local.appKey,
   sipId: local.sipId,
 })
-const bot = WechatyBuilder.build({
-  name: 'myBot',
-  puppet: puppet,
-})
 log.level('silly')
 
 /**
@@ -42,7 +38,7 @@ log.level('silly')
  * 2. Register event handlers for Bot
  *
  */
-bot
+puppet
   .on('login', onLogin)
   .on('message', onMessage)
 
@@ -51,7 +47,7 @@ bot
  * 3. Start the bot!
  *
  */
-bot.start()
+puppet.start()
   .catch(async (e: any) => {
     log.error('Bot start() fail:', e)
     await puppet.stop()
@@ -71,8 +67,8 @@ bot.start()
  *
  */
 
-async function onLogin (user: ContactSelf) {
-  log.info('bot login: ' + user.id)
+async function onLogin (payload: PUPPET.payloads.EventLogin) {
+  log.info('bot login: ' + payload.contactId)
 }
 
 /**
@@ -81,10 +77,11 @@ async function onLogin (user: ContactSelf) {
  *    dealing with Messages.
  *
  */
-async function onMessage (msg: Message) {
-  log.info(`receive message: ${msg.text()}`)
-  if (msg.text() === 'ding') {
-    await msg.talker().say('dong')
+async function onMessage (payload: PUPPET.payloads.EventMessage) {
+  const msgPayload = await puppet.messagePayload(payload.messageId)
+  log.info(`receive message: ${msgPayload.text}`)
+  if (msgPayload.text === 'ding') {
+    void await puppet.messageSendText(msgPayload.fromId!, 'dong')
   }
 }
 

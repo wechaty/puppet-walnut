@@ -144,9 +144,9 @@ class PuppetWalnut extends PUPPET.Puppet {
 
   override async contactRawPayloadParser (rawPayload: WalnutContactPayload): Promise<PUPPET.payloads.Contact> {
     return {
-      avatar: 'https://raw.githubusercontent.com/fabian4/puppet-walnut/dev/docs/images/avatar.jpg',
+      avatar: config.avatarUrl,
       gender: PUPPET.types.ContactGender.Unknown,
-      id: '',
+      id: rawPayload.phone,
       name: rawPayload.phone,
       phone: [rawPayload.phone],
       type: PUPPET.types.Contact.Individual,
@@ -168,7 +168,7 @@ class PuppetWalnut extends PUPPET.Puppet {
       fromId: rawPayload.senderAddress.replace('tel:+86', ''),
       id: rawPayload.messageId,
       text: rawPayload.messageList[0]!.contentText,
-      timestamp: Date.parse(new Date().toString()),
+      timestamp: Date.now(),
       toId: rawPayload.destinationAddress,
       type: PUPPET.types.Message.Text,
     }

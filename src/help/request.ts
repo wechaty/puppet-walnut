@@ -26,10 +26,10 @@ export function updateToken () {
   setTimeout(updateToken, 2 * 60 * 60 * 1000)
 }
 
-export function get (url: string, params = {}) {
+export function get (url: string, data = {}) {
   return axios.request({
     data: {
-      ...params,
+      ...data,
     },
     headers: headers,
     method: 'GET',
@@ -37,10 +37,10 @@ export function get (url: string, params = {}) {
   })
 }
 
-export function post (url: string, params = {}) {
+export function post (url: string, data = {}) {
   return axios.request({
     data: {
-      ...params,
+      ...data,
     },
     headers: headers,
     method: 'POST',

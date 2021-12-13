@@ -79,7 +79,6 @@ async function onLogin (payload: PUPPET.payloads.EventLogin) {
  */
 async function onMessage (payload: PUPPET.payloads.EventMessage) {
   const msgPayload = await puppet.messagePayload(payload.messageId)
-  log.info(`receive message: ${msgPayload.text}`)
   if (msgPayload.text === 'ding') {
     void await puppet.messageSendText(msgPayload.fromId!, 'dong')
   }

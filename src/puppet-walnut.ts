@@ -53,7 +53,7 @@ class PuppetWalnut extends PUPPET.Puppet {
     PuppetWalnut.sipId = process.env['WECHATY_PUPPET_WALNUT_SIPID'] || ''
     PuppetWalnut.appId = process.env['WECHATY_PUPPET_WALNUT_APPID'] || ''
     PuppetWalnut.appKey = process.env['WECHATY_PUPPET_WALNUT_APPKEY'] || ''
-    if( !PuppetWalnut.sipId || !PuppetWalnut.appId || !PuppetWalnut.appKey ){
+    if (!PuppetWalnut.sipId || !PuppetWalnut.appId || !PuppetWalnut.appKey) {
       throw new Error('Set your Environment variables')
     }
     PuppetWalnut.chatbotId = `sip:${PuppetWalnut.sipId}@botplatform.rcs.chinaunicom.cn`

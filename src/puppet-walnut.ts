@@ -50,9 +50,12 @@ class PuppetWalnut extends PUPPET.Puppet {
     super()
     PuppetWalnut.instance = this
     PuppetWalnut.port = config.port
-    PuppetWalnut.sipId = process.env['WECHATY_PUPPET_WALNUT_SIPID'] !
-    PuppetWalnut.appId = process.env['WECHATY_PUPPET_WALNUT_APPID'] !
-    PuppetWalnut.appKey = process.env['WECHATY_PUPPET_WALNUT_APPKEY'] !
+    PuppetWalnut.sipId = process.env['WECHATY_PUPPET_WALNUT_SIPID'] || ''
+    PuppetWalnut.appId = process.env['WECHATY_PUPPET_WALNUT_APPID'] || ''
+    PuppetWalnut.appKey = process.env['WECHATY_PUPPET_WALNUT_APPKEY'] || ''
+    if( !PuppetWalnut.sipId || !PuppetWalnut.appId || !PuppetWalnut.appKey ){
+      throw new Error('Set your Environment variables')
+    }
     PuppetWalnut.chatbotId = `sip:${PuppetWalnut.sipId}@botplatform.rcs.chinaunicom.cn`
     PuppetWalnut.baseUrl = `http://${config.serverRoot}/bot/${config.apiVersion}/${PuppetWalnut.chatbotId}`
     log.verbose('PuppetWalnut', 'constructor("%s")', JSON.stringify(options))

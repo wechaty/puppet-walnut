@@ -25,8 +25,8 @@ export function send (to: string, msg: string) {
       },
     ],
   }).then(res => {
-    log.verbose(res.data.messageId)
-    return null
+      log.info(res.data.messageId)
+      return null
   },
   )
 }

@@ -5,7 +5,7 @@ import PuppetWalnut from '../puppet-walnut.js'
 
 const headers = {
   'Content-Type': 'application/json',
-  authorization: 'accessToken ',
+  authorization: 'accessToken',
 }
 
 export function updateToken () {
@@ -18,7 +18,7 @@ export function updateToken () {
     method: 'POST',
     url: PuppetWalnut.baseUrl + Api.accessToken,
   }).then(res => {
-    headers.authorization = headers.authorization + res.data.accessToken
+    headers.authorization = headers.authorization + ' ' + res.data.accessToken
     log.info('update-token', `${headers['authorization']}`)
     return null
   })

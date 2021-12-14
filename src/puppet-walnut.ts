@@ -46,13 +46,13 @@ class PuppetWalnut extends PUPPET.Puppet {
   static cacheManager?: CacheManager
   static override readonly VERSION = VERSION
 
-  constructor (options: PuppetWalnutOptions) {
+  constructor (options?: PuppetWalnutOptions) {
     super()
     PuppetWalnut.instance = this
     PuppetWalnut.port = config.port
-    PuppetWalnut.sipId = options.sipId || process.env['WECHATY_PUPPET_WALNUT_SIPID'] || ''
-    PuppetWalnut.appId = options.appId || process.env['WECHATY_PUPPET_WALNUT_APPID'] || ''
-    PuppetWalnut.appKey = options.appKey || process.env['WECHATY_PUPPET_WALNUT_APPKEY'] || ''
+    PuppetWalnut.sipId = options?.sipId || process.env['WECHATY_PUPPET_WALNUT_SIPID'] || ''
+    PuppetWalnut.appId = options?.appId || process.env['WECHATY_PUPPET_WALNUT_APPID'] || ''
+    PuppetWalnut.appKey = options?.appKey || process.env['WECHATY_PUPPET_WALNUT_APPKEY'] || ''
     if (!PuppetWalnut.sipId || !PuppetWalnut.appId || !PuppetWalnut.appKey) {
       throw new Error('Set your Environment variables')
     }

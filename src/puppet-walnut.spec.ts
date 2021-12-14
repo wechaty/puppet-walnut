@@ -16,7 +16,7 @@ import PuppetWalnut from './puppet-walnut.js'
  */
 
 test.skip('PuppetWalnut perfect restart testing', async t => {
-  const puppet = new PuppetWalnut({})
+  const puppet = new PuppetWalnut()
   for (let n = 0; n < 3; n++) {
     await puppet.start()
     await puppet.stop()

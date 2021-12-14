@@ -25,7 +25,7 @@ import PuppetWalnut from '../src/puppet-walnut.js'
  * 1. Declare your Bot!
  *
  */
-const puppet = new PuppetWalnut({})
+const puppet = new PuppetWalnut()
 log.level('silly')
 
 /**

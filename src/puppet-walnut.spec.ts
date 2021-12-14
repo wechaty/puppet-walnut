@@ -2,7 +2,6 @@
 import { test } from 'tstest'
 
 import PuppetWalnut from './puppet-walnut.js'
-import { local } from '../local.js'
 
 /**
  *   zrn-fight - https://github.com/zrn-fight
@@ -17,11 +16,7 @@ import { local } from '../local.js'
  */
 
 test.skip('PuppetWalnut perfect restart testing', async t => {
-  const puppet = new PuppetWalnut({
-    appId: local.appId,
-    appKey: local.appKey,
-    sipId: local.sipId,
-  })
+  const puppet = new PuppetWalnut({})
   for (let n = 0; n < 3; n++) {
     await puppet.start()
     await puppet.stop()

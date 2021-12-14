@@ -17,7 +17,6 @@
  *
  */
 import { log } from 'wechaty-puppet'
-import { local } from '../local.js'
 import type * as PUPPET from 'wechaty-puppet'
 import PuppetWalnut from '../src/puppet-walnut.js'
 
@@ -26,11 +25,7 @@ import PuppetWalnut from '../src/puppet-walnut.js'
  * 1. Declare your Bot!
  *
  */
-const puppet = new PuppetWalnut({
-  appId: local.appId,
-  appKey: local.appKey,
-  sipId: local.sipId,
-})
+const puppet = new PuppetWalnut({})
 log.level('silly')
 
 /**

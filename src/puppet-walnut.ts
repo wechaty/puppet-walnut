@@ -29,9 +29,9 @@ import * as path from 'path'
 import CacheManager from './cache/cacheManager.js'
 
 export type PuppetWalnutOptions = PUPPET.PuppetOptions & {
-  sipId: string,
-  appId: string,
-  appKey: string,
+  sipId?: string,
+  appId?: string,
+  appKey?: string,
 }
 
 class PuppetWalnut extends PUPPET.Puppet {
@@ -50,9 +50,9 @@ class PuppetWalnut extends PUPPET.Puppet {
     super()
     PuppetWalnut.instance = this
     PuppetWalnut.port = config.port
-    PuppetWalnut.sipId = process.env['WECHATY_PUPPET_WALNUT_SIPID'] || ''
-    PuppetWalnut.appId = process.env['WECHATY_PUPPET_WALNUT_APPID'] || ''
-    PuppetWalnut.appKey = process.env['WECHATY_PUPPET_WALNUT_APPKEY'] || ''
+    PuppetWalnut.sipId = options.sipId || process.env['WECHATY_PUPPET_WALNUT_SIPID'] || ''
+    PuppetWalnut.appId = options.appId || process.env['WECHATY_PUPPET_WALNUT_APPID'] || ''
+    PuppetWalnut.appKey = options.appKey || process.env['WECHATY_PUPPET_WALNUT_APPKEY'] || ''
     if (!PuppetWalnut.sipId || !PuppetWalnut.appId || !PuppetWalnut.appKey) {
       throw new Error('Set your Environment variables')
     }

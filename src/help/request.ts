@@ -28,9 +28,7 @@ export function updateToken () {
 
 export function get (url: string, data = {}) {
   return axios.request({
-    data: {
-      ...data,
-    },
+    data,
     headers: headers,
     method: 'GET',
     url: PuppetWalnut.baseUrl + url,
@@ -39,9 +37,7 @@ export function get (url: string, data = {}) {
 
 export function post (url: string, data = {}) {
   return axios.request({
-    data: {
-      ...data,
-    },
+    data,
     headers: headers,
     method: 'POST',
     url: PuppetWalnut.baseUrl + url,

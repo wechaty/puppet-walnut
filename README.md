@@ -81,7 +81,7 @@ Wechaty 社区目前已经支持微信、Whatsapp、企业微信、飞书等常�
 
 1. TypeScript programming language
 2. Git
-3. REST API
+3. REST Api
 4. 5G Chatbot / Rich Communication Service
 5. 硬核桃社区 5G Chatbot SDK <https://www.5g-msg.com/#/bussinessInformation>
 

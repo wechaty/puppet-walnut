@@ -16,17 +16,17 @@
  *   limitations under the License.
  *
  */
+import { log } from 'wechaty-puppet'
 import type * as PUPPET from 'wechaty-puppet'
-import {
-  PuppetWalnut,
-}               from '../src/mod.js'
+import PuppetWalnut from '../src/puppet-walnut.js'
 
 /**
  *
  * 1. Declare your Bot!
  *
  */
-const puppet = new PuppetWalnut({ sms:'+861234' })
+const puppet = new PuppetWalnut()
+log.level('silly')
 
 /**
  *
@@ -34,10 +34,7 @@ const puppet = new PuppetWalnut({ sms:'+861234' })
  *
  */
 puppet
-  .on('logout', onLogout)
-  .on('login',  onLogin)
-  .on('scan',   onScan)
-  .on('error',  onError)
+  .on('login', onLogin)
   .on('message', onMessage)
 
 /**
@@ -47,7 +44,7 @@ puppet
  */
 puppet.start()
   .catch(async (e: any) => {
-    console.error('Bot start() fail:', e)
+    log.error('Bot start() fail:', e)
     await puppet.stop()
     process.exit(-1)
   })
@@ -64,30 +61,9 @@ puppet.start()
  *  `scan`, `login`, `logout`, `error`, and `message`
  *
  */
-function onScan (payload: PUPPET.payloads.EventScan) {
-  if (payload.qrcode) {
-    const qrcodeImageUrl = [
-      'https://wechaty.js.org/qrcode/',
-      encodeURIComponent(payload.qrcode),
-    ].join('')
-    console.info(`[${payload.status}] ${qrcodeImageUrl}\nScan QR Code above to log in: `)
 
-  } else {
-    console.info(`[${payload.status}]`)
-  }
-}
-
-function onLogin (payload: PUPPET.payloads.EventLogin) {
-  console.info(`${payload.contactId} login`)
-  puppet.messageSendText(payload.contactId, 'Wechaty login').catch(console.error)
-}
-
-function onLogout (payload: PUPPET.payloads.EventLogout) {
-  console.info(`${payload.contactId} logouted`)
-}
-
-function onError (payload: PUPPET.payloads.EventError) {
-  console.error('Bot error:', payload.data)
+async function onLogin (payload: PUPPET.payloads.EventLogin) {
+  log.info('bot login: ' + payload.contactId)
 }
 
 /**
@@ -98,20 +74,9 @@ function onError (payload: PUPPET.payloads.EventError) {
  */
 async function onMessage (payload: PUPPET.payloads.EventMessage) {
   const msgPayload = await puppet.messagePayload(payload.messageId)
-  if (/ding/i.test(msgPayload.text || '')) {
-    console.info('ding success')
-    await puppet.messageSendText(
-     msgPayload.fromId!,
-     'dong',
-    )
-  } else {
-    console.info('ding not found')
-    await puppet.messageSendText(
-      msgPayload.fromId!,
-      'ding please',
-    )
+  if (msgPayload.text === 'ding') {
+    void await puppet.messageSendText(msgPayload.fromId!, 'dong')
   }
-  console.info(JSON.stringify(msgPayload))
 }
 
 /**

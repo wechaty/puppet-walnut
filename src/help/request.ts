@@ -46,6 +46,9 @@ export function post (url: string, data = {}) {
 
 axios.interceptors.response.use(
   function (response) {
+    if (response.data.errorCode !== 0) {
+      log.error('PuppetWalnut-Request', JSON.stringify(response.data))
+    }
     return response
   }, function (error) {
     log.info(error)

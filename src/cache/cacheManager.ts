@@ -10,6 +10,8 @@ const PRE = 'CacheManager'
 
 export default class CacheManager {
 
+  private static reg: RegExp = /^1(3\d|4[5-9]|5[0-35-9]|6[567]|7[0-8]|8\d|9[0-35-9])\d{8}$/
+
   /**
    * ************************************************************************
    *                Static Methods
@@ -101,7 +103,28 @@ export default class CacheManager {
       throw new Error(`${PRE} getContact() has no cache.`)
     }
     log.verbose(PRE, `getContact(${contactId})`)
+    if (!await this.cacheContactRawPayload.has(contactId)) {
+      if (!CacheManager.reg.exec(contactId)) {
+        throw new Error(`invalid contactId: ${contactId}`)
+      }
+      const payload = { phone: contactId }
+      await this.cacheContactRawPayload.set(contactId, payload)
+      return payload
+    }
     return await this.cacheContactRawPayload.get(contactId)
+  }
+
+  public async getContactList (selfId: string): Promise<string[]> {
+    if (!this.cacheContactRawPayload) {
+      throw new Error(`${PRE} getContactList(${selfId}) has no cache.`)
+    }
+    const result: string[] = []
+    for await (const key of this.cacheContactRawPayload.keys()) {
+      if (key !== selfId) {
+        result.push(key)
+      }
+    }
+    return result
   }
 
   public async setContact (contactId: string, payload: WalnutContactPayload): Promise<void> {

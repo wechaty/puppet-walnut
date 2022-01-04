@@ -25,7 +25,7 @@ export function send (to: string, msg: string) {
       },
     ],
   }).then(res => {
-    log.info(res.data.messageId)
+    log.info('PuppetWalnut-Request-send', `messageId: ${res.data.messageId}`)
     return null
   },
   )

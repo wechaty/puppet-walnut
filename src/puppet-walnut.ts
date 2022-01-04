@@ -67,7 +67,7 @@ class PuppetWalnut extends PUPPET.Puppet {
 
     PuppetWalnut.cacheManager = await CacheManager.init()
 
-    updateToken()
+    await updateToken()
 
     this.login(PuppetWalnut.chatbotId)
 
@@ -128,9 +128,9 @@ class PuppetWalnut extends PUPPET.Puppet {
     log.verbose('PuppetWalnut', 'contactDescription(%s, %s)', contactId, description)
   }
 
-  override async contactList (): Promise<string[]> {
+  override async contactList (): Promise<string[] | undefined> {
     log.verbose('PuppetWalnut', 'contactList()')
-    throw new Error('Method not implemented.')
+    return PuppetWalnut.cacheManager?.getContactList(PuppetWalnut.chatbotId)
   }
 
   override async contactAvatar(contactId: string): Promise<FileBoxInterface>

@@ -128,9 +128,9 @@ class PuppetWalnut extends PUPPET.Puppet {
     log.verbose('PuppetWalnut', 'contactDescription(%s, %s)', contactId, description)
   }
 
-  override async contactList (): Promise<string[] | undefined> {
+  override async contactList (): Promise<string[]> {
     log.verbose('PuppetWalnut', 'contactList()')
-    return PuppetWalnut.cacheManager?.getContactList(PuppetWalnut.chatbotId)
+    return PuppetWalnut.cacheManager?.getContactList(PuppetWalnut.chatbotId)!
   }
 
   override async contactAvatar(contactId: string): Promise<FileBoxInterface>

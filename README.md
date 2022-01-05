@@ -9,29 +9,45 @@
 [![Powered by Wechaty](https://img.shields.io/badge/Powered%20By-Wechaty-brightgreen.svg)](https://github.com/wechaty/wechaty)
 [![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-blue.svg)](https://www.typescriptlang.org/)
 
+## 前提环境
+
+1. 申请 5G 开发者权限、应用调试工具。
+
+   👉 [5G消息开发者社区平台](https://www.5g-msg.com)
+
+2. 配置系统环境变量。
+
+   - `WECHATY_PUPPET_WALNUT_APPID`: Chatbot的AppId。
+   - `WECHATY_PUPPET_WALNUT_APPKEY`：Chatbot的AppKey。
+   - `WECHATY_PUPPET_WALNUT_SIPID`: Chatbot的sipId。
+   - `WECHATY_PUPPET`：wechaty-puppet-walnut
+
+3. 配置公网环境
+
+   > 如果是本地调试，则需要将在申请 5G 开发者时填入的公网地址，映射到本地才可以监听到`chatbot`接收到的消息
+
+   这里推荐使用 [Frp](https://github.com/fatedier/frp)，来进行端口的映射。Walnut本身集成的 sever 端口默认为 **3000**，将公网地址映射到本地即可
+
 ## 运行方法
 
 ### 安装依赖
 
-将代码clone到本地,执行`npm install`
+~~~shell
+npm install wechaty
+npm install wechaty-puppet-walnut
+~~~
 
-### 在硬核桃5G消息开发者社区平台申请权限
+### 编写代码
 
-在5G消息开发者社区平台，申请Chatbot应用调测工具[5G消息开发者社区平台](https://www.5g-msg.com)
+~~~typescript
+import { WechatyBuilder } from 'wechaty'
 
-### 配置系统环境变量
+WechatyBuilder.build()  // get a Wechaty instance
+  .on('message',       message => console.log(`Message: ${message}`))
+  .start()
+~~~
 
-1. `WECHATY_PUPPET_WALNUT_APPID`: Chatbot的AppId
-
-2. `WECHATY_PUPPET_WALNUT_APPKEY`：Chatbot的AppKey
-
-3. `WECHATY_PUPPET_WALNUT_SIPID`: Chatbot的sipId
-
-### 运行示例代码
-
-`npm start`
-
-Learn more for building your first Wechaty bot at <https://github.com/wechaty/>
+> Learn more for building your first Wechaty bot at <https://github.com/wechaty/>, <https://github.com/wechaty/getting-started>
 
 ## 项目介绍
 

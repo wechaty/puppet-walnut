@@ -11,5 +11,9 @@ const bot = WechatyBuilder.build({
 await bot.start()
 
 const contact = await bot.Contact.find({ id: '15751763183' })
-contact.say('hello')
 console.log(contact)
+console.log(await contact.alias('fffl'))
+// console.log(await contact.alias())
+// console.log(contact.name())
+// console.log(await contact.phone())
+// console.log(contact.id)

@@ -165,7 +165,7 @@ export default class CacheManager {
     this.cacheMessageRawPayload = await CacheManager.initFlashStore('messageRawPayload')
     this.cacheContactRawPayload = await CacheManager.initFlashStore('contactRawPayload')
 
-    await this.cacheContactRawPayload.set(PuppetWalnut.chatbotId, { phone: PuppetWalnut.chatbotId })
+    await this.cacheContactRawPayload.set(PuppetWalnut.chatbotId, { name: PuppetWalnut.chatbotId, phone: PuppetWalnut.chatbotId })
 
     log.verbose(PRE, `initCache() cacheDir="${CacheManager.baseDir}"`)
   }

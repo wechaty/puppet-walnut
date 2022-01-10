@@ -53,18 +53,52 @@ WechatyBuilder.build()  // get a Wechaty instance
 
 ### Contact
 
-- id
-- say(text Or Contact Or File Or Url)
-- name()
-- alias(newAlias)
-- friend()
+- ### [Properties](https://wechaty.js.org/docs/api/contact#properties)
+
+  | Name | Type     | Description                                                  | Support | Details |
+  | ---- | -------- | ------------------------------------------------------------ | ------- | ------- |
+  | id   | `string` | Get Contact id. This function is depending on the Puppet Implementation, see [puppet-compatible-table](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table) | ✅       |         |
+
+- ### [Instance Methods](https://wechaty.js.org/docs/api/contact#instance-methods)
+
+  | Instance Methods                    | Return type                                                  | Support | Details |
+  | ----------------------------------- | ------------------------------------------------------------ | ------- | ------- |
+  | say(text Or Contact Or File Or Url) | `Promise`                                                    | ✅       |         |
+  | name()                              | `String`                                                     | ✅       |         |
+  | alias(newAlias)                     | `Promise`                                                    | ✅       |         |
+  | friend()                            | `Boolean or null`                                            | ✅       |         |
+  | type()                              | `ContactType.Unknown or ContactType.Personal or ContactType.Official` | ✅       |         |
+  | gender()                            | `ContactGender.Unknown or ContactGender.Male or ContactGender.Female` | ✅       |         |
+  | province()                          | `String or null`                                             | ❎       |         |
+  | city()                              | `String or null`                                             | ❎       |         |
+  | avatar()                            | `Promise`                                                    | ✅       |         |
+  | sync()                              | `Promise`                                                    | ✅       |         |
+  | self()                              | `Boolean`                                                    | ✅       |         |
+
+- ### [Static Methods](https://wechaty.js.org/docs/api/contact#static-methods)
+
+  | Static Methods            | Return Type                 | Support | Detail |
+  | ------------------------- | --------------------------- | ------- | ------ |
+  | find(query)               | `Promise <Contact \| null>` | ✅       |        |
+  | findAll(Query Arguements) | `Promise <Contact []>`      | ✅       |        |
+
+### Message
+
+- from()
+- to()
+- room()
+- text()
+- say(text Or Contact Or File)	
 - type()
-- gender()
-- avatar()
-- sync()
 - self()
-- find(query)
-- findAll(query)
+- mention()
+- mentionSelf()
+- forward(to)	
+- date()
+- age()
+- toFileBox()
+- toContact()
+- toUrlLink()
 
 ## 项目介绍
 
@@ -72,7 +106,7 @@ WechatyBuilder.build()  // get a Wechaty instance
 
 根据项目的难易程度和完成情况，参与者还可获取“开源软件供应链点亮计划-暑期2021”活动奖金和奖杯。
 
-官网：<https://summer.iscas.ac.cn>
+官网：<https://summer.iscas.ac.c>
 
 ## Wechaty
 

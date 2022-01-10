@@ -190,6 +190,12 @@ class PuppetWalnut extends PUPPET.Puppet {
     send(to, msg)
   }
 
+  override async messageForward (conversationId: string, messageId: string): Promise<void> {
+    log.verbose('PuppetWalnut', 'conversationId(%s, %s)', conversationId, messageId)
+    const message = await PuppetWalnut.cacheManager?.getMessage(messageId)
+    send(conversationId, message!.messageList[0]!.contentText)
+  }
+
 }
 
 export default PuppetWalnut

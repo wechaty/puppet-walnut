@@ -104,9 +104,11 @@ class PuppetWalnut extends PUPPET.Puppet {
 
   override async contactAlias (contactId: string, alias?: string | null): Promise<void | string> {
     log.verbose('PuppetWalnut', 'contactAlias(%s, %s)', contactId, alias)
-
     if (typeof alias === 'undefined') {
       return 'mock alias'
+    }
+    if (alias !== null) {
+      PuppetWalnut.cacheManager?.setContactAlias(contactId, alias)
     }
   }
 
@@ -141,13 +143,14 @@ class PuppetWalnut extends PUPPET.Puppet {
     if (file) {
       return
     }
-    const WECHATY_ICON_PNG = path.resolve('../../docs/images/wechaty-icon.png')
-    return FileBox.fromFile(WECHATY_ICON_PNG)
+    return FileBox.fromUrl(config.avatarUrl)
   }
 
   override async contactRawPayloadParser (rawPayload: WalnutContactPayload): Promise<PUPPET.payloads.Contact> {
     return {
+      alias: rawPayload.name,
       avatar: config.avatarUrl,
+      friend: true,
       gender: PUPPET.types.ContactGender.Unknown,
       id: rawPayload.phone,
       name: rawPayload.phone,

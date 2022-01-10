@@ -49,6 +49,23 @@ WechatyBuilder.build()  // get a Wechaty instance
 
 > Learn more for building your first Wechaty bot at <https://github.com/wechaty/>, <https://github.com/wechaty/getting-started>
 
+## Wechaty API 支持
+
+### Contact
+
+- id
+- say(text Or Contact Or File Or Url)
+- name()
+- alias(newAlias)
+- friend()
+- type()
+- gender()
+- avatar()
+- sync()
+- self()
+- find(query)
+- findAll(query)
+
 ## 项目介绍
 
 “开源软件供应链点亮计划-暑期2021”（以下简称 暑期2021）是由中科院软件所与 openEuler 社区共同举办的一项面向高校学生的暑期活动，旨在鼓励在校学生积极参与开源软件的开发维护，促进国内优秀开源软件社区的蓬勃发展。

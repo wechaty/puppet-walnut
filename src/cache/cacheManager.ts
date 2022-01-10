@@ -107,7 +107,7 @@ export default class CacheManager {
       if (!CacheManager.reg.exec(contactId)) {
         throw new Error(`invalid contactId: ${contactId}`)
       }
-      const payload = { phone: contactId }
+      const payload = { name: contactId, phone: contactId }
       await this.cacheContactRawPayload.set(contactId, payload)
       return payload
     }
@@ -135,6 +135,16 @@ export default class CacheManager {
     await this.cacheContactRawPayload.set(contactId, payload)
   }
 
+  public async setContactAlias (contactId: string, alias: string): Promise<void> {
+    if (!this.cacheContactRawPayload || !contactId) {
+      throw new Error(`${PRE} setContact() has no cache.`)
+    }
+    log.verbose(PRE, `setContactAlias(${contactId}): ${alias}`)
+    const payload = await this.cacheContactRawPayload.get(contactId)
+    payload!.name = alias
+    await this.cacheContactRawPayload.set(contactId, payload!)
+  }
+
   /**
    * -------------------------------
    * Private Method Section
@@ -155,7 +165,7 @@ export default class CacheManager {
     this.cacheMessageRawPayload = await CacheManager.initFlashStore('messageRawPayload')
     this.cacheContactRawPayload = await CacheManager.initFlashStore('contactRawPayload')
 
-    await this.cacheContactRawPayload.set(PuppetWalnut.chatbotId, { phone: PuppetWalnut.chatbotId })
+    await this.cacheContactRawPayload.set(PuppetWalnut.chatbotId, { name: PuppetWalnut.chatbotId, phone: PuppetWalnut.chatbotId })
 
     log.verbose(PRE, `initCache() cacheDir="${CacheManager.baseDir}"`)
   }

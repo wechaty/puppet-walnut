@@ -68,8 +68,8 @@ WechatyBuilder.build()  // get a Wechaty instance
   | alias(newAlias)                     | `Promise`                                                    | ✅       |         |
   | friend()                            | `Boolean or null`                                            | ✅       |         |
   | type()                              | `ContactType.Unknown or ContactType.Personal or ContactType.Official` | ✅       |         |
-  | gender()                            | `ContactGender.Unknown or ContactGender.Male or ContactGender.Female` | ✅       |         |
-  | province()                          | `String or null`                                             | ❎       |         |
+  | gender()                            | `ContactGender.Unknown or ContactGender.Male or ContactGender.Female` |         |         |
+  | province()                          | `String or null`                                             | ❌       |         |
   | city()                              | `String or null`                                             | ❎       |         |
   | avatar()                            | `Promise`                                                    | ✅       |         |
   | sync()                              | `Promise`                                                    | ✅       |         |

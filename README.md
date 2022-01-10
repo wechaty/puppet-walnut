@@ -55,25 +55,27 @@ WechatyBuilder.build()  // get a Wechaty instance
 
 - ### [Properties](https://wechaty.js.org/docs/api/contact#properties)
 
-  | Name | Type     | Description                                                  | Support | Details |
-  | ---- | -------- | ------------------------------------------------------------ | ------- | ------- |
-  | id   | `string` | Get Contact id. This function is depending on the Puppet Implementation, see [puppet-compatible-table](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table) | ✅       |         |
+  | Name | Type     | Description                                                  | Support | Details      |
+  | ---- | -------- | ------------------------------------------------------------ | ------- | ------------ |
+  | id   | `string` | Get Contact id. This function is depending on the Puppet Implementation, see [puppet-compatible-table](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table) | ✅       | Phone number |
 
 - ### [Instance Methods](https://wechaty.js.org/docs/api/contact#instance-methods)
 
-  | Instance Methods                    | Return type                                                  | Support | Details |
-  | ----------------------------------- | ------------------------------------------------------------ | ------- | ------- |
-  | say(text Or Contact Or File Or Url) | `Promise`                                                    | ✅       |         |
-  | name()                              | `String`                                                     | ✅       |         |
-  | alias(newAlias)                     | `Promise`                                                    | ✅       |         |
-  | friend()                            | `Boolean or null`                                            | ✅       |         |
-  | type()                              | `ContactType.Unknown or ContactType.Personal or ContactType.Official` | ✅       |         |
-  | gender()                            | `ContactGender.Unknown or ContactGender.Male or ContactGender.Female` |         |         |
-  | province()                          | `String or null`                                             | ❌       |         |
-  | city()                              | `String or null`                                             | ❎       |         |
-  | avatar()                            | `Promise`                                                    | ✅       |         |
-  | sync()                              | `Promise`                                                    | ✅       |         |
-  | self()                              | `Boolean`                                                    | ✅       |         |
+  | Instance Methods                    | Return type                                                  | Support | Details               |
+  | ----------------------------------- | ------------------------------------------------------------ | ------- | --------------------- |
+  | say(text Or Contact Or File Or Url) | `Promise`                                                    | ✅       |                       |
+  | name()                              | `String`                                                     | ✅       | Phone number          |
+  | alias(newAlias)                     | `Promise`                                                    | ✅       | ⚠                     |
+  | friend()                            | `Boolean or null`                                            | ✅       | Always true           |
+  | type()                              | `ContactType.Unknown or ContactType.Personal or ContactType.Official` | ✅       | ContactType.Personal  |
+  | gender()                            | `ContactGender.Unknown or ContactGender.Male or ContactGender.Female` | ✅       | ContactGender.Unknown |
+  | province()                          | `String or null`                                             | ❌       |                       |
+  | city()                              | `String or null`                                             | ❌       |                       |
+  | avatar()                            | `Promise`                                                    | ✅       | Default avatar        |
+  | sync()                              | `Promise`                                                    | ✅       | ⚠                     |
+  | self()                              | `Boolean`                                                    | ✅       |                       |
+
+  > Default avatar 👉 https://raw.githubusercontent.com/wechaty/puppet-walnut/main/docs/images/avatar.webp
 
 - ### [Static Methods](https://wechaty.js.org/docs/api/contact#static-methods)
 

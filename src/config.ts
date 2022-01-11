@@ -11,6 +11,9 @@ const config = {
   serverRoot: 'maap.5g-msg.com:30001',
 }
 
-export { config, log }
+export {
+  config,
+  log,
+}
 
 export { VERSION } from './version.js'

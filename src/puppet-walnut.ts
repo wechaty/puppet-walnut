@@ -25,6 +25,7 @@ import { updateToken } from './help/request.js'
 import type { WalnutContactPayload, WalnutMessagePayload } from './help/struct.js'
 import { send } from './help/message.js'
 import CacheManager from './cache/cacheManager.js'
+import { checkPhoneNumber } from './help/utils.js'
 
 export type PuppetWalnutOptions = PUPPET.PuppetOptions & {
   sipId?: string,
@@ -166,9 +167,7 @@ class PuppetWalnut extends PUPPET.Puppet {
 
   override async contactRawPayload (contactId: string): Promise<WalnutContactPayload | undefined> {
     log.verbose('PuppetWalnut', 'contactRawPayload(%s)', contactId)
-    if (!CacheManager.reg.exec(contactId)) {
-      throw new Error(`invalid contactId: ${contactId}`)
-    }
+    checkPhoneNumber(contactId)
     return PuppetWalnut.getCacheManager().getContact(contactId)
   }
 

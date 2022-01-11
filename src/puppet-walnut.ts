@@ -62,7 +62,7 @@ class PuppetWalnut extends PUPPET.Puppet {
 
   public static getCacheManager (): CacheManager {
     if (!PuppetWalnut.cacheManager) {
-      throw new Error()
+      throw new Error('cache is not Exist!')
     }
     return PuppetWalnut.cacheManager
   }
@@ -199,7 +199,11 @@ class PuppetWalnut extends PUPPET.Puppet {
   override async messageForward (conversationId: string, messageId: string): Promise<void> {
     log.verbose('PuppetWalnut', 'conversationId(%s, %s)', conversationId, messageId)
     const message = await PuppetWalnut.getCacheManager().getMessage(messageId)
-    send(conversationId, message!.messageList[0]!.contentText)
+    if (message && message.messageList[0]) {
+      send(conversationId, message.messageList[0].contentText)
+    } else {
+      throw new Error('Message is Empty!')
+    }
   }
 
 }

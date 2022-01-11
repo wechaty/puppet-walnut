@@ -166,6 +166,9 @@ class PuppetWalnut extends PUPPET.Puppet {
 
   override async contactRawPayload (contactId: string): Promise<WalnutContactPayload | undefined> {
     log.verbose('PuppetWalnut', 'contactRawPayload(%s)', contactId)
+    if (!CacheManager.reg.exec(contactId)) {
+      throw new Error(`invalid contactId: ${contactId}`)
+    }
     return PuppetWalnut.getCacheManager().getContact(contactId)
   }
 

@@ -10,7 +10,7 @@ const PRE = 'CacheManager'
 
 export default class CacheManager {
 
-  private static reg: RegExp = /^1(3\d|4[5-9]|5[0-35-9]|6[567]|7[0-8]|8\d|9[0-35-9])\d{8}$/
+  static reg: RegExp = /^1(3\d|4[5-9]|5[0-35-9]|6[567]|7[0-8]|8\d|9[0-35-9])\d{8}$/
 
   /**
    * ************************************************************************
@@ -104,9 +104,6 @@ export default class CacheManager {
     }
     log.verbose(PRE, `getContact(${contactId})`)
     if (!await this.cacheContactRawPayload.has(contactId)) {
-      if (!CacheManager.reg.exec(contactId)) {
-        throw new Error(`invalid contactId: ${contactId}`)
-      }
       const payload = { name: contactId, phone: contactId }
       await this.cacheContactRawPayload.set(contactId, payload)
       return payload

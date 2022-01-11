@@ -18,5 +18,6 @@ export interface WalnutMessagePayload {
 }
 
 export interface WalnutContactPayload {
+  name: string
   phone: string
 }

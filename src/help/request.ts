@@ -8,8 +8,8 @@ const headers = {
   authorization: 'accessToken',
 }
 
-export function updateToken () {
-  void axios.request({
+export async function updateToken () {
+  await axios.request({
     data: {
       appId: PuppetWalnut.appId,
       appKey: PuppetWalnut.appKey,
@@ -23,7 +23,7 @@ export function updateToken () {
     return null
   })
   // 定时两小时
-  setTimeout(updateToken, 2 * 60 * 60 * 1000)
+  // setTimeout(updateToken, 2 * 60 * 60 * 1000)
 }
 
 export function get (url: string, data = {}) {
@@ -46,6 +46,9 @@ export function post (url: string, data = {}) {
 
 axios.interceptors.response.use(
   function (response) {
+    if (response.data.errorCode !== 0) {
+      log.error('PuppetWalnut-Request', JSON.stringify(response.data))
+    }
     return response
   }, function (error) {
     log.info(error)

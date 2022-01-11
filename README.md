@@ -49,6 +49,41 @@ WechatyBuilder.build()  // get a Wechaty instance
 
 > Learn more for building your first Wechaty bot at <https://github.com/wechaty/>, <https://github.com/wechaty/getting-started>
 
+## Wechaty API 支持
+
+### Contact
+
+- #### [Properties](https://wechaty.js.org/docs/api/contact#properties)
+
+  | Name | Type     | Description                                                  | Support | Details      |
+  | ---- | -------- | ------------------------------------------------------------ | ------- | ------------ |
+  | id   | `string` | Get Contact id. This function is depending on the Puppet Implementation, see [puppet-compatible-table](https://github.com/wechaty/wechaty/wiki/Puppet#3-puppet-compatible-table) | ✅       | Phone number |
+
+- #### [Instance Methods](https://wechaty.js.org/docs/api/contact#instance-methods)
+
+  | Instance Methods                    | Return type                                                  | Support | Details               |
+  | ----------------------------------- | ------------------------------------------------------------ | ------- | --------------------- |
+  | say(text Or Contact Or File Or Url) | `Promise`                                                    | ✅       |                       |
+  | name()                              | `String`                                                     | ✅       | Phone number          |
+  | alias(newAlias)                     | `Promise`                                                    | ✅       |                     |
+  | friend()                            | `Boolean or null`                                            | ✅       | True           |
+  | type()                              | `ContactType.Unknown or ContactType.Personal or ContactType.Official` | ✅       | ContactType.Personal  |
+  | gender()                            | `ContactGender.Unknown or ContactGender.Male or ContactGender.Female` | ✅       | ContactGender.Unknown |
+  | province()                          | `String or null`                                             | ❌       |                       |
+  | city()                              | `String or null`                                             | ❌       |                       |
+  | avatar()                            | `Promise`                                                    | ✅       | Default avatar        |
+  | sync()                              | `Promise`                                                    | ✅       |                     |
+  | self()                              | `Boolean`                                                    | ✅       |                       |
+
+  > Default avatar 👉 https://raw.githubusercontent.com/wechaty/puppet-walnut/main/docs/images/avatar.webp
+
+- #### [Static Methods](https://wechaty.js.org/docs/api/contact#static-methods)
+
+  | Static Methods            | Return Type                 | Support | Detail |
+  | ------------------------- | --------------------------- | ------- | ------ |
+  | find(query)               | `Promise <Contact \| null>` | ✅       |        |
+  | findAll(Query Arguements) | `Promise <Contact []>`      | ✅       |        |
+
 ## 项目介绍
 
 “开源软件供应链点亮计划-暑期2021”（以下简称 暑期2021）是由中科院软件所与 openEuler 社区共同举办的一项面向高校学生的暑期活动，旨在鼓励在校学生积极参与开源软件的开发维护，促进国内优秀开源软件社区的蓬勃发展。

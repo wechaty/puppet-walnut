@@ -60,6 +60,13 @@ class PuppetWalnut extends PUPPET.Puppet {
     log.verbose('PuppetWalnut', 'constructor("%s")', JSON.stringify(options))
   }
 
+  public static getCacheManager (): CacheManager {
+    if (!PuppetWalnut.cacheManager) {
+      throw new Error()
+    }
+    return PuppetWalnut.cacheManager
+  }
+
   override async onStart (): Promise<void> {
 
     await initSever()
@@ -107,7 +114,7 @@ class PuppetWalnut extends PUPPET.Puppet {
       return 'mock alias'
     }
     if (alias !== null) {
-      PuppetWalnut.cacheManager?.setContactAlias(contactId, alias)
+      await PuppetWalnut.getCacheManager().setContactAlias(contactId, alias)
     }
   }
 
@@ -131,7 +138,7 @@ class PuppetWalnut extends PUPPET.Puppet {
 
   override async contactList (): Promise<string[]> {
     log.verbose('PuppetWalnut', 'contactList()')
-    return PuppetWalnut.cacheManager?.getContactList(PuppetWalnut.chatbotId)!
+    return await PuppetWalnut.getCacheManager().getContactList(PuppetWalnut.chatbotId)!
   }
 
   override async contactAvatar(contactId: string): Promise<FileBoxInterface>
@@ -160,7 +167,7 @@ class PuppetWalnut extends PUPPET.Puppet {
 
   override async contactRawPayload (contactId: string): Promise<WalnutContactPayload | undefined> {
     log.verbose('PuppetWalnut', 'contactRawPayload(%s)', contactId)
-    return PuppetWalnut.cacheManager?.getContact(contactId)
+    return PuppetWalnut.getCacheManager().getContact(contactId)
   }
 
   /**
@@ -181,7 +188,7 @@ class PuppetWalnut extends PUPPET.Puppet {
 
   override async messageRawPayload (messageId: string): Promise<WalnutMessagePayload | undefined> {
     log.verbose('PuppetWalnut', 'messageRawPayload(%s)', messageId)
-    return PuppetWalnut.cacheManager?.getMessage(messageId)
+    return PuppetWalnut.getCacheManager().getMessage(messageId)
   }
 
   override async messageSendText (to: string, msg: string): Promise<void> {
@@ -191,7 +198,7 @@ class PuppetWalnut extends PUPPET.Puppet {
 
   override async messageForward (conversationId: string, messageId: string): Promise<void> {
     log.verbose('PuppetWalnut', 'conversationId(%s, %s)', conversationId, messageId)
-    const message = await PuppetWalnut.cacheManager?.getMessage(messageId)
+    const message = await PuppetWalnut.getCacheManager().getMessage(messageId)
     send(conversationId, message!.messageList[0]!.contentText)
   }
 

@@ -119,9 +119,9 @@ export default class CacheManager {
       throw new Error(`${PRE} getContactList(${selfId}) has no cache.`)
     }
     const result: string[] = []
-    for await (const key of this.cacheContactRawPayload.keys()) {
-      if (key !== selfId) {
-        result.push(key)
+    for await (const contactId of this.cacheContactRawPayload.keys()) {
+      if (contactId !== selfId) {
+        result.push(contactId)
       }
     }
     return result

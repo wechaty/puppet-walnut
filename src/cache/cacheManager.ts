@@ -1,10 +1,10 @@
 import os from 'os'
 import path from 'path'
 import fs from 'fs-extra'
-import { log } from 'wechaty-puppet'
 import FlashStore from 'flash-store'
 import PuppetWalnut from '../puppet-walnut.js'
 import type { WalnutContactPayload, WalnutMessagePayload } from '../help/struct'
+import { log } from '../config.js'
 
 const PRE = 'CacheManager'
 
@@ -165,7 +165,10 @@ export default class CacheManager {
     this.cacheMessageRawPayload = await CacheManager.initFlashStore('messageRawPayload')
     this.cacheContactRawPayload = await CacheManager.initFlashStore('contactRawPayload')
 
-    await this.cacheContactRawPayload.set(PuppetWalnut.chatbotId, { name: PuppetWalnut.chatbotId, phone: PuppetWalnut.chatbotId })
+    await this.cacheContactRawPayload.set(PuppetWalnut.chatbotId, {
+      name: PuppetWalnut.chatbotId,
+      phone: PuppetWalnut.chatbotId,
+    })
 
     log.verbose(PRE, `initCache() cacheDir="${CacheManager.baseDir}"`)
   }

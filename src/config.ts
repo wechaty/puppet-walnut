@@ -1,3 +1,5 @@
+import { log } from 'wechaty-puppet'
+
 const config = {
   // The version of the API you are using
   apiVersion: 'v1',
@@ -10,5 +12,7 @@ const config = {
 }
 
 export { config }
+
+export { log }
 
 export { VERSION } from './version.js'

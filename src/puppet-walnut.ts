@@ -17,11 +17,10 @@
  *
  */
 import * as PUPPET from 'wechaty-puppet'
-import { log } from 'wechaty-puppet'
 import type { FileBoxInterface } from 'file-box'
 import { FileBox } from 'file-box'
 import { initSever } from './sever/sever.js'
-import { config, VERSION } from './config.js'
+import { log, config, VERSION } from './config.js'
 import { updateToken } from './help/request.js'
 import type { WalnutContactPayload, WalnutMessagePayload } from './help/struct.js'
 import { send } from './help/message.js'

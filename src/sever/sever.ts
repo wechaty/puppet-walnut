@@ -3,7 +3,7 @@ import { logger } from './logging.js'
 import routers from './routers.js'
 import koaBody from 'koa-body'
 import PuppetWalnut from '../puppet-walnut.js'
-import { log } from 'wechaty-puppet'
+import { log } from '../config.js'
 
 const app = new Koa()
 

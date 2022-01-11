@@ -8,9 +8,9 @@ function notifyAuthorization (ctx: any) {
 
 function parseMessage (ctx: any) {
   const message: WalnutMessagePayload = ctx.request.body
-  void PuppetWalnut.cacheManager?.setMessage(message.messageId, message)
+  void PuppetWalnut.getCacheManager().setMessage(message.messageId, message)
   const phone = message.senderAddress.replace('tel:+86', '')
-  void PuppetWalnut.cacheManager?.setContact(
+  void PuppetWalnut.getCacheManager().setContact(
     phone, {
       name: phone,
       phone: phone,

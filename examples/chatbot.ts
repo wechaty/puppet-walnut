@@ -1,5 +1,5 @@
 import { WechatyBuilder } from 'wechaty'
-import { log, Puppet } from 'wechaty-puppet'
+import { log } from 'wechaty-puppet'
 import PuppetWalnut from '../src/puppet-walnut.js'
 
 const bot = WechatyBuilder.build({

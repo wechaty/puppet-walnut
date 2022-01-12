@@ -16,7 +16,7 @@
  *   limitations under the License.
  *
  */
-import { log } from 'wechaty-puppet'
+import { log } from '../src/config.js'
 import type * as PUPPET from 'wechaty-puppet'
 import PuppetWalnut from '../src/puppet-walnut.js'
 

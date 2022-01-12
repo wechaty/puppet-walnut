@@ -17,16 +17,15 @@
  *
  */
 import * as PUPPET from 'wechaty-puppet'
-import { log } from 'wechaty-puppet'
 import type { FileBoxInterface } from 'file-box'
 import { FileBox } from 'file-box'
 import { initSever } from './sever/sever.js'
-import { config, VERSION } from './config.js'
+import { log, config, VERSION } from './config.js'
 import { updateToken } from './help/request.js'
 import type { WalnutContactPayload, WalnutMessagePayload } from './help/struct.js'
 import { send } from './help/message.js'
-import * as path from 'path'
 import CacheManager from './cache/cacheManager.js'
+import { checkPhoneNumber } from './help/utils.js'
 
 export type PuppetWalnutOptions = PUPPET.PuppetOptions & {
   sipId?: string,
@@ -59,6 +58,13 @@ class PuppetWalnut extends PUPPET.Puppet {
     PuppetWalnut.chatbotId = `sip:${PuppetWalnut.sipId}@botplatform.rcs.chinaunicom.cn`
     PuppetWalnut.baseUrl = `http://${config.serverRoot}/bot/${config.apiVersion}/${PuppetWalnut.chatbotId}`
     log.verbose('PuppetWalnut', 'constructor("%s")', JSON.stringify(options))
+  }
+
+  public static getCacheManager (): CacheManager {
+    if (!PuppetWalnut.cacheManager) {
+      throw new Error('cache is not Exist!')
+    }
+    return PuppetWalnut.cacheManager
   }
 
   override async onStart (): Promise<void> {
@@ -108,7 +114,7 @@ class PuppetWalnut extends PUPPET.Puppet {
       return 'mock alias'
     }
     if (alias !== null) {
-      PuppetWalnut.cacheManager?.setContactAlias(contactId, alias)
+      await PuppetWalnut.getCacheManager().setContactAlias(contactId, alias)
     }
   }
 
@@ -132,7 +138,7 @@ class PuppetWalnut extends PUPPET.Puppet {
 
   override async contactList (): Promise<string[]> {
     log.verbose('PuppetWalnut', 'contactList()')
-    return PuppetWalnut.cacheManager?.getContactList(PuppetWalnut.chatbotId)!
+    return await PuppetWalnut.getCacheManager().getContactList(PuppetWalnut.chatbotId)!
   }
 
   override async contactAvatar(contactId: string): Promise<FileBoxInterface>
@@ -161,7 +167,8 @@ class PuppetWalnut extends PUPPET.Puppet {
 
   override async contactRawPayload (contactId: string): Promise<WalnutContactPayload | undefined> {
     log.verbose('PuppetWalnut', 'contactRawPayload(%s)', contactId)
-    return PuppetWalnut.cacheManager?.getContact(contactId)
+    checkPhoneNumber(contactId)
+    return PuppetWalnut.getCacheManager().getContact(contactId)
   }
 
   /**
@@ -182,7 +189,7 @@ class PuppetWalnut extends PUPPET.Puppet {
 
   override async messageRawPayload (messageId: string): Promise<WalnutMessagePayload | undefined> {
     log.verbose('PuppetWalnut', 'messageRawPayload(%s)', messageId)
-    return PuppetWalnut.cacheManager?.getMessage(messageId)
+    return PuppetWalnut.getCacheManager().getMessage(messageId)
   }
 
   override async messageSendText (to: string, msg: string): Promise<void> {
@@ -192,8 +199,12 @@ class PuppetWalnut extends PUPPET.Puppet {
 
   override async messageForward (conversationId: string, messageId: string): Promise<void> {
     log.verbose('PuppetWalnut', 'conversationId(%s, %s)', conversationId, messageId)
-    const message = await PuppetWalnut.cacheManager?.getMessage(messageId)
-    send(conversationId, message!.messageList[0]!.contentText)
+    const message = await PuppetWalnut.getCacheManager().getMessage(messageId)
+    if (message && message.messageList[0]) {
+      send(conversationId, message.messageList[0].contentText)
+    } else {
+      throw new Error('Message is Empty!')
+    }
   }
 
 }

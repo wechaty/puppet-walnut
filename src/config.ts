@@ -1,3 +1,5 @@
+import { log } from 'wechaty-puppet'
+
 const config = {
   // The version of the API you are using
   apiVersion: 'v1',
@@ -9,6 +11,9 @@ const config = {
   serverRoot: 'maap.5g-msg.com:30001',
 }
 
-export { config }
+export {
+  config,
+  log,
+}
 
 export { VERSION } from './version.js'

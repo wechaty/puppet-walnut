@@ -1,16 +1,14 @@
 import os from 'os'
 import path from 'path'
 import fs from 'fs-extra'
-import { log } from 'wechaty-puppet'
 import FlashStore from 'flash-store'
 import PuppetWalnut from '../puppet-walnut.js'
 import type { WalnutContactPayload, WalnutMessagePayload } from '../help/struct'
+import { log } from '../config.js'
 
 const PRE = 'CacheManager'
 
 export default class CacheManager {
-
-  private static reg: RegExp = /^1(3\d|4[5-9]|5[0-35-9]|6[567]|7[0-8]|8\d|9[0-35-9])\d{8}$/
 
   /**
    * ************************************************************************
@@ -104,9 +102,6 @@ export default class CacheManager {
     }
     log.verbose(PRE, `getContact(${contactId})`)
     if (!await this.cacheContactRawPayload.has(contactId)) {
-      if (!CacheManager.reg.exec(contactId)) {
-        throw new Error(`invalid contactId: ${contactId}`)
-      }
       const payload = { name: contactId, phone: contactId }
       await this.cacheContactRawPayload.set(contactId, payload)
       return payload
@@ -119,9 +114,9 @@ export default class CacheManager {
       throw new Error(`${PRE} getContactList(${selfId}) has no cache.`)
     }
     const result: string[] = []
-    for await (const key of this.cacheContactRawPayload.keys()) {
-      if (key !== selfId) {
-        result.push(key)
+    for await (const contactId of this.cacheContactRawPayload.keys()) {
+      if (contactId !== selfId) {
+        result.push(contactId)
       }
     }
     return result
@@ -165,7 +160,10 @@ export default class CacheManager {
     this.cacheMessageRawPayload = await CacheManager.initFlashStore('messageRawPayload')
     this.cacheContactRawPayload = await CacheManager.initFlashStore('contactRawPayload')
 
-    await this.cacheContactRawPayload.set(PuppetWalnut.chatbotId, { name: PuppetWalnut.chatbotId, phone: PuppetWalnut.chatbotId })
+    await this.cacheContactRawPayload.set(PuppetWalnut.chatbotId, {
+      name: PuppetWalnut.chatbotId,
+      phone: PuppetWalnut.chatbotId,
+    })
 
     log.verbose(PRE, `initCache() cacheDir="${CacheManager.baseDir}"`)
   }

@@ -86,21 +86,32 @@ WechatyBuilder.build()  // get a Wechaty instance
 
 ### Message
 
-- from()
-- to()
-- room()
-- text()
-- say(text Or Contact Or File)	
-- type()
-- self()
-- mention()
-- mentionSelf()
-- forward(to)	
-- date()
-- age()
-- toFileBox()
-- toContact()
-- toUrlLink()
+- #### [Instance Methods](https://wechaty.js.org/docs/api/message#instance-methods)
+
+  | Instance methods             | Return type         | Support | Detail |
+  | ---------------------------- | ------------------- | ------- | ------ |
+  | from()                       | `Contact` or `null` | ✅       |        |
+  | to()                         | `Contact` or `null` | ✅       |        |
+  | room()                       | `Room` or `null`    | ✅       |        |
+  | text()                       | `string`            | ✅       |        |
+  | say(text Or Contact Or File) | `Promise`           | ✅       |        |
+  | type()                       | `MessageType`       | ✅       |        |
+  | self()                       | `boolean`           | ✅       |        |
+  | mention()                    | `Promise`           | ✅       |        |
+  | mentionSelf()                | `Promise`           | ✅       |        |
+  | forward(to)                  | `Promise`           | ✅       |        |
+  | date()                       | `Date`              | ✅       |        |
+  | age()                        | `Number`            | ✅       |        |
+  | toFileBox()                  | `Promise`           | ✅       |        |
+  | toContact()                  | `Promise`           | ✅       |        |
+  | toUrlLink()                  | `Promise`           | ✅       |        |
+
+- #### [Static Method](https://wechaty.js.org/docs/api/message#static-method)
+
+  | Static Methods | Return type | Support | Detail |
+  | -------------- | ----------- | ------- | ------ |
+  | find()         | `Promise`   | ✅       |        |
+  | findAll()      | `Promise`   | ✅       |        |
 
 ## 项目介绍
 

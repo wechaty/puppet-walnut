@@ -2,6 +2,9 @@ import axios from 'axios'
 import { Api } from './api.js'
 import { log }  from 'wechaty-puppet'
 import PuppetWalnut from '../puppet-walnut.js'
+import type { FileBoxInterface } from 'file-box'
+import FormData from 'form-data'
+import * as fs from "fs";
 
 const headers = {
   'Content-Type': 'application/json',
@@ -24,6 +27,24 @@ export async function updateToken () {
   })
   // 定时两小时
   // setTimeout(updateToken, 2 * 60 * 60 * 1000)
+}
+
+export async function uploadFile (temp: boolean, file: FileBoxInterface) {
+  console.log(file)
+  const data = new FormData()
+  data.append('img', file.toStream)
+  void axios.request({
+    data,
+    headers: {
+      authorization: headers.authorization,
+      uploadMode: temp ? 'temp' : 'perm',
+      ...data.getHeaders(),
+    },
+    method: 'POST',
+    url: PuppetWalnut.baseUrl + Api.uploadFile,
+  }).then(res => {
+    console.log(res.data)
+  })
 }
 
 export function get (url: string, data = {}) {

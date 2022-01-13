@@ -1,6 +1,7 @@
 import { WechatyBuilder } from 'wechaty'
 import { log } from 'wechaty-puppet'
 import PuppetWalnut from '../src/puppet-walnut.js'
+import { FileBox } from 'file-box'
 
 const bot = WechatyBuilder.build({
   puppet: new PuppetWalnut(),
@@ -8,14 +9,12 @@ const bot = WechatyBuilder.build({
   .on('login',            user => log.info(`User ${user} logged in`))
   .on('message',       async message => {
     log.info(`Message: ${message}`)
-    console.log(await message.mentionList())
-    console.log(message)
+    // console.log(message)
   })
 
 await bot.start()
 
-// const msg = await bot.Message.find({ id: 'c878ecfe-566e-103a-9750-ebf5c5e8f821' })
-// const contact = await bot.Contact.find({ id: '15751763183' })
-// contact.say('hello')
+const contact = await bot.Contact.find({ id: '15751763183' })
+contact.say(FileBox.fromFile('C:\\Users\\fabian\\Desktop\\avatar.jpg'))
 // console.log(msg)
 // contact.sync()

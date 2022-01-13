@@ -23,7 +23,7 @@ import { initSever } from './sever/sever.js'
 import { log, config, VERSION } from './config.js'
 import { updateToken } from './help/request.js'
 import type { WalnutContactPayload, WalnutMessagePayload } from './help/struct.js'
-import { send } from './help/message.js'
+import { send, sendFile } from './help/message.js'
 import CacheManager from './cache/cacheManager.js'
 import { checkPhoneNumber } from './help/utils.js'
 
@@ -205,6 +205,11 @@ class PuppetWalnut extends PUPPET.Puppet {
     } else {
       throw new Error('Message is Empty!')
     }
+  }
+
+  override async messageSendFile (conversationId: string, file: FileBoxInterface): Promise<void> {
+    log.verbose('PuppetWalnut', 'messageSendFile(%s, %s)', conversationId, file)
+    sendFile(conversationId, file)
   }
 
 }

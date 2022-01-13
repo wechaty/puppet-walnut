@@ -8,14 +8,14 @@ const bot = WechatyBuilder.build({
   .on('login',            user => log.info(`User ${user} logged in`))
   .on('message',       async message => {
     log.info(`Message: ${message}`)
-    // const contact = await bot.Contact.find({ id: '15751763183' })
-    // await message.forward(contact)
+    console.log(await message.mentionList())
     console.log(message)
   })
 
 await bot.start()
 
+// const msg = await bot.Message.find({ id: 'c878ecfe-566e-103a-9750-ebf5c5e8f821' })
 // const contact = await bot.Contact.find({ id: '15751763183' })
 // contact.say('hello')
-// console.log(contact)
+// console.log(msg)
 // contact.sync()

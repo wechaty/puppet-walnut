@@ -3,10 +3,12 @@ import type { WalnutMessagePayload } from '../help/struct.js'
 import { log } from '../config.js'
 
 function notifyAuthorization (ctx: any) {
+  log.silly('notifyAuthorization', JSON.stringify(ctx.request))
   log.info(ctx.header)
 }
 
 function parseMessage (ctx: any) {
+  log.silly('parseMessage', JSON.stringify(ctx.request.body))
   const message: WalnutMessagePayload = ctx.request.body
   void PuppetWalnut.getCacheManager().setMessage(message.messageId, message)
   const phone = message.senderAddress.replace('tel:+86', '')
@@ -25,6 +27,7 @@ function parseMessage (ctx: any) {
 }
 
 function checkDelivery (ctx: any) {
+  log.silly('checkDelivery', JSON.stringify(ctx.request.body))
   if (ctx.request.body.deliveryInfoList[0].errorCode !== 0) {
     log.warn('puppet-5g sever', 'message send error')
   }

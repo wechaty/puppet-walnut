@@ -138,7 +138,7 @@ class PuppetWalnut extends PUPPET.Puppet {
 
   override async contactList (): Promise<string[]> {
     log.verbose('PuppetWalnut', 'contactList()')
-    return await PuppetWalnut.getCacheManager().getContactList(PuppetWalnut.chatbotId)!
+    return await PuppetWalnut.getCacheManager().getContactList(PuppetWalnut.chatbotId)
   }
 
   override async contactAvatar(contactId: string): Promise<FileBoxInterface>
@@ -198,7 +198,7 @@ class PuppetWalnut extends PUPPET.Puppet {
   }
 
   override async messageForward (conversationId: string, messageId: string): Promise<void> {
-    log.verbose('PuppetWalnut', 'conversationId(%s, %s)', conversationId, messageId)
+    log.verbose('PuppetWalnut', 'messageForward(%s, %s)', conversationId, messageId)
     const message = await PuppetWalnut.getCacheManager().getMessage(messageId)
     if (message && message.messageList[0]) {
       send(conversationId, message.messageList[0].contentText)

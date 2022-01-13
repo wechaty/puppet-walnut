@@ -92,7 +92,7 @@ WechatyBuilder.build()  // get a Wechaty instance
   | ---------------------------- | ------------------- | ------- | ------ |
   | from()                       | `Contact` or `null` | ✅       |        |
   | to()                         | `Contact` or `null` | ✅       |        |
-  | room()                       | `Room` or `null`    | ✅       |        |
+  | room()                       | `Room` or `null`    | ✅       | null   |
   | text()                       | `string`            | ✅       |        |
   | say(text Or Contact Or File) | `Promise`           | ✅       |        |
   | type()                       | `MessageType`       | ✅       |        |

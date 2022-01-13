@@ -1,10 +1,10 @@
 import os from 'os'
 import path from 'path'
 import fs from 'fs-extra'
-import { log } from 'wechaty-puppet'
 import FlashStore from 'flash-store'
 import PuppetWalnut from '../puppet-walnut.js'
 import type { WalnutContactPayload, WalnutMessagePayload } from '../help/struct'
+import { log } from '../config.js'
 
 const PRE = 'CacheManager'
 
@@ -101,7 +101,25 @@ export default class CacheManager {
       throw new Error(`${PRE} getContact() has no cache.`)
     }
     log.verbose(PRE, `getContact(${contactId})`)
+    if (!await this.cacheContactRawPayload.has(contactId)) {
+      const payload = { name: contactId, phone: contactId }
+      await this.cacheContactRawPayload.set(contactId, payload)
+      return payload
+    }
     return await this.cacheContactRawPayload.get(contactId)
+  }
+
+  public async getContactList (selfId: string): Promise<string[]> {
+    if (!this.cacheContactRawPayload) {
+      throw new Error(`${PRE} getContactList(${selfId}) has no cache.`)
+    }
+    const result: string[] = []
+    for await (const contactId of this.cacheContactRawPayload.keys()) {
+      if (contactId !== selfId) {
+        result.push(contactId)
+      }
+    }
+    return result
   }
 
   public async setContact (contactId: string, payload: WalnutContactPayload): Promise<void> {
@@ -110,6 +128,16 @@ export default class CacheManager {
     }
     log.verbose(PRE, `setContact(${contactId}): ${JSON.stringify(payload)}`)
     await this.cacheContactRawPayload.set(contactId, payload)
+  }
+
+  public async setContactAlias (contactId: string, alias: string): Promise<void> {
+    if (!this.cacheContactRawPayload || !contactId) {
+      throw new Error(`${PRE} setContact() has no cache.`)
+    }
+    log.verbose(PRE, `setContactAlias(${contactId}): ${alias}`)
+    const payload = await this.cacheContactRawPayload.get(contactId)
+    payload!.name = alias
+    await this.cacheContactRawPayload.set(contactId, payload!)
   }
 
   /**
@@ -132,7 +160,10 @@ export default class CacheManager {
     this.cacheMessageRawPayload = await CacheManager.initFlashStore('messageRawPayload')
     this.cacheContactRawPayload = await CacheManager.initFlashStore('contactRawPayload')
 
-    await this.cacheContactRawPayload.set(PuppetWalnut.chatbotId, { phone: PuppetWalnut.chatbotId })
+    await this.cacheContactRawPayload.set(PuppetWalnut.chatbotId, {
+      name: PuppetWalnut.chatbotId,
+      phone: PuppetWalnut.chatbotId,
+    })
 
     log.verbose(PRE, `initCache() cacheDir="${CacheManager.baseDir}"`)
   }

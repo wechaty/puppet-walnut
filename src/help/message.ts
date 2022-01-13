@@ -1,7 +1,7 @@
 import { post } from './request.js'
 import { Api } from './api.js'
 import { v4 as uuidV4 } from 'uuid'
-import { log } from 'wechaty-puppet'
+import { log } from '../config.js'
 import PuppetWalnut from '../puppet-walnut.js'
 
 export function send (to: string, msg: string) {
@@ -25,7 +25,7 @@ export function send (to: string, msg: string) {
       },
     ],
   }).then(res => {
-    log.info(res.data.messageId)
+    log.info('PuppetWalnut-Request-send', `messageId: ${res.data.messageId}`)
     return null
   },
   )

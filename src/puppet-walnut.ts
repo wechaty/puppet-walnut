@@ -17,16 +17,15 @@
  *
  */
 import * as PUPPET from 'wechaty-puppet'
-import { log } from 'wechaty-puppet'
 import type { FileBoxInterface } from 'file-box'
 import { FileBox } from 'file-box'
 import { initSever } from './sever/sever.js'
-import { config, VERSION } from './config.js'
+import { log, config, VERSION } from './config.js'
 import { updateToken } from './help/request.js'
 import type { WalnutContactPayload, WalnutMessagePayload } from './help/struct.js'
 import { send } from './help/message.js'
-import * as path from 'path'
 import CacheManager from './cache/cacheManager.js'
+import { checkPhoneNumber } from './help/utils.js'
 
 export type PuppetWalnutOptions = PUPPET.PuppetOptions & {
   sipId?: string,
@@ -61,13 +60,20 @@ class PuppetWalnut extends PUPPET.Puppet {
     log.verbose('PuppetWalnut', 'constructor("%s")', JSON.stringify(options))
   }
 
+  public static getCacheManager (): CacheManager {
+    if (!PuppetWalnut.cacheManager) {
+      throw new Error('cache is not Exist!')
+    }
+    return PuppetWalnut.cacheManager
+  }
+
   override async onStart (): Promise<void> {
 
     await initSever()
 
     PuppetWalnut.cacheManager = await CacheManager.init()
 
-    updateToken()
+    await updateToken()
 
     this.login(PuppetWalnut.chatbotId)
 
@@ -104,9 +110,11 @@ class PuppetWalnut extends PUPPET.Puppet {
 
   override async contactAlias (contactId: string, alias?: string | null): Promise<void | string> {
     log.verbose('PuppetWalnut', 'contactAlias(%s, %s)', contactId, alias)
-
     if (typeof alias === 'undefined') {
       return 'mock alias'
+    }
+    if (alias !== null) {
+      await PuppetWalnut.getCacheManager().setContactAlias(contactId, alias)
     }
   }
 
@@ -130,7 +138,7 @@ class PuppetWalnut extends PUPPET.Puppet {
 
   override async contactList (): Promise<string[]> {
     log.verbose('PuppetWalnut', 'contactList()')
-    throw new Error('Method not implemented.')
+    return await PuppetWalnut.getCacheManager().getContactList(PuppetWalnut.chatbotId)!
   }
 
   override async contactAvatar(contactId: string): Promise<FileBoxInterface>
@@ -141,13 +149,14 @@ class PuppetWalnut extends PUPPET.Puppet {
     if (file) {
       return
     }
-    const WECHATY_ICON_PNG = path.resolve('../../docs/images/wechaty-icon.png')
-    return FileBox.fromFile(WECHATY_ICON_PNG)
+    return FileBox.fromUrl(config.avatarUrl)
   }
 
   override async contactRawPayloadParser (rawPayload: WalnutContactPayload): Promise<PUPPET.payloads.Contact> {
     return {
+      alias: rawPayload.name,
       avatar: config.avatarUrl,
+      friend: true,
       gender: PUPPET.types.ContactGender.Unknown,
       id: rawPayload.phone,
       name: rawPayload.phone,
@@ -158,7 +167,8 @@ class PuppetWalnut extends PUPPET.Puppet {
 
   override async contactRawPayload (contactId: string): Promise<WalnutContactPayload | undefined> {
     log.verbose('PuppetWalnut', 'contactRawPayload(%s)', contactId)
-    return PuppetWalnut.cacheManager?.getContact(contactId)
+    checkPhoneNumber(contactId)
+    return PuppetWalnut.getCacheManager().getContact(contactId)
   }
 
   /**
@@ -179,12 +189,22 @@ class PuppetWalnut extends PUPPET.Puppet {
 
   override async messageRawPayload (messageId: string): Promise<WalnutMessagePayload | undefined> {
     log.verbose('PuppetWalnut', 'messageRawPayload(%s)', messageId)
-    return PuppetWalnut.cacheManager?.getMessage(messageId)
+    return PuppetWalnut.getCacheManager().getMessage(messageId)
   }
 
   override async messageSendText (to: string, msg: string): Promise<void> {
     log.verbose('PuppetWalnut', 'messageSend(%s, %s)', to, msg)
     send(to, msg)
+  }
+
+  override async messageForward (conversationId: string, messageId: string): Promise<void> {
+    log.verbose('PuppetWalnut', 'conversationId(%s, %s)', conversationId, messageId)
+    const message = await PuppetWalnut.getCacheManager().getMessage(messageId)
+    if (message && message.messageList[0]) {
+      send(conversationId, message.messageList[0].contentText)
+    } else {
+      throw new Error('Message is Empty!')
+    }
   }
 
 }

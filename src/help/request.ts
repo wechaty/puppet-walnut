@@ -4,6 +4,7 @@ import { log }  from 'wechaty-puppet'
 import PuppetWalnut from '../puppet-walnut.js'
 import type { FileBoxInterface } from 'file-box'
 import FormData from 'form-data'
+import * as util from "util";
 
 const headers = {
   'Content-Type': 'application/json',
@@ -63,8 +64,8 @@ export function post (url: string, data = {}) {
 
 axios.interceptors.request.use(
   function (config) {
-    log.silly('PuppetWalnut-Axios',
-      `Params: ${JSON.stringify(config.data)}, Url: ${config.url}`)
+    // log.silly('PuppetWalnut-Axios',
+    //   `Params: ${util.inspect(config.data, false, 2, true)}, Url: ${config.url}`)
     return config
   },
 )

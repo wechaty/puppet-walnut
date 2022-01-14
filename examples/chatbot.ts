@@ -15,6 +15,6 @@ const bot = WechatyBuilder.build({
 await bot.start()
 
 const contact = await bot.Contact.find({ id: '15751763183' })
-contact.say(FileBox.fromFile('C:\\Users\\fabian\\Desktop\\avatar.jpg'))
+contact.say(FileBox.fromUrl('https://fabian.oss-cn-hangzhou.aliyuncs.com/img/mmexport1630917534919.jpg'))
 // console.log(msg)
 // contact.sync()

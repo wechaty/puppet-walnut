@@ -95,14 +95,14 @@ WechatyBuilder.build()  // get a Wechaty instance
   | room()                       | `Room` or `null`    | ✅       | null                 |
   | text()                       | `string`            | ✅       |                      |
   | say(text Or Contact Or File) | `Promise`           | ✅       | ⚠Contact not Support |
-  | type()                       | `MessageType`       | ✅       |                      |
+  | type()                       | `MessageType`       | ✅       | Message.Text         |
   | self()                       | `boolean`           | ✅       |                      |
   | mention()                    | `Promise`           | ❌       |                      |
   | mentionSelf()                | `Promise`           | ❌       |                      |
   | forward(to)                  | `Promise`           | ✅       |                      |
   | date()                       | `Date`              | ✅       |                      |
   | age()                        | `Number`            | ✅       |                      |
-  | toFileBox()                  | `Promise`           | ✅       |                      |
+  | toFileBox()                  | `Promise`           | ❌       |                      |
   | toContact()                  | `Promise`           | ❌       |                      |
   | toUrlLink()                  | `Promise`           | ❌       |                      |
 

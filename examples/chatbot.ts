@@ -14,7 +14,10 @@ const bot = WechatyBuilder.build({
 
 await bot.start()
 
-const contact = await bot.Contact.find({ id: '15751763183' })
-contact.say(FileBox.fromUrl('https://fabian.oss-cn-hangzhou.aliyuncs.com/img/mmexport1630917534919.jpg'))
+// const contact = await bot.Contact.find({ id: '15751763183' })
+// contact.say(FileBox.fromUrl('https://fabian.oss-cn-hangzhou.aliyuncs.com/img/mmexport1630917534919.jpg'))
 // console.log(msg)
 // contact.sync()
+const message = await bot.Message.find({ id: '8dcf7a26-5760-103a-b02f-f7e6c49198e7' })
+console.log(message.age())
+console.log(message.date())

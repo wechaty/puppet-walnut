@@ -63,7 +63,7 @@ WechatyBuilder.build()  // get a Wechaty instance
 
   | Instance Methods                    | Return type                                                  | Support | Details               |
   | ----------------------------------- | ------------------------------------------------------------ | ------- | --------------------- |
-  | say(text Or Contact Or File Or Url) | `Promise`                                                    | ✅       |                       |
+  | say(text Or Contact Or File) | `Promise`                                                    | ✅       | ⚠Contact not Support |
   | name()                              | `String`                                                     | ✅       | Phone number          |
   | alias(newAlias)                     | `Promise`                                                    | ✅       |                     |
   | friend()                            | `Boolean or null`                                            | ✅       | True           |
@@ -88,23 +88,23 @@ WechatyBuilder.build()  // get a Wechaty instance
 
 - #### [Instance Methods](https://wechaty.js.org/docs/api/message#instance-methods)
 
-  | Instance methods             | Return type         | Support | Detail |
-  | ---------------------------- | ------------------- | ------- | ------ |
-  | from()                       | `Contact` or `null` | ✅       |        |
-  | to()                         | `Contact` or `null` | ✅       |        |
-  | room()                       | `Room` or `null`    | ✅       | null   |
-  | text()                       | `string`            | ✅       |        |
-  | say(text Or Contact Or File) | `Promise`           | ✅       |        |
-  | type()                       | `MessageType`       | ✅       |        |
-  | self()                       | `boolean`           | ✅       |        |
-  | mention()                    | `Promise`           | ✅       |        |
-  | mentionSelf()                | `Promise`           | ✅       |        |
-  | forward(to)                  | `Promise`           | ✅       |        |
-  | date()                       | `Date`              | ✅       |        |
-  | age()                        | `Number`            | ✅       |        |
-  | toFileBox()                  | `Promise`           | ✅       |        |
-  | toContact()                  | `Promise`           | ✅       |        |
-  | toUrlLink()                  | `Promise`           | ✅       |        |
+  | Instance methods             | Return type         | Support | Detail               |
+  | ---------------------------- | ------------------- | ------- | -------------------- |
+  | from()                       | `Contact` or `null` | ✅       |                      |
+  | to()                         | `Contact` or `null` | ✅       |                      |
+  | room()                       | `Room` or `null`    | ✅       | null                 |
+  | text()                       | `string`            | ✅       |                      |
+  | say(text Or Contact Or File) | `Promise`           | ✅       | ⚠Contact not Support |
+  | type()                       | `MessageType`       | ✅       |                      |
+  | self()                       | `boolean`           | ✅       |                      |
+  | mention()                    | `Promise`           | ❌       |                      |
+  | mentionSelf()                | `Promise`           | ❌       |                      |
+  | forward(to)                  | `Promise`           | ✅       |                      |
+  | date()                       | `Date`              | ✅       |                      |
+  | age()                        | `Number`            | ✅       |                      |
+  | toFileBox()                  | `Promise`           | ✅       |                      |
+  | toContact()                  | `Promise`           | ❌       |                      |
+  | toUrlLink()                  | `Promise`           | ❌       |                      |
 
 - #### [Static Method](https://wechaty.js.org/docs/api/message#static-method)
 

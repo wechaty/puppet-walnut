@@ -102,9 +102,9 @@ WechatyBuilder.build()  // get a Wechaty instance
   | forward(to)                  | `Promise`           | ✅       |                      |
   | date()                       | `Date`              | ✅       |                      |
   | age()                        | `Number`            | ✅       |                      |
-  | toFileBox()                  | `Promise`           | ❌       |                      |
+  | toFileBox()                  | `Promise`           | ✅       |                      |
   | toContact()                  | `Promise`           | ❌       |                      |
-  | toUrlLink()                  | `Promise`           | ❌       |                      |
+  | toUrlLink()                  | `Promise`           | ✅       |                      |
 
 - #### [Static Method](https://wechaty.js.org/docs/api/message#static-method)
 

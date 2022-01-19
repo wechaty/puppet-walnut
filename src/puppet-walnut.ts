@@ -26,6 +26,7 @@ import type { WalnutContactPayload, WalnutMessagePayload } from './help/struct.j
 import { send, sendFile } from './help/message.js'
 import CacheManager from './cache/cacheManager.js'
 import { checkPhoneNumber } from './help/utils.js'
+import {LocationPayload} from "wechaty-puppet/src/schemas/location";
 
 export type PuppetWalnutOptions = PUPPET.PuppetOptions & {
   sipId?: string,
@@ -181,7 +182,7 @@ class PuppetWalnut extends PUPPET.Puppet {
       fromId: rawPayload.senderAddress.replace('tel:+86', ''),
       id: rawPayload.messageId,
       text: rawPayload.messageList[0]!.contentText,
-      timestamp: Date.now(),
+      timestamp: Date.parse(rawPayload.dateTime),
       toId: rawPayload.destinationAddress,
       type: PUPPET.types.Message.Text,
     }
@@ -197,6 +198,16 @@ class PuppetWalnut extends PUPPET.Puppet {
     send(to, msg)
   }
 
+  override async messageSendLocation (conversationId: string, locationPayload: LocationPayload): Promise<void> {
+    log.verbose('PuppetWalnut', 'messageSendLocation(%s, %s)', conversationId, locationPayload)
+    // send(to, msg)
+  }
+
+  override async messageSendFile (conversationId: string, file: FileBoxInterface): Promise<void> {
+    log.verbose('PuppetWalnut', 'messageSendFile(%s, %s)', conversationId, file)
+    sendFile(conversationId, file)
+  }
+
   override async messageForward (conversationId: string, messageId: string): Promise<void> {
     log.verbose('PuppetWalnut', 'messageForward(%s, %s)', conversationId, messageId)
     const message = await PuppetWalnut.getCacheManager().getMessage(messageId)
@@ -205,11 +216,6 @@ class PuppetWalnut extends PUPPET.Puppet {
     } else {
       throw new Error('Message is Empty!')
     }
-  }
-
-  override async messageSendFile (conversationId: string, file: FileBoxInterface): Promise<void> {
-    log.verbose('PuppetWalnut', 'messageSendFile(%s, %s)', conversationId, file)
-    sendFile(conversationId, file)
   }
 
 }

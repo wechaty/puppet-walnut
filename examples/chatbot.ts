@@ -1,6 +1,7 @@
-import { WechatyBuilder } from 'wechaty'
+import {Location, WechatyBuilder} from 'wechaty'
 import { log } from 'wechaty-puppet'
 import PuppetWalnut from '../src/puppet-walnut.js'
+import {LocationConstructor} from "wechaty/dist/cjs/src/user-modules/mod";
 // import { FileBox } from 'file-box'
 
 const bot = WechatyBuilder.build({
@@ -15,14 +16,14 @@ const bot = WechatyBuilder.build({
 await bot.start()
 
 const contact = await bot.Contact.find({ id: '15751763183' })
-const location = {
-  accuracy  : 15, // in meters
-  address   : '北京市北京市海淀区45 Chengfu Rd',
-  latitude  : 39.995120999999997,
-  longitude : 116.334154,
-  name      : 'chatchat',  // Huan(202109):
-}
-await contact.say(location)
+// const location: Location = new location({
+//   accuracy  : 11,
+//   address   : '北京市北京市海淀区45 Chengfu Rd',
+//   latitude  : 39.995120999999997,
+//   longitude : 116.334154,
+//   name      : '东升乡人民政府(海淀区成府路45号)',
+// })
+await contact.say(Location.create('aaa'))
 // contact.say(FileBox.fromUrl('https://fabian.oss-cn-hangzhou.aliyuncs.com/img/mmexport1630917534919.jpg'))
 // console.log(msg)
 // contact.sync()

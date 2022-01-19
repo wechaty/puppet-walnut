@@ -26,7 +26,6 @@ import type { WalnutContactPayload, WalnutMessagePayload } from './help/struct.j
 import { send, sendFile } from './help/message.js'
 import CacheManager from './cache/cacheManager.js'
 import { checkPhoneNumber } from './help/utils.js'
-import {LocationPayload} from "wechaty-puppet/src/schemas/location";
 
 export type PuppetWalnutOptions = PUPPET.PuppetOptions & {
   sipId?: string,
@@ -198,8 +197,8 @@ class PuppetWalnut extends PUPPET.Puppet {
     send(to, msg)
   }
 
-  override async messageSendLocation (conversationId: string, locationPayload: LocationPayload): Promise<void> {
-    log.verbose('PuppetWalnut', 'messageSendLocation(%s, %s)', conversationId, locationPayload)
+  override async messageSendLocation (to: string, locationPayload: PUPPET.payloads.Location): Promise<void> {
+    log.verbose('PuppetWalnut', 'messageSendLocation(%s, %s)', to, locationPayload)
     // send(to, msg)
   }
 

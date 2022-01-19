@@ -1,4 +1,4 @@
-import { messageToSayable, WechatyBuilder } from 'wechaty'
+import { WechatyBuilder } from 'wechaty'
 import { log } from 'wechaty-puppet'
 import PuppetWalnut from '../src/puppet-walnut.js'
 // import { FileBox } from 'file-box'
@@ -15,13 +15,14 @@ const bot = WechatyBuilder.build({
 await bot.start()
 
 const contact = await bot.Contact.find({ id: '15751763183' })
-await contact.say({
+const location = {
   accuracy  : 15, // in meters
   address   : '北京市北京市海淀区45 Chengfu Rd',
   latitude  : 39.995120999999997,
   longitude : 116.334154,
-  name      : 'poi',  // Huan(202109):
-})
+  name      : 'chatchat',  // Huan(202109):
+}
+await contact.say(location)
 // contact.say(FileBox.fromUrl('https://fabian.oss-cn-hangzhou.aliyuncs.com/img/mmexport1630917534919.jpg'))
 // console.log(msg)
 // contact.sync()

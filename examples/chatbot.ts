@@ -16,13 +16,13 @@ const bot = WechatyBuilder.build({
 await bot.start()
 
 const contact = await bot.Contact.find({ id: '15751763183' })
-// const location: Location = new location({
-//   accuracy  : 11,
-//   address   : '北京市北京市海淀区45 Chengfu Rd',
-//   latitude  : 39.995120999999997,
-//   longitude : 116.334154,
-//   name      : '东升乡人民政府(海淀区成府路45号)',
-// })
+const location: Location = new location({
+  accuracy  : 11,
+  address   : '北京市北京市海淀区45 Chengfu Rd',
+  latitude  : 39.995120999999997,
+  longitude : 116.334154,
+  name      : '东升乡人民政府(海淀区成府路45号)',
+})
 await contact.say(Location.create('aaa'))
 // contact.say(FileBox.fromUrl('https://fabian.oss-cn-hangzhou.aliyuncs.com/img/mmexport1630917534919.jpg'))
 // console.log(msg)

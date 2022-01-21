@@ -2,6 +2,9 @@ import axios from 'axios'
 import { Api } from './api.js'
 import { log }  from 'wechaty-puppet'
 import PuppetWalnut from '../puppet-walnut.js'
+import type { FileBoxInterface } from 'file-box'
+import FormData from 'form-data'
+import type { FileItem } from './struct.js'
 
 const headers = {
   'Content-Type': 'application/json',
@@ -26,6 +29,31 @@ export async function updateToken () {
   // setTimeout(updateToken, 2 * 60 * 60 * 1000)
 }
 
+export async function uploadFile (temp: boolean, file: FileBoxInterface): Promise<FileItem> {
+  const data = new FormData()
+  data.append('img', await file.toStream())
+  return axios.request({
+    data,
+    headers: {
+      authorization: headers.authorization,
+      uploadMode: temp ? 'temp' : 'perm',
+      ...data.getHeaders(),
+    },
+    method: 'POST',
+    url: PuppetWalnut.baseUrl + Api.uploadFile,
+  }).then(res => {
+    const fileInfo = res.data.fileInfo[0]
+    return {
+      contentType: fileInfo.contentType,
+      fileName: fileInfo.fileName,
+      fileSize: fileInfo.fileSize,
+      type: 'file',
+      until: fileInfo.until,
+      url: fileInfo.url,
+    }
+  })
+}
+
 export function get (url: string, data = {}) {
   return axios.request({
     data,
@@ -44,11 +72,21 @@ export function post (url: string, data = {}) {
   })
 }
 
+axios.interceptors.request.use(
+  function (config) {
+    // log.silly('PuppetWalnut-Axios',
+    //   `Params: ${util.inspect(config.data, false, 2, true)}, Url: ${config.url}`)
+    return config
+  },
+)
+
 axios.interceptors.response.use(
   function (response) {
-    if (response.data.errorCode !== 0) {
-      log.error('PuppetWalnut-Request', JSON.stringify(response.data))
-    }
+    log.silly('PuppetWalnut-Axios',
+      `Response: ${JSON.stringify(response.data)}`)
+    // if (response.data.errorCode !== 0) {
+    //   log.error('PuppetWalnut-Axios', JSON.stringify(response.data))
+    // }
     return response
   }, function (error) {
     log.info(error)

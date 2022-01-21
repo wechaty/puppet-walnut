@@ -1,6 +1,15 @@
-interface MessageList {
+export interface FileItem {
+  contentType: string,
+  fileName: string,
+  fileSize: string,
+  type: string,
+  until: string,
+  url: string,
+}
+
+export interface MessageItem {
   contentEncoding: string,
-  contentText: string,
+  contentText: string | FileItem,
   contentType: string
 }
 
@@ -13,7 +22,7 @@ export interface WalnutMessagePayload {
   messageFileSize: number,
   messageId: string,
   messageItem: string,
-  messageList: MessageList[],
+  messageList: MessageItem[],
   senderAddress: string
 }
 

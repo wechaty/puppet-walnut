@@ -23,7 +23,12 @@ import { initSever } from './sever/sever.js'
 import { log, config, VERSION } from './config.js'
 import { updateToken } from './help/request.js'
 import type { WalnutContactPayload, WalnutMessagePayload } from './help/struct.js'
-import { send } from './help/message.js'
+import {
+  sendMessage,
+  sendTextMessage,
+  sendFileMessage,
+  sendLocationMessage,
+} from './help/message.js'
 import CacheManager from './cache/cacheManager.js'
 import { checkPhoneNumber } from './help/utils.js'
 
@@ -138,7 +143,7 @@ class PuppetWalnut extends PUPPET.Puppet {
 
   override async contactList (): Promise<string[]> {
     log.verbose('PuppetWalnut', 'contactList()')
-    return await PuppetWalnut.getCacheManager().getContactList(PuppetWalnut.chatbotId)!
+    return await PuppetWalnut.getCacheManager().getContactList(PuppetWalnut.chatbotId)
   }
 
   override async contactAvatar(contactId: string): Promise<FileBoxInterface>
@@ -181,7 +186,7 @@ class PuppetWalnut extends PUPPET.Puppet {
       fromId: rawPayload.senderAddress.replace('tel:+86', ''),
       id: rawPayload.messageId,
       text: rawPayload.messageList[0]!.contentText,
-      timestamp: Date.now(),
+      timestamp: Date.parse(rawPayload.dateTime),
       toId: rawPayload.destinationAddress,
       type: PUPPET.types.Message.Text,
     }
@@ -192,16 +197,26 @@ class PuppetWalnut extends PUPPET.Puppet {
     return PuppetWalnut.getCacheManager().getMessage(messageId)
   }
 
-  override async messageSendText (to: string, msg: string): Promise<void> {
-    log.verbose('PuppetWalnut', 'messageSend(%s, %s)', to, msg)
-    send(to, msg)
+  override async messageSendText (conversationId: string, msg: string): Promise<void> {
+    log.verbose('PuppetWalnut', 'messageSendText(%s, %s)', conversationId, msg)
+    sendTextMessage(conversationId, msg)
+  }
+
+  override async messageSendLocation (conversationId: string, locationPayload: PUPPET.payloads.Location): Promise<void> {
+    log.verbose('PuppetWalnut', 'messageSendLocation(%s, %s)', conversationId, locationPayload)
+    sendLocationMessage(conversationId, locationPayload)
+  }
+
+  override async messageSendFile (conversationId: string, file: FileBoxInterface): Promise<void> {
+    log.verbose('PuppetWalnut', 'messageSendFile(%s, %s)', conversationId, file)
+    await sendFileMessage(conversationId, file)
   }
 
   override async messageForward (conversationId: string, messageId: string): Promise<void> {
-    log.verbose('PuppetWalnut', 'conversationId(%s, %s)', conversationId, messageId)
+    log.verbose('PuppetWalnut', 'messageForward(%s, %s)', conversationId, messageId)
     const message = await PuppetWalnut.getCacheManager().getMessage(messageId)
     if (message && message.messageList[0]) {
-      send(conversationId, message.messageList[0].contentText)
+      sendMessage(conversationId, message.messageList[0])
     } else {
       throw new Error('Message is Empty!')
     }

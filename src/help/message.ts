@@ -16,7 +16,7 @@ export function sendTextMessage (to: string, msg: string) {
 }
 
 export function sendLocationMessage (to: string, locationPayload: PUPPET.payloads.Location) {
-  console.log(locationPayload)
+  log.info(JSON.stringify(locationPayload))
   sendMessage(to, {
     contentEncoding: 'utf8',
     contentText: 'geo:50.7311865,7.0914591;crs=gcj02;u=10;rcs-l=Qingfeng%20Steamed%20Dumpling%20Shop %20%F0%9F%8D%9A',

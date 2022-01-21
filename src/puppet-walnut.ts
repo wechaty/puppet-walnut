@@ -185,7 +185,7 @@ class PuppetWalnut extends PUPPET.Puppet {
     return {
       fromId: rawPayload.senderAddress.replace('tel:+86', ''),
       id: rawPayload.messageId,
-      text: rawPayload.messageList[0]!.contentText,
+      text: rawPayload.messageList[0]!.contentText.toString(),
       timestamp: Date.parse(rawPayload.dateTime),
       toId: rawPayload.destinationAddress,
       type: PUPPET.types.Message.Text,

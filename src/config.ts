@@ -11,7 +11,12 @@ const config = {
   serverRoot: 'maap.5g-msg.com:30001',
 }
 
+enum contentEncoding {
+  utf8 = 'utf8'
+}
+
 export {
+  contentEncoding,
   config,
   log,
 }

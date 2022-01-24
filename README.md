@@ -90,7 +90,7 @@ WechatyBuilder.build()  // get a Wechaty instance
 
   | Instance methods             | Return type         | Support | Detail               |
   | ---------------------------- | ------------------- | ------- | -------------------- |
-  | from()                       | `Contact` or `null` | ✅       |                      |
+  | talker()                       | `Contact` or `null` | ✅       |                      |
   | to()                         | `Contact` or `null` | ✅       |                      |
   | room()                       | `Room` or `null`    | ✅       | null                 |
   | text()                       | `string`            | ✅       |                      |

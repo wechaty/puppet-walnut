@@ -1,4 +1,4 @@
-import { post } from './request.js'
+import { post, uploadFile } from './request.js'
 import { Api } from './api.js'
 import { v4 as uuidV4 } from 'uuid'
 import { contentEncoding, contentType, log } from '../config.js'

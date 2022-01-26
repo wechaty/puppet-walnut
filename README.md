@@ -51,17 +51,15 @@ WechatyBuilder.build()  // get a Wechaty instance
 
 ## 消息种类支持
 
-| 消息类型 | 从属(根据接口返回) | 接收 | 发送 | 群聊 |
-| -------- | ------------------ | ---- | ---- | ---- |
-| 文本     | `text`             | ✅    | ✅    | ❌    |
-| 图片     | `image`            | ✅    | ✅    | ❌    |
-| 视频     | `video`            | ✅    | ❌    | ❌    |
-| 音频     | `audio`            | ✅    | ❌    | ❌    |
-| 位置     | `location`         | ✅    | ❌    | ❌    |
-| 文件     | `other`            | ✅    | ❌    | ❌    |
-| 联系人   | `other`            | ✅    | ❌    | ❌    |
-
-
+| 消息类型 | 从属(根据接口返回) | api                    | 接收 | 发送 | 群聊 |
+| -------- | ------------------ | ---------------------- | ---- | ---- | ---- |
+| 文本     | `text`             | `message.text`         | ✅    | ✅    | ❌    |
+| 图片     | `image`            | `message.toImage()`    | ✅    | ✅    | ❌    |
+| 视频     | `video`            | `message.toFilebox()`  | ✅    | ❌    | ❌    |
+| 音频     | `audio`            | `message.toFilebox()`  | ✅    | ❌    | ❌    |
+| 位置     | `location`         | `message.toLocation()` | ✅    | ❌    | ❌    |
+| 文件     | `other`            | `message.toFilebox()`  | ✅    | ❌    | ❌    |
+| 联系人   | `other`            | `message.toContact()`  | ✅    | ❌    | ❌    |
 
 ## Wechaty API 支持
 

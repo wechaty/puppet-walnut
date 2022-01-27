@@ -31,17 +31,3 @@
 // // const message = await bot.Message.find({ id: '8dcf7a26-5760-103a-b02f-f7e6c49198e7' })
 // // console.log(message.age())
 // // console.log(message.date())
-
-import { parseVCards } from 'vcard4-ts'
-import { FileBox } from 'file-box'
-import * as util from 'util'
-
-// const vcf = readFileSync('example.vcf').toString()
-const vcf = await FileBox.fromUrl('https://gateway.5g-msg.com:30083/UP/7a90a4a8-f6ab-442e-a777-c5b3fa689e15.vcf').toBuffer()
-
-const cards = parseVCards(vcf.toString())
-if (cards.vCards) {
-  console.log(util.inspect(cards))
-} else {
-  console.error('No valid vCards in file')
-}

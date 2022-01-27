@@ -34,19 +34,12 @@
 
 import { parseVCards } from 'vcard4-ts'
 import { readFileSync } from 'fs'
-import * as util from "util";
-
 const vcf = readFileSync('C:\\Users\\fabian\\Desktop\\1.vcf').toString()
 
 const cards = parseVCards(vcf)
 if (cards.vCards) {
   let card = cards.vCards[0]
-  // console.log(util.inspect(card))
-  // console.log(JSON.stringify(card))
   console.log(card.TEL[0].value)
-  // for (const card of cards.vCards) {
-  //   console.log('Card found for ' + card.FN[0].value[0])
-  // }
 } else {
   console.error('No valid vCards in file')
 }

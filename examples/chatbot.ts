@@ -1,20 +1,20 @@
-// import {WechatyBuilder} from 'wechaty'
-// import { log } from 'wechaty-puppet'
-// import PuppetWalnut from '../src/puppet-walnut.js'
+import {WechatyBuilder} from 'wechaty'
+import { log } from 'wechaty-puppet'
+import PuppetWalnut from '../src/puppet-walnut.js'
 // import { FileBox } from 'file-box'
-// const bot = WechatyBuilder.build({
-//   puppet: new PuppetWalnut(),
-// })  // get a Wechaty instance
-//   .on('login',            user => log.info(`User ${user} logged in`))
-//   .on('message',       async message => {
-//     log.info(`Message: ${message}`)
-//     console.log(message)
-//     const file = await message.toFileBox()
-//     console.log(file)
-//   })
-//
-// await bot.start()
+const bot = WechatyBuilder.build({
+  puppet: new PuppetWalnut(),
+})  // get a Wechaty instance
+  .on('login',            user => log.info(`User ${user} logged in`))
+  .on('message',       async message => {
+    log.info(`Message: ${message}`)
+    console.log(message)
+    const file = await message.toContact()
+    console.log(file)
+  })
 
+await bot.start()
+//
 // const contact = await bot.Contact.find({ id: '15751763183' })
 // contact.say(new LocationInterface('payload'))
 // const location = {
@@ -31,15 +31,3 @@
 // const message = await bot.Message.find({ id: '8dcf7a26-5760-103a-b02f-f7e6c49198e7' })
 // console.log(message.age())
 // console.log(message.date())
-
-import { parseVCards } from 'vcard4-ts'
-import { readFileSync } from 'fs'
-const vcf = readFileSync('C:\\Users\\fabian\\Desktop\\1.vcf').toString()
-
-const cards = parseVCards(vcf)
-if (cards.vCards) {
-  let card = cards.vCards[0]
-  console.log(card.TEL[0].value)
-} else {
-  console.error('No valid vCards in file')
-}

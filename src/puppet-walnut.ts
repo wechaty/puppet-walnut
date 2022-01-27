@@ -28,6 +28,7 @@ import { sendFileMessage, sendLocationMessage, sendMessage, sendTextMessage } fr
 import CacheManager from './cache/cacheManager.js'
 import { checkPhoneNumber } from './help/utils.js'
 import type { ImageType } from 'wechaty-puppet/src/schemas/image'
+import { parseVCards } from 'vcard4-ts'
 
 export type PuppetWalnutOptions = PUPPET.PuppetOptions & {
   sipId?: string,
@@ -187,6 +188,7 @@ class PuppetWalnut extends PUPPET.Puppet {
       toId: rawPayload.destinationAddress,
       type: PUPPET.types.Message.Text,
     }
+    const file = rawPayload.messageList[0]?.contentText[0] as FileItem
     switch (rawPayload.messageItem) {
       case MessageRawType.text:
         break
@@ -209,6 +211,10 @@ class PuppetWalnut extends PUPPET.Puppet {
       case MessageRawType.other:
         res.type = PUPPET.types.Message.Attachment
         res.text = 'file'
+        if (file.contentType === 'text/vcard') {
+          res.type = PUPPET.types.Message.Contact
+          res.text = 'contact'
+        }
         break
     }
     return res
@@ -230,13 +236,26 @@ class PuppetWalnut extends PUPPET.Puppet {
   }
 
   override async messageFile (messageId: string) : Promise<FileBoxInterface> {
-    log.verbose('PuppetWalnut', 'messageFile(%s, %s)', messageId)
+    log.verbose('PuppetWalnut', 'messageFile(%s)', messageId)
     const messagePayload = await this.messageRawPayload(messageId)
     let file = messagePayload?.messageList[0]?.contentText[0] as FileItem
     if (messagePayload?.messageItem === MessageRawType.video) {
       file = messagePayload.messageList[0]?.contentText[1] as FileItem
     }
     return FileBox.fromUrl(file.url)
+  }
+
+  override async messageContact (messageId: string) : Promise<string> {
+    log.verbose('PuppetWalnut', 'messageContact(%s)', messageId)
+    const messagePayload = await this.messageRawPayload(messageId)
+    const file = messagePayload?.messageList[0]?.contentText[0] as FileItem
+    const contact = await FileBox.fromUrl(file.url).toBuffer()
+    const cards = parseVCards(contact.toString())
+    if (cards.vCards && cards.vCards[0].TEL) {
+      return cards.vCards[0].TEL[0].value
+    } else {
+      throw new Error('invalid contact')
+    }
   }
 
   override async messageSendText (conversationId: string, msg: string): Promise<void> {

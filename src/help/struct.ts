@@ -14,7 +14,7 @@ export interface MessageItem {
 }
 
 export enum MessageRawType {
-  image = 'image',
+  image = 'IMAGE',
   text = 'text',
   location = 'location',
   audio = 'audio',

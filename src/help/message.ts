@@ -28,7 +28,7 @@ export async function sendFileMessage (to: string, file: FileBoxInterface) {
   const fileItem = await uploadFile(true, file)
   sendMessage(to, {
     contentEncoding: contentEncoding.utf8,
-    contentText: fileItem,
+    contentText: [fileItem],
     contentType: contentType.application,
   })
 }

@@ -59,7 +59,7 @@ WechatyBuilder.build()  // get a Wechaty instance
 | 音频     | `audio`            | `message.toFilebox()`  | ✅    | ❌    | ❌    |
 | 位置     | `location`         | `message.toLocation()` | ❌    | ❌    | ❌    |
 | 文件     | `other`            | `message.toFilebox()`  | ✅    | ❌    | ❌    |
-| 联系人   | `other`            | `message.toContact()`  | ❌    | ❌    | ❌    |
+| 联系人   | `other`            | `message.toContact()`  | ✅    | ❌    | ❌    |
 
 ## Wechaty API 支持
 

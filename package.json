@@ -23,7 +23,6 @@
     "lint:ts": "tsc --isolatedModules --noEmit",
     "lint:md": "markdownlint README.md",
     "lint:es": "eslint \"src/**/*.ts\" \"tests/**/*.spec.ts\" --ignore-pattern tests/fixtures/",
-    "dev": "cross-env WECHATY_LOG=silly node --loader ts-node/esm examples/chatbot.ts",
     "start": "node --loader ts-node/esm examples/ding-dong-bot.ts",
     "test": "npm run lint && npm run test:unit",
     "test:pack": "bash -x scripts/npm-pack-testing.sh",
@@ -60,7 +59,6 @@
     "@types/uuid": "^8.3.3"
   },
   "peerDependencies": {
-    "wechaty": "^1.10.4",
     "wechaty-puppet": "^1.11.12"
   },
   "dependencies": {

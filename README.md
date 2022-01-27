@@ -49,6 +49,18 @@ WechatyBuilder.build()  // get a Wechaty instance
 
 > Learn more for building your first Wechaty bot at <https://github.com/wechaty/>, <https://github.com/wechaty/getting-started>
 
+## 消息种类支持
+
+| 消息类型 | 从属(根据接口返回) | api                    | 接收 | 发送 | 群聊 |
+| -------- | ------------------ | ---------------------- | ---- | ---- | ---- |
+| 文本     | `text`             | `message.text`         | ✅    | ✅    | ❌    |
+| 图片     | `image`            | `message.toImage()`    | ✅    | ✅    | ❌    |
+| 视频     | `video`            | `message.toFilebox()`  | ✅    | ❌    | ❌    |
+| 音频     | `audio`            | `message.toFilebox()`  | ✅    | ❌    | ❌    |
+| 位置     | `location`         | `message.toLocation()` | ❌    | ❌    | ❌    |
+| 文件     | `other`            | `message.toFilebox()`  | ✅    | ❌    | ❌    |
+| 联系人   | `other`            | `message.toContact()`  | ❌    | ❌    | ❌    |
+
 ## Wechaty API 支持
 
 ### Contact

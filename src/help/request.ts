@@ -29,7 +29,7 @@ export async function updateToken () {
   // setTimeout(updateToken, 2 * 60 * 60 * 1000)
 }
 
-export async function uploadFile (temp: boolean, file: FileBoxInterface): Promise<FileItem> {
+export async function uploadFile (temp: boolean, file: FileBoxInterface): Promise<FileItem[]> {
   const data = new FormData()
   data.append('img', await file.toStream())
   return axios.request({
@@ -43,14 +43,14 @@ export async function uploadFile (temp: boolean, file: FileBoxInterface): Promis
     url: PuppetWalnut.baseUrl + Api.uploadFile,
   }).then(res => {
     const fileInfo = res.data.fileInfo[0]
-    return {
+    return [{
       contentType: fileInfo.contentType,
       fileName: fileInfo.fileName,
       fileSize: fileInfo.fileSize,
       type: 'file',
       until: fileInfo.until,
       url: fileInfo.url,
-    }
+    }]
   })
 }
 

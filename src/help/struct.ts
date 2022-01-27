@@ -9,8 +9,17 @@ export interface FileItem {
 
 export interface MessageItem {
   contentEncoding: string,
-  contentText: string | FileItem,
+  contentText: string | FileItem[],
   contentType: string
+}
+
+export enum MessageRawType {
+  image = 'image',
+  text = 'text',
+  location = 'location',
+  audio = 'audio',
+  video = 'video',
+  other = 'other'
 }
 
 export interface WalnutMessagePayload {
@@ -21,7 +30,7 @@ export interface WalnutMessagePayload {
   destinationAddress: string,
   messageFileSize: number,
   messageId: string,
-  messageItem: string,
+  messageItem: MessageRawType,
   messageList: MessageItem[],
   senderAddress: string
 }

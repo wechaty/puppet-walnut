@@ -17,17 +17,17 @@
  *
  */
 import * as PUPPET from 'wechaty-puppet'
-import type {FileBoxInterface} from 'file-box'
-import {FileBox} from 'file-box'
-import {initSever} from './sever/sever.js'
-import {config, log, VERSION} from './config.js'
-import {updateToken} from './help/request.js'
-import type {FileItem, WalnutContactPayload, WalnutMessagePayload} from './help/struct.js'
-import {MessageRawType} from './help/struct.js'
-import {sendFileMessage, sendLocationMessage, sendMessage, sendTextMessage} from './help/message.js'
+import type { FileBoxInterface } from 'file-box'
+import { FileBox } from 'file-box'
+import { initSever } from './sever/sever.js'
+import { config, log, VERSION } from './config.js'
+import { updateToken } from './help/request.js'
+import type { FileItem, WalnutContactPayload, WalnutMessagePayload } from './help/struct.js'
+import { MessageRawType } from './help/struct.js'
+import { sendFileMessage, sendLocationMessage, sendMessage, sendTextMessage } from './help/message.js'
 import CacheManager from './cache/cacheManager.js'
-import {checkPhoneNumber} from './help/utils.js'
-import type {ImageType} from 'wechaty-puppet/src/schemas/image'
+import { checkPhoneNumber } from './help/utils.js'
+import type { ImageType } from 'wechaty-puppet/src/schemas/image'
 
 export type PuppetWalnutOptions = PUPPET.PuppetOptions & {
   sipId?: string,

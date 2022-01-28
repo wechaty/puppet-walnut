@@ -31,3 +31,13 @@
 // // const message = await bot.Message.find({ id: '8dcf7a26-5760-103a-b02f-f7e6c49198e7' })
 // // console.log(message.age())
 // // console.log(message.date())
+
+import { FileBox } from 'file-box'
+import { parse } from 'vcard4'
+
+const vcard = await FileBox.fromFile('C:\\Users\\fabian\\Desktop\\1.vcf').toBuffer()
+
+const card = parse(vcard.toString())
+console.log(card)
+// @ts-ignore
+console.log(card.TEL.value)

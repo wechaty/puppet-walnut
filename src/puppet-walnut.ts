@@ -28,7 +28,7 @@ import { sendFileMessage, sendLocationMessage, sendMessage, sendTextMessage } fr
 import CacheManager from './cache/cacheManager.js'
 import { checkPhoneNumber } from './help/utils.js'
 import type { ImageType } from 'wechaty-puppet/src/schemas/image'
-import { parseVCards } from 'vcard4-ts'
+import { parse } from 'vcard4'
 
 export type PuppetWalnutOptions = PUPPET.PuppetOptions & {
   sipId?: string,
@@ -250,12 +250,9 @@ class PuppetWalnut extends PUPPET.Puppet {
     const messagePayload = await this.messageRawPayload(messageId)
     const file = messagePayload?.messageList[0]?.contentText[0] as FileItem
     const contact = await FileBox.fromUrl(file.url).toBuffer()
-    const cards = parseVCards(contact.toString())
-    if (cards.vCards && cards.vCards[0].TEL) {
-      return cards.vCards[0].TEL[0].value
-    } else {
-      throw new Error('invalid contact')
-    }
+    const cards = parse(contact.toString())
+    // @ts-ignore
+    return cards.TEL.value
   }
 
   override async messageSendText (conversationId: string, msg: string): Promise<void> {

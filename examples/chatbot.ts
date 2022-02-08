@@ -32,12 +32,11 @@
 // // console.log(message.age())
 // // console.log(message.date())
 
-import { FileBox } from 'file-box'
-import { parse } from 'vcard4'
+import PuppetWalnut from '../src/puppet-walnut.js'
 
-const vcard = await FileBox.fromFile('C:\\Users\\fabian\\Desktop\\1.vcf').toBuffer()
-
-const card = parse(vcard.toString())
-console.log(card)
-// @ts-ignore
-console.log(card.TEL.value)
+await new PuppetWalnut({
+  appId: '28871d8c83954bc78424ffcbff80285c',
+  appKey: '3b9cc5506af2466aa82eee4c04f86471',
+  sipId: '20210401',
+}).start()
+const cacheManager = PuppetWalnut.getCacheManager()

@@ -20,17 +20,15 @@ import * as PUPPET from 'wechaty-puppet'
 import type { FileBoxInterface } from 'file-box'
 import { FileBox } from 'file-box'
 import { initSever } from './sever/sever.js'
-import { log, config, VERSION } from './config.js'
+import { config, log, VERSION } from './config.js'
 import { updateToken } from './help/request.js'
-import type { WalnutContactPayload, WalnutMessagePayload } from './help/struct.js'
-import {
-  sendMessage,
-  sendTextMessage,
-  sendFileMessage,
-  sendLocationMessage,
-} from './help/message.js'
+import type { FileItem, WalnutContactPayload, WalnutMessagePayload } from './help/struct.js'
+import { MessageRawType } from './help/struct.js'
+import { sendFileMessage, sendLocationMessage, sendMessage, sendTextMessage } from './help/message.js'
 import CacheManager from './cache/cacheManager.js'
 import { checkPhoneNumber } from './help/utils.js'
+import type { ImageType } from 'wechaty-puppet/src/schemas/image'
+import { parse } from 'vcard4'
 
 export type PuppetWalnutOptions = PUPPET.PuppetOptions & {
   sipId?: string,
@@ -182,7 +180,7 @@ class PuppetWalnut extends PUPPET.Puppet {
    *
    */
   override async messageRawPayloadParser (rawPayload: WalnutMessagePayload): Promise<PUPPET.payloads.Message> {
-    return {
+    const res = {
       fromId: rawPayload.senderAddress.replace('tel:+86', ''),
       id: rawPayload.messageId,
       text: rawPayload.messageList[0]!.contentText.toString(),
@@ -190,11 +188,71 @@ class PuppetWalnut extends PUPPET.Puppet {
       toId: rawPayload.destinationAddress,
       type: PUPPET.types.Message.Text,
     }
+    const file = rawPayload.messageList[0]?.contentText[0] as FileItem
+    switch (rawPayload.messageItem) {
+      case MessageRawType.text:
+        break
+      case MessageRawType.image:
+        res.type = PUPPET.types.Message.Image
+        res.text = 'image'
+        break
+      case MessageRawType.video:
+        res.type = PUPPET.types.Message.Video
+        res.text = 'video'
+        break
+      case MessageRawType.audio:
+        res.type = PUPPET.types.Message.Audio
+        res.text = 'audio'
+        break
+      case MessageRawType.location:
+        res.type = PUPPET.types.Message.Location
+        res.text = 'location'
+        break
+      case MessageRawType.other:
+        res.type = PUPPET.types.Message.Attachment
+        res.text = 'file'
+        if (file.contentType === 'text/vcard') {
+          res.type = PUPPET.types.Message.Contact
+          res.text = 'contact'
+        }
+        break
+    }
+    return res
   }
 
   override async messageRawPayload (messageId: string): Promise<WalnutMessagePayload | undefined> {
     log.verbose('PuppetWalnut', 'messageRawPayload(%s)', messageId)
     return PuppetWalnut.getCacheManager().getMessage(messageId)
+  }
+
+  override async messageImage (messageId: string, imageType: ImageType) : Promise<FileBoxInterface> {
+    log.verbose('PuppetWalnut', 'messageImage(%s, %s)', messageId, imageType)
+    const messagePayload = await this.messageRawPayload(messageId)
+    let file = messagePayload?.messageList[0]?.contentText[1] as FileItem
+    if (imageType === PUPPET.types.Image.Thumbnail) {
+      file = messagePayload?.messageList[0]?.contentText[0] as FileItem
+    }
+    return FileBox.fromUrl(file.url)
+  }
+
+  override async messageFile (messageId: string) : Promise<FileBoxInterface> {
+    log.verbose('PuppetWalnut', 'messageFile(%s)', messageId)
+    const messagePayload = await this.messageRawPayload(messageId)
+    let file = messagePayload?.messageList[0]?.contentText[0] as FileItem
+    if (messagePayload?.messageItem === MessageRawType.video) {
+      file = messagePayload.messageList[0]?.contentText[1] as FileItem
+    }
+    return FileBox.fromUrl(file.url)
+  }
+
+  override async messageContact (messageId: string) : Promise<string> {
+    log.verbose('PuppetWalnut', 'messageContact(%s)', messageId)
+    const messagePayload = await this.messageRawPayload(messageId)
+    const file = messagePayload?.messageList[0]?.contentText[0] as FileItem
+    const contact = await FileBox.fromUrl(file.url).toBuffer()
+    const cards = parse(contact.toString())
+    // @ts-ignore
+    return cards.TEL.value
   }
 
   override async messageSendText (conversationId: string, msg: string): Promise<void> {

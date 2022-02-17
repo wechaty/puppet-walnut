@@ -2,9 +2,9 @@
 
 ![PUPPET-WALNUT](https://github.com/wechaty/puppet-walnut/blob/main/docs/images/puppet-walnut.webp)
 
-[![NPM Version](https://badge.fury.io/js/wechaty-puppet-mock.svg)](https://badge.fury.io/js/wechaty-puppet-mock)
-[![npm (tag)](https://img.shields.io/npm/v/wechaty-puppet-mock/next.svg)](https://www.npmjs.com/package/wechaty-puppet-mock?activeTab=versions)
-[![NPM](https://github.com/wechaty/wechaty-puppet-mock/workflows/NPM/badge.svg)](https://github.com/wechaty/wechaty-puppet-mock/actions?query=workflow%3ANPM)
+[![NPM Version](https://badge.fury.io/js/wechaty-puppet-walnut.svg)](https://badge.fury.io/js/wechaty-puppet-walnut)
+[![npm (tag)](https://img.shields.io/npm/v/wechaty-puppet-walnut/next.svg)](https://www.npmjs.com/package/wechaty-puppet-walnut?activeTab=versions)
+[![NPM](https://github.com/wechaty/wechaty-puppet-walnut/workflows/NPM/badge.svg)](https://github.com/wechaty/wechaty-puppet-walnut/actions?query=workflow%3ANPM)
 
 [![Powered by Wechaty](https://img.shields.io/badge/Powered%20By-Wechaty-brightgreen.svg)](https://github.com/wechaty/wechaty)
 [![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-blue.svg)](https://www.typescriptlang.org/)
@@ -115,7 +115,7 @@ WechatyBuilder.build()  // get a Wechaty instance
   | date()                       | `Date`              | ✅       |                      |
   | age()                        | `Number`            | ✅       |                      |
   | toFileBox()                  | `Promise`           | ✅       |                      |
-  | toContact()                  | `Promise`           | ❌       |                      |
+  | toContact()                  | `Promise`           | ✅       |                      |
   | toUrlLink()                  | `Promise`           | ✅       |                      |
 
 - #### [Static Method](https://wechaty.js.org/docs/api/message#static-method)

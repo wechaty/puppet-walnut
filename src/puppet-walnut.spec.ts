@@ -1,9 +1,8 @@
 #!/usr/bin/env -S node --no-warnings --loader ts-node/esm
 /* eslint-disable sort-keys */
-import {test} from 'tstest'
+import { test } from 'tstest'
 
 import PuppetWalnut from './puppet-walnut.js'
-import {MessageRawType} from './help/struct.js'
 import * as PUPPET from 'wechaty-puppet'
 
 /**

@@ -1,10 +1,9 @@
 #!/usr/bin/env -S node --no-warnings --loader ts-node/esm
 /* eslint-disable sort-keys */
-import { test } from 'tstest'
+import {test} from 'tstest'
 
 import PuppetWalnut from './puppet-walnut.js'
-import { MessageRawType } from './help/struct.js'
-import { contentEncoding, contentType } from './config.js'
+import {MessageRawType} from './help/struct.js'
 import * as PUPPET from 'wechaty-puppet'
 
 /**
@@ -28,14 +27,20 @@ test.skip('PuppetWalnut perfect restart testing', async t => {
   }
 })
 
+const puppet = new PuppetWalnut({
+  sipId: '20210401',
+  appId: '28871d8c83954bc78424ffcbff80285c',
+  appKey: '3b9cc5506af2466aa82eee4c04f86471',
+})
+
 test('message parser for text message', async t => {
   const walnutMessagePayload = {
     messageId: '4BF4F950-A0B6-4CC3-86B4-5A9580399BCA',
     messageList: [
       {
-        contentType: contentType.text,
+        contentType: 'text/plain',
         contentText: 'hello world',
-        contentEncoding: contentEncoding.utf8,
+        contentEncoding: 'utf8',
       },
     ],
     messageFileSize: 0,
@@ -46,11 +51,6 @@ test('message parser for text message', async t => {
     conversationId: 'XSFDSFDFSAFDSAS^%',
     contributionId: 'SFF$#REGFY7&^%THT',
   }
-  const puppet = new PuppetWalnut({
-    sipId: '20210401',
-    appId: '28871d8c83954bc78424ffcbff80285c',
-    appKey: '3b9cc5506af2466aa82eee4c04f86471',
-  })
   const messagePayload = await puppet.messageRawPayloadParser(walnutMessagePayload)
   t.ok(
     messagePayload.toId === 'sip:106500@botplatform.rcs.domain.cn'
@@ -66,7 +66,7 @@ test('message parser for image message', async t => {
     messageId: '4BF4F950-A0B6-4CC3-86B4-5A9580399BCA',
     messageList: [
       {
-        contentType: contentType.application,
+        contentType: 'application/vnd.gsma.rcs-ft-http',
         contentText: [{
           type: 'thumbnail',
           fileSize: '7427',
@@ -82,7 +82,7 @@ test('message parser for image message', async t => {
           url: 'http://xxxxxx6c5274f0. jpg',
           until: '2019-04-25T12:17:07Z',
         }],
-        contentEncoding: contentEncoding.utf8,
+        contentEncoding: 'utf8',
       },
     ],
     messageFileSize: 0,
@@ -93,11 +93,6 @@ test('message parser for image message', async t => {
     conversationId: 'XSFDSFDFSAFDSAS^%',
     contributionId: 'SFF$#REGFY7&^%THT',
   }
-  const puppet = new PuppetWalnut({
-    sipId: '20210401',
-    appId: '28871d8c83954bc78424ffcbff80285c',
-    appKey: '3b9cc5506af2466aa82eee4c04f86471',
-  })
   const messagePayload = await puppet.messageRawPayloadParser(walnutMessagePayload)
   t.ok(
     messagePayload.toId === 'sip:106500@botplatform.rcs.domain.cn'
@@ -113,7 +108,7 @@ test('message parser for file message', async t => {
     messageId: '4BF4F950-A0B6-4CC3-86B4-5A9580399BCA',
     messageList: [
       {
-        contentType: contentType.application,
+        contentType: 'application/vnd.gsma.rcs-ft-http',
         contentText: [{
           type: 'thumbnail',
           fileSize: '7427',
@@ -129,7 +124,7 @@ test('message parser for file message', async t => {
           url: 'http://xxxxxx6c5274f0. jpg',
           until: '2019-04-25T12:17:07Z',
         }],
-        contentEncoding: contentEncoding.utf8,
+        contentEncoding: 'utf8',
       },
     ],
     messageFileSize: 0,
@@ -140,11 +135,6 @@ test('message parser for file message', async t => {
     conversationId: 'XSFDSFDFSAFDSAS^%',
     contributionId: 'SFF$#REGFY7&^%THT',
   }
-  const puppet = new PuppetWalnut({
-    sipId: '20210401',
-    appId: '28871d8c83954bc78424ffcbff80285c',
-    appKey: '3b9cc5506af2466aa82eee4c04f86471',
-  })
   const messagePayload = await puppet.messageRawPayloadParser(walnutMessagePayload)
   t.ok(
     messagePayload.toId === 'sip:106500@botplatform.rcs.domain.cn'

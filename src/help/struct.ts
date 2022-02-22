@@ -30,7 +30,7 @@ export interface WalnutMessagePayload {
   destinationAddress: string,
   messageFileSize: number,
   messageId: string,
-  messageItem: MessageRawType,
+  messageItem: string,
   messageList: MessageItem[],
   senderAddress: string
 }

@@ -4,7 +4,7 @@ import { test } from 'tstest'
 
 import PuppetWalnut from './puppet-walnut.js'
 import { MessageRawType } from './help/struct.js'
-import {contentEncoding, contentType} from './config.js'
+import { contentEncoding, contentType } from './config.js'
 import * as PUPPET from 'wechaty-puppet'
 
 /**
@@ -99,7 +99,6 @@ test('message parser for image message', async t => {
     && messagePayload.type === PUPPET.types.Message.Image,
   )
 })
-
 
 test('message parser for file message', async t => {
   const walnutMessagePayload = {

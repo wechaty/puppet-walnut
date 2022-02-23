@@ -34,7 +34,7 @@
 
    > 需要一部非 IOS 系统的手机
 
-   下载并且安装 **终端测试消息APP** 👉 https://www.5g-msg.com/#/bussinessInformation。
+   下载并且安装 👉 [终端测试消息APP](https://www.5g-msg.com/#/bussinessInformation) 。
 
 2. 打开 app ，将其设置为系统的默认信息应用。
 3. 关闭wifi，确保使用手机流量上网。

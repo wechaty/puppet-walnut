@@ -11,7 +11,7 @@
 
 ## 前提环境
 
-1. 申请 5G 开发者权限、应用调试工具。
+1. 申请 5G 开发者权限。
 
    👉 [5G消息开发者社区平台](https://www.5g-msg.com)
 
@@ -22,11 +22,25 @@
    - `WECHATY_PUPPET_WALNUT_SIPID`: Chatbot的sipId。
    - `WECHATY_PUPPET`：wechaty-puppet-walnut
 
-3. 配置公网环境
+3. 配置公网环境。
 
    > 如果是本地调试，则需要将在申请 5G 开发者时填入的公网地址，映射到本地才可以监听到`chatbot`接收到的消息
 
    这里推荐使用 [Frp](https://github.com/fatedier/frp)，来进行端口的映射。Walnut本身集成的 sever 端口默认为 **3000**，将公网地址映射到本地即可
+
+## 安装本地调试环境
+
+1. 下载安装调试客户端。
+
+   > 需要一部非 IOS 系统的手机
+
+   下载并且安装 **终端测试消息APP** 👉 https://www.5g-msg.com/#/bussinessInformation。
+
+2. 打开 app ，将其设置为系统的默认信息应用。
+3. 关闭wifi，确保使用手机流量上网。
+4. 右上角 -> 设置 -> 常规 -> 融合通信登录。
+5. 向康嘉老师申请账号密码。
+6. 登录成功之后就可以收到我们 chatbot 发送的消息了🎉。
 
 ## 运行方法
 

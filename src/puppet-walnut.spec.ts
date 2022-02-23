@@ -4,6 +4,7 @@ import { test } from 'tstest'
 
 import PuppetWalnut from './puppet-walnut.js'
 import * as PUPPET from 'wechaty-puppet'
+import type { WalnutMessagePayload } from './help/struct.js'
 
 /**
  *   zrn-fight - https://github.com/zrn-fight
@@ -50,7 +51,7 @@ test('message parser for text message', async t => {
     conversationId: 'XSFDSFDFSAFDSAS^%',
     contributionId: 'SFF$#REGFY7&^%THT',
   }
-  const messagePayload = await puppet.messageRawPayloadParser(walnutMessagePayload)
+  const messagePayload = await puppet.messageRawPayloadParser(walnutMessagePayload as WalnutMessagePayload)
   t.ok(
     messagePayload.toId === 'sip:106500@botplatform.rcs.domain.cn'
     && messagePayload.roomId === undefined
@@ -92,7 +93,7 @@ test('message parser for image message', async t => {
     conversationId: 'XSFDSFDFSAFDSAS^%',
     contributionId: 'SFF$#REGFY7&^%THT',
   }
-  const messagePayload = await puppet.messageRawPayloadParser(walnutMessagePayload)
+  const messagePayload = await puppet.messageRawPayloadParser(walnutMessagePayload as WalnutMessagePayload)
   t.ok(
     messagePayload.toId === 'sip:106500@botplatform.rcs.domain.cn'
     && messagePayload.roomId === undefined
@@ -134,7 +135,7 @@ test('message parser for file message', async t => {
     conversationId: 'XSFDSFDFSAFDSAS^%',
     contributionId: 'SFF$#REGFY7&^%THT',
   }
-  const messagePayload = await puppet.messageRawPayloadParser(walnutMessagePayload)
+  const messagePayload = await puppet.messageRawPayloadParser(walnutMessagePayload as WalnutMessagePayload)
   t.ok(
     messagePayload.toId === 'sip:106500@botplatform.rcs.domain.cn'
     && messagePayload.roomId === undefined

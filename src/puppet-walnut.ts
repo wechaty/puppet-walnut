@@ -181,11 +181,11 @@ class PuppetWalnut extends PUPPET.Puppet {
    */
   override async messageRawPayloadParser (rawPayload: WalnutMessagePayload): Promise<PUPPET.payloads.Message> {
     const res = {
-      fromId: rawPayload.senderAddress.replace('tel:+86', ''),
       id: rawPayload.messageId,
+      listenerId: rawPayload.destinationAddress,
+      talkerId: rawPayload.senderAddress.replace('tel:+86', ''),
       text: rawPayload.messageList[0]!.contentText.toString(),
       timestamp: Date.parse(rawPayload.dateTime),
-      toId: rawPayload.destinationAddress,
       type: PUPPET.types.Message.Text,
     }
     const file = rawPayload.messageList[0]?.contentText[0] as FileItem

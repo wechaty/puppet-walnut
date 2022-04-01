@@ -60,8 +60,8 @@
     "@types/uuid": "^8.3.3"
   },
   "peerDependencies": {
-    "wechaty": "^1.10.4",
-    "wechaty-puppet": "^1.11.12"
+    "wechaty": "^1.18.1",
+    "wechaty-puppet": "^1.18.3"
   },
   "dependencies": {
     "axios": "^0.24.0",

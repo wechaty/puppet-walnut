@@ -1,6 +1,7 @@
-import { WechatyBuilder } from "wechaty"
+import { Wechaty, WechatyBuilder} from "wechaty"
 import { log } from 'wechaty-puppet'
 import PuppetWalnut from '../src/puppet-walnut.js'
+import * as PUPPET from "wechaty-puppet";
 // import { FileBox } from 'file-box'
 const bot = WechatyBuilder.build({
   puppet: new PuppetWalnut(),
@@ -15,6 +16,12 @@ const bot = WechatyBuilder.build({
   })
 
 await bot.start()
+
+const post = await bot.Post.builder()
+  .add('this is a tweet from wechaty')
+  .type(PUPPET.types.Post.Unspecified)
+  .build()
+await bot.publish(post)
 
 const contact = await bot.Contact.find({ id: '15751763183' })
 // contact.say(new LocationInterface('payload'))

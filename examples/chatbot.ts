@@ -9,7 +9,7 @@ const bot = WechatyBuilder.build({
   .on('login',            (user: any) => log.info(`User ${user} logged in`))
   .on('message',       async (message: { toContact: () => void }) => {
     log.info(`Message: ${message}`)
-    message.toContact()
+    // message.toContact()
     console.log(message)
     // const file = await message.toContact()
     // console.log(file)
@@ -17,11 +17,11 @@ const bot = WechatyBuilder.build({
 
 await bot.start()
 
-const post = await bot.Post.builder()
-  .add('this is a tweet from wechaty')
-  .type(PUPPET.types.Post.Unspecified)
-  .build()
-await bot.publish(post)
+// const post = await bot.Post.builder()
+//   .add('this is a tweet from wechaty')
+//   .type(PUPPET.types.Post.Unspecified)
+//   .build()
+// await bot.publish(post)
 
 const contact = await bot.Contact.find({ id: '15751763183' })
 // contact.say(new LocationInterface('payload'))

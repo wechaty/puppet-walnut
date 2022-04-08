@@ -14,12 +14,12 @@ export interface MessageItem {
 }
 
 export enum MessageRawType {
-  image = 'image',
-  text = 'text',
-  location = 'location',
-  audio = 'audio',
-  video = 'video',
-  other = 'other'
+  image = 'IMAGE',
+  text = 'TEXT',
+  location = 'LOCATION',
+  audio = 'AUDIO',
+  video = 'VIDEO',
+  other = 'OTHER'
 }
 
 export interface WalnutMessagePayload {

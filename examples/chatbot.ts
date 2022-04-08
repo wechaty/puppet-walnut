@@ -22,9 +22,9 @@ await bot.start()
 const contact = await bot.Contact.find({ id: '15751763183' })
 
 const post = await bot.Post.builder()
-  .add('this is the qrcode of Friday bot')
+  .add('this is the text message')
   .add(FileBox.fromUrl('https://wechaty.js.org/img/wechatyqrcode.webp'))
-  .type(WECHATY.types.Post.Moment)
+  .type(PUPPET.types.Post.Unspecified)
   .build()
 
 await contact.say(post)
@@ -34,7 +34,6 @@ await contact.say(post)
 //   .type(PUPPET.types.Post.Unspecified)
 //   .build()
 // await bot.publish(post)
-
 
 // contact.say(new LocationInterface('payload'))
 // const location = {

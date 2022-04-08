@@ -27,9 +27,7 @@ import { MessageRawType } from './help/struct.js'
 import { sendFileMessage, sendLocationMessage, sendMessage, sendTextMessage } from './help/message.js'
 import CacheManager from './cache/cacheManager.js'
 import { checkPhoneNumber } from './help/utils.js'
-import type { ImageType } from 'wechaty-puppet/src/schemas/image'
 import { parse } from 'vcard4'
-import {PostPayload} from "wechaty-puppet/src/schemas/post";
 
 export type PuppetWalnutOptions = PUPPET.PuppetOptions & {
   sipId?: string,
@@ -226,7 +224,7 @@ class PuppetWalnut extends PUPPET.Puppet {
     return PuppetWalnut.getCacheManager().getMessage(messageId)
   }
 
-  override async messageImage (messageId: string, imageType: ImageType) : Promise<FileBoxInterface> {
+  override async messageImage (messageId: string, imageType: PUPPET.types.Image) : Promise<FileBoxInterface> {
     log.verbose('PuppetWalnut', 'messageImage(%s, %s)', messageId, imageType)
     const messagePayload = await this.messageRawPayload(messageId)
     let file = messagePayload?.messageList[0]?.contentText[1] as FileItem
@@ -287,7 +285,7 @@ class PuppetWalnut extends PUPPET.Puppet {
    *
    */
 
-  override messageSendPost(conversationId: string, postPayload: PostPayload): Promise<void> {
+  override messageSendPost(conversationId: string, postPayload: PUPPET.payloads.Post): Promise<void> {
     log.verbose('PuppetWalnut', 'messageSendPost(%s, %s)', conversationId, postPayload)
     // sendLocationMessage(conversationId, postPayload)
   }

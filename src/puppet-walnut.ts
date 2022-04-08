@@ -317,7 +317,6 @@ class PuppetWalnut extends PUPPET.Puppet {
     }
   }
 
-
 }
 
 export default PuppetWalnut

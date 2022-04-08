@@ -33,6 +33,17 @@ export async function sendFileMessage (to: string, file: FileBoxInterface) {
   })
 }
 
+export function sendPostMessage (to: string, postPayload: PUPPET.payloads.Post) {
+  for (let i = 0; i < postPayload.sayableList.length; i++) {
+    console.log(postPayload.sayableList[i]!)
+  }
+  sendMessage(to, {
+    contentEncoding: contentEncoding.utf8,
+    contentText: 'msg',
+    contentType: contentType.text,
+  })
+}
+
 export function sendMessage (to: string, msg: MessageItem) {
   void post(Api.sendMessage, {
     contributionId: 'SFF$#REGFY7&^%THT',

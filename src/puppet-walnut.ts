@@ -24,7 +24,7 @@ import { config, log, VERSION } from './config.js'
 import { updateToken } from './help/request.js'
 import type { FileItem, WalnutContactPayload, WalnutMessagePayload } from './help/struct.js'
 import { MessageRawType } from './help/struct.js'
-import { sendFileMessage, sendLocationMessage, sendMessage, sendTextMessage } from './help/message.js'
+import {sendFileMessage, sendLocationMessage, sendMessage, sendPostMessage, sendTextMessage} from './help/message.js'
 import CacheManager from './cache/cacheManager.js'
 import { checkPhoneNumber } from './help/utils.js'
 import { parse } from 'vcard4'
@@ -285,9 +285,9 @@ class PuppetWalnut extends PUPPET.Puppet {
    *
    */
 
-  override messageSendPost(conversationId: string, postPayload: PUPPET.payloads.Post): Promise<void> {
+  override async messageSendPost (conversationId: string, postPayload: PUPPET.payloads.Post): Promise<void> {
     log.verbose('PuppetWalnut', 'messageSendPost(%s, %s)', conversationId, postPayload)
-    // sendLocationMessage(conversationId, postPayload)
+    await sendPostMessage(conversationId, postPayload)
   }
   override async postRawPayload (postId: string): Promise<any> {
     log.verbose('PuppetWalnut', 'postRawPayload(%s)', postId)

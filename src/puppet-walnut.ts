@@ -29,6 +29,7 @@ import CacheManager from './cache/cacheManager.js'
 import { checkPhoneNumber } from './help/utils.js'
 import type { ImageType } from 'wechaty-puppet/src/schemas/image'
 import { parse } from 'vcard4'
+import {PostPayload} from "wechaty-puppet/src/schemas/post";
 
 export type PuppetWalnutOptions = PUPPET.PuppetOptions & {
   sipId?: string,
@@ -285,6 +286,11 @@ class PuppetWalnut extends PUPPET.Puppet {
    * Post
    *
    */
+
+  override messageSendPost(conversationId: string, postPayload: PostPayload): Promise<void> {
+    log.verbose('PuppetWalnut', 'messageSendPost(%s, %s)', conversationId, postPayload)
+    // sendLocationMessage(conversationId, postPayload)
+  }
   override async postRawPayload (postId: string): Promise<any> {
     log.verbose('PuppetWalnut', 'postRawPayload(%s)', postId)
     return { postId } as any
@@ -293,14 +299,6 @@ class PuppetWalnut extends PUPPET.Puppet {
   override async postRawPayloadParser (rawPayload: any): Promise<PUPPET.payloads.Post> {
     log.verbose('PuppetWalnut', 'postRawPayloadParser(%s)', rawPayload.id)
     return rawPayload
-  }
-
-  override async postPublish (payload: PUPPET.payloads.Post): Promise<void | string> {
-    log.verbose('PuppetWalnut', 'postPublish({type: %s})',
-      PUPPET.types.Post[
-        payload.type || PUPPET.types.Post.Unspecified
-      ],
-    )
   }
 
   override async postSearch (

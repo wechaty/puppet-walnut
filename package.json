@@ -1,6 +1,6 @@
 {
   "name": "wechaty-puppet-walnut",
-  "version": "1.11.8",
+  "version": "1.18.1",
   "description": "Puppet Walnut for Wechaty",
   "type": "module",
   "exports": {
@@ -59,7 +59,7 @@
     "@types/uuid": "^8.3.3"
   },
   "peerDependencies": {
-    "wechaty-puppet": "^1.11.12"
+    "wechaty-puppet": "^1.18.3"
   },
   "dependencies": {
     "axios": "^0.24.0",

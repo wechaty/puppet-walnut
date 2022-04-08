@@ -1,7 +1,9 @@
-import { Wechaty, WechatyBuilder} from "wechaty"
+import { WechatyBuilder } from "wechaty"
+import * as WECHATY from 'wechaty'
 import { log } from 'wechaty-puppet'
 import PuppetWalnut from '../src/puppet-walnut.js'
 import * as PUPPET from "wechaty-puppet";
+import {FileBox} from "file-box";
 // import { FileBox } from 'file-box'
 const bot = WechatyBuilder.build({
   puppet: new PuppetWalnut(),
@@ -16,6 +18,14 @@ const bot = WechatyBuilder.build({
   })
 
 await bot.start()
+
+const post = await WECHATY.Post.builder()
+  .add('this is the qrcode of Friday bot')
+  .add(FileBox.from('https://wechaty.js.org/img/wechatyqrcode.webp'))
+  .type(WECHATY.types.Post.Moment)
+  .build()
+
+await WECHATY.post(post)
 
 // const post = await bot.Post.builder()
 //   .add('this is a tweet from wechaty')

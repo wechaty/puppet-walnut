@@ -19,13 +19,13 @@ const bot = WechatyBuilder.build({
 
 await bot.start()
 
-const post = await wechaty.Post.builder()
+const post = await bot.Post.builder()
   .add('this is the qrcode of Friday bot')
-  .add(FileBox.from('https://wechaty.js.org/img/wechatyqrcode.webp'))
+  .add(FileBox.fromUrl('https://wechaty.js.org/img/wechatyqrcode.webp'))
   .type(WECHATY.types.Post.Moment)
   .build()
 
-await wechaty.post(post)
+await bot.publish(post)
 
 // const post = await bot.Post.builder()
 //   .add('this is a tweet from wechaty')

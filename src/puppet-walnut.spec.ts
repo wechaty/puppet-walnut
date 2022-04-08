@@ -53,9 +53,9 @@ test('message parser for text message', async t => {
   }
   const messagePayload = await puppet.messageRawPayloadParser(walnutMessagePayload as WalnutMessagePayload)
   t.ok(
-    messagePayload.toId === 'sip:106500@botplatform.rcs.domain.cn'
+    messagePayload.listenerId === 'sip:106500@botplatform.rcs.domain.cn'
     && messagePayload.roomId === undefined
-    && messagePayload.fromId === '17928222350'
+    && messagePayload.talkerId === '17928222350'
     && messagePayload.text === 'hello world'
     && messagePayload.type === PUPPET.types.Message.Text,
   )
@@ -95,9 +95,9 @@ test('message parser for image message', async t => {
   }
   const messagePayload = await puppet.messageRawPayloadParser(walnutMessagePayload as WalnutMessagePayload)
   t.ok(
-    messagePayload.toId === 'sip:106500@botplatform.rcs.domain.cn'
+    messagePayload.listenerId === 'sip:106500@botplatform.rcs.domain.cn'
     && messagePayload.roomId === undefined
-    && messagePayload.fromId === '17928222350'
+    && messagePayload.talkerId === '17928222350'
     && messagePayload.text === 'image'
     && messagePayload.type === PUPPET.types.Message.Image,
   )
@@ -137,9 +137,9 @@ test('message parser for file message', async t => {
   }
   const messagePayload = await puppet.messageRawPayloadParser(walnutMessagePayload as WalnutMessagePayload)
   t.ok(
-    messagePayload.toId === 'sip:106500@botplatform.rcs.domain.cn'
+    messagePayload.listenerId === 'sip:106500@botplatform.rcs.domain.cn'
     && messagePayload.roomId === undefined
-    && messagePayload.fromId === '17928222350'
+    && messagePayload.talkerId === '17928222350'
     && messagePayload.text === 'file'
     && messagePayload.type === PUPPET.types.Message.Attachment,
   )

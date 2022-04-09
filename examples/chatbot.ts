@@ -43,7 +43,7 @@ await contact.say(post)
 //   longitude : 116.334154,
 //   name      : '东升乡人民政府(海淀区成府路45号)',
 // }
-await contact.say('aaa')
+// await contact.say('aaa')
 // contact.say(FileBox.fromUrl('https://fabian.oss-cn-hangzhou.aliyuncs.com/img/mmexport1630917534919.jpg'))
 // console.log(msg)
 // contact.sync()

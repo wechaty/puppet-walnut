@@ -7,7 +7,6 @@ import type { FileBoxInterface } from 'file-box'
 import type { MessageItem } from './struct.js'
 import type * as PUPPET from 'wechaty-puppet'
 import type { SayablePayload } from 'wechaty-puppet/dist/cjs/src/schemas/sayable'
-import {FileBox} from "file-box";
 
 export function sendTextMessage (to: string, msg: string) {
   sendMessage(to, {

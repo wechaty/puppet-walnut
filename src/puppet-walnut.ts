@@ -289,6 +289,7 @@ class PuppetWalnut extends PUPPET.Puppet {
     log.verbose('PuppetWalnut', 'messageSendPost(%s, %s)', conversationId, postPayload)
     await sendPostMessage(conversationId, postPayload)
   }
+
   override async postRawPayload (postId: string): Promise<any> {
     log.verbose('PuppetWalnut', 'postRawPayload(%s)', postId)
     return { postId } as any

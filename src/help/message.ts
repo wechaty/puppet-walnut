@@ -6,6 +6,8 @@ import PuppetWalnut from '../puppet-walnut.js'
 import type { FileBoxInterface } from 'file-box'
 import type { MessageItem } from './struct.js'
 import type * as PUPPET from 'wechaty-puppet'
+import type { SayablePayload } from 'wechaty-puppet/dist/cjs/src/schemas/sayable'
+import {FileBox} from "file-box";
 
 export function sendTextMessage (to: string, msg: string) {
   sendMessage(to, {
@@ -34,12 +36,14 @@ export async function sendFileMessage (to: string, file: FileBoxInterface) {
 }
 
 export async function sendPostMessage (to: string, postPayload: PUPPET.payloads.Post) {
-  const list = postPayload.sayableList
-  if (list[0]!.type !== 'Text' || list[1]!.type !== 'Text' || list[2]!.type !== 'Attachment') {
+  const title = postPayload.sayableList[0] as SayablePayload
+  const description = postPayload.sayableList[1] as SayablePayload
+  const img = postPayload.sayableList[2] as SayablePayload
+  if (title.type !== 'Text' || description.type !== 'Text' || img.type !== 'Attachment') {
     throw new Error('Wrong Post!!!')
   }
 
-  const fileItem = await uploadFile(true, list[2].payload.filebox)
+  const fileItem = await uploadFile(true, (img.payload).filebox)
 
   sendMessage(to, {
     contentEncoding: contentEncoding.utf8,
@@ -47,14 +51,14 @@ export async function sendPostMessage (to: string, postPayload: PUPPET.payloads.
       message: {
         generalPurposeCard: {
           content: {
-            description: list[1].payload,
+            description: description.payload,
             media: {
               height: 'MEDIUM_HEIGHT',
               mediaContentType: fileItem.contentType,
               mediaFileSize: fileItem.fileSize,
               mediaUrl: fileItem.url,
             },
-            title: list[0].payload,
+            title: title.payload,
           },
           layout: {
             cardOrientation: 'HORIZONTAL',

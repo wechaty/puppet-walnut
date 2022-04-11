@@ -22,8 +22,9 @@ await bot.start()
 const contact = await bot.Contact.find({ id: '15751763183' })
 
 const post = await bot.Post.builder()
-  .add('this is the text message')
-  .add(FileBox.fromUrl('https://wechaty.js.org/img/wechatyqrcode.webp'))
+  .add('This is a single rich card.')
+  .add('This is the description of the rich card. It\'s the first field that will be truncated if it exceeds the maximum width or height of a card.')
+  .add(FileBox.fromFile('C:\\Users\\fabian\\Desktop\\1.png'))
   .type(PUPPET.types.Post.Unspecified)
   .build()
 

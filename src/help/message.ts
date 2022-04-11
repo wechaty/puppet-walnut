@@ -33,14 +33,39 @@ export async function sendFileMessage (to: string, file: FileBoxInterface) {
   })
 }
 
-export function sendPostMessage (to: string, postPayload: PUPPET.payloads.Post) {
-  for (let i = 0; i < postPayload.sayableList.length; i++) {
-    console.log(postPayload.sayableList[i]!)
+export async function sendPostMessage (to: string, postPayload: PUPPET.payloads.Post) {
+  const list = postPayload.sayableList
+  if (list[0]!.type !== 'Text' || list[1]!.type !== 'Text' || list[2]!.type !== 'Attachment') {
+    throw new Error('Wrong Post!!!')
   }
+
+  const fileItem = await uploadFile(true, list[2].payload.filebox)
+
   sendMessage(to, {
     contentEncoding: contentEncoding.utf8,
-    contentText: 'msg',
-    contentType: contentType.text,
+    contentText: {
+      message: {
+        generalPurposeCard: {
+          content: {
+            description: list[1].payload,
+            media: {
+              height: 'MEDIUM_HEIGHT',
+              mediaContentType: fileItem.contentType,
+              mediaFileSize: fileItem.fileSize,
+              mediaUrl: fileItem.url,
+            },
+            title: list[0].payload,
+          },
+          layout: {
+            cardOrientation: 'HORIZONTAL',
+            descriptionFontStyle: ['calibri'],
+            imageAlignment: 'LEFT',
+            titleFontStyle: ['underline', 'bold'],
+          },
+        },
+      },
+    },
+    contentType: 'application/vnd.gsma.botmessage.v1.0+json',
   })
 }
 

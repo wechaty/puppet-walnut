@@ -6,45 +6,44 @@ import PuppetWalnut from '../puppet-walnut.js'
 import type { FileBoxInterface } from 'file-box'
 import type { MessageItem } from './struct.js'
 import type * as PUPPET from 'wechaty-puppet'
-import type { SayablePayload } from 'wechaty-puppet/dist/cjs/src/schemas/sayable'
 
-export function sendTextMessage (to: string, msg: string) {
-  sendMessage(to, {
+export function sendTextMessage (contactId: string, msg: string) {
+  sendMessage(contactId, {
     contentEncoding: contentEncoding.utf8,
     contentText: msg,
     contentType: contentType.text,
   })
 }
 
-export function sendLocationMessage (to: string, locationPayload: PUPPET.payloads.Location) {
+export function sendLocationMessage (contactId: string, locationPayload: PUPPET.payloads.Location) {
   log.info(JSON.stringify(locationPayload))
-  sendMessage(to, {
+  sendMessage(contactId, {
     contentEncoding: contentEncoding.utf8,
     contentText: 'geo:50.7311865,7.0914591;crs=gcj02;u=10;rcs-l=Qingfeng%20Steamed%20Dumpling%20Shop %20%F0%9F%8D%9A',
     contentType: contentType.text,
   })
 }
 
-export async function sendFileMessage (to: string, file: FileBoxInterface) {
+export async function sendFileMessage (contactId: string, file: FileBoxInterface) {
   const fileItem = await uploadFile(true, file)
-  sendMessage(to, {
+  sendMessage(contactId, {
     contentEncoding: contentEncoding.utf8,
     contentText: [fileItem],
     contentType: contentType.application,
   })
 }
 
-export async function sendPostMessage (to: string, postPayload: PUPPET.payloads.Post) {
-  const title = postPayload.sayableList[0] as SayablePayload
-  const description = postPayload.sayableList[1] as SayablePayload
-  const img = postPayload.sayableList[2] as SayablePayload
+export async function sendPostMessage (contactId: string, postPayload: PUPPET.payloads.Post) {
+  const title = postPayload.sayableList[0] as PUPPET.payloads.Sayable
+  const description = postPayload.sayableList[1] as PUPPET.payloads.Sayable
+  const img = postPayload.sayableList[2] as PUPPET.payloads.Sayable
   if (title.type !== 'Text' || description.type !== 'Text' || img.type !== 'Attachment') {
-    throw new Error('Wrong Post!!!')
+    throw new Error('Wrong Post!!! please check your Post payload to make sure it right')
   }
 
   const fileItem = await uploadFile(true, (<FileBoxInterface>img.payload.filebox))
 
-  sendMessage(to, {
+  sendMessage(contactId, {
     contentEncoding: contentEncoding.utf8,
     contentText: {
       message: {
@@ -72,11 +71,11 @@ export async function sendPostMessage (to: string, postPayload: PUPPET.payloads.
   })
 }
 
-export function sendMessage (to: string, msg: MessageItem) {
+export function sendMessage (contactId: string, msg: MessageItem) {
   void post(Api.sendMessage, {
     contributionId: 'SFF$#REGFY7&^%THT',
     conversationId: 'XSFDSFDFSAFDSAS^%',
-    destinationAddress: [`tel:+86${to}`],
+    destinationAddress: [`tel:+86${contactId}`],
     messageId: uuidV4(),
     messageList: [
       msg,

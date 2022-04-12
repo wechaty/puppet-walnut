@@ -210,7 +210,7 @@ class PuppetWalnut extends PUPPET.Puppet {
       case MessageRawType.other:
         res.type = PUPPET.types.Message.Attachment
         res.text = 'file'
-        if (files[0]!.contentType === 'text/vcard') {
+        if (files[0] && files[0].contentType === 'text/vcard') {
           res.type = PUPPET.types.Message.Contact
           res.text = 'contact'
         }

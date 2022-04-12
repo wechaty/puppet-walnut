@@ -42,7 +42,7 @@ export async function sendPostMessage (to: string, postPayload: PUPPET.payloads.
     throw new Error('Wrong Post!!!')
   }
 
-  const fileItem = await uploadFile(true, img.payload.filebox)
+  const fileItem = await uploadFile(true, (<FileBoxInterface>img.payload.filebox))
 
   sendMessage(to, {
     contentEncoding: contentEncoding.utf8,

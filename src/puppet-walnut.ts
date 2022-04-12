@@ -187,7 +187,7 @@ class PuppetWalnut extends PUPPET.Puppet {
       timestamp: Date.parse(rawPayload.dateTime),
       type: PUPPET.types.Message.Text,
     }
-    const file = rawPayload.messageList[0]?.contentText[0] as FileItem
+    const files = rawPayload.messageList[0]?.contentText as FileItem[]
     switch (rawPayload.messageItem) {
       case MessageRawType.text:
         break
@@ -210,7 +210,7 @@ class PuppetWalnut extends PUPPET.Puppet {
       case MessageRawType.other:
         res.type = PUPPET.types.Message.Attachment
         res.text = 'file'
-        if (file.contentType === 'text/vcard') {
+        if (files[0]!.contentType === 'text/vcard') {
           res.type = PUPPET.types.Message.Contact
           res.text = 'contact'
         }
@@ -227,28 +227,28 @@ class PuppetWalnut extends PUPPET.Puppet {
   override async messageImage (messageId: string, imageType: PUPPET.types.Image) : Promise<FileBoxInterface> {
     log.verbose('PuppetWalnut', 'messageImage(%s, %s)', messageId, imageType)
     const messagePayload = await this.messageRawPayload(messageId)
-    let file = messagePayload?.messageList[0]?.contentText[1] as FileItem
+    const files = messagePayload?.messageList[0]?.contentText as FileItem[]
     if (imageType === PUPPET.types.Image.Thumbnail) {
-      file = messagePayload?.messageList[0]?.contentText[0] as FileItem
+      return FileBox.fromUrl(files[0]!.url)
     }
-    return FileBox.fromUrl(file.url)
+    return FileBox.fromUrl(files[1]!.url)
   }
 
   override async messageFile (messageId: string) : Promise<FileBoxInterface> {
     log.verbose('PuppetWalnut', 'messageFile(%s)', messageId)
     const messagePayload = await this.messageRawPayload(messageId)
-    let file = messagePayload?.messageList[0]?.contentText[0] as FileItem
+    const files = messagePayload?.messageList[0]?.contentText as FileItem[]
     if (messagePayload?.messageItem === MessageRawType.video) {
-      file = messagePayload.messageList[0]?.contentText[1] as FileItem
+      return FileBox.fromUrl(files[1]!.url)
     }
-    return FileBox.fromUrl(file.url)
+    return FileBox.fromUrl(files[0]!.url)
   }
 
   override async messageContact (messageId: string) : Promise<string> {
     log.verbose('PuppetWalnut', 'messageContact(%s)', messageId)
     const messagePayload = await this.messageRawPayload(messageId)
-    const file = messagePayload?.messageList[0]?.contentText[0] as FileItem
-    const contact = await FileBox.fromUrl(file.url).toBuffer()
+    const files = messagePayload?.messageList[0]?.contentText as FileItem[]
+    const contact = await FileBox.fromUrl(files[0]!.url).toBuffer()
     const cards = parse(contact.toString())
     // @ts-ignore
     return cards.TEL.value

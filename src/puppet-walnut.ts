@@ -228,27 +228,36 @@ class PuppetWalnut extends PUPPET.Puppet {
     log.verbose('PuppetWalnut', 'messageImage(%s, %s)', messageId, imageType)
     const messagePayload = await this.messageRawPayload(messageId)
     const files = messagePayload?.messageList[0]?.contentText as FileItem[]
-    if (imageType === PUPPET.types.Image.Thumbnail) {
-      return FileBox.fromUrl(files[0]!.url)
+    if (!files[0] || !files[1]) {
+      throw new Error('Wrong message structs!')
     }
-    return FileBox.fromUrl(files[1]!.url)
+    if (imageType === PUPPET.types.Image.Thumbnail) {
+      return FileBox.fromUrl(files[0].url)
+    }
+    return FileBox.fromUrl(files[1].url)
   }
 
   override async messageFile (messageId: string) : Promise<FileBoxInterface> {
     log.verbose('PuppetWalnut', 'messageFile(%s)', messageId)
     const messagePayload = await this.messageRawPayload(messageId)
     const files = messagePayload?.messageList[0]?.contentText as FileItem[]
-    if (messagePayload?.messageItem === MessageRawType.video) {
-      return FileBox.fromUrl(files[1]!.url)
+    if (!files[0] || !files[1]) {
+      throw new Error('Wrong message structs!')
     }
-    return FileBox.fromUrl(files[0]!.url)
+    if (messagePayload?.messageItem === MessageRawType.video) {
+      return FileBox.fromUrl(files[1].url)
+    }
+    return FileBox.fromUrl(files[0].url)
   }
 
   override async messageContact (messageId: string) : Promise<string> {
     log.verbose('PuppetWalnut', 'messageContact(%s)', messageId)
     const messagePayload = await this.messageRawPayload(messageId)
     const files = messagePayload?.messageList[0]?.contentText as FileItem[]
-    const contact = await FileBox.fromUrl(files[0]!.url).toBuffer()
+    if (!files[0]) {
+      throw new Error('Wrong message structs!')
+    }
+    const contact = await FileBox.fromUrl(files[0].url).toBuffer()
     const cards = parse(contact.toString())
     // @ts-ignore
     return cards.TEL.value

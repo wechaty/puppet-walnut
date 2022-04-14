@@ -74,6 +74,7 @@ WechatyBuilder.build()  // get a Wechaty instance
 | 位置     | `location`         | `message.toLocation()` | ❌    | ❌    | ❌    |
 | 文件     | `other`            | `message.toFilebox()`  | ✅    | ❌    | ❌    |
 | 联系人   | `other`            | `message.toContact()`  | ✅    | ❌    | ❌    |
+| 富文本卡片   | `post`            | `message.toPost()`  | ❌   | ✅     | ❌    |
 
 ## Wechaty API 支持
 

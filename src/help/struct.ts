@@ -9,7 +9,7 @@ export interface FileItem {
 
 export interface MessageItem {
   contentEncoding: string,
-  contentText: string | FileItem[],
+  contentText: string | FileItem[] | {},
   contentType: string
 }
 

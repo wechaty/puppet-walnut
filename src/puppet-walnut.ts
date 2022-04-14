@@ -24,10 +24,9 @@ import { config, log, VERSION } from './config.js'
 import { updateToken } from './help/request.js'
 import type { FileItem, WalnutContactPayload, WalnutMessagePayload } from './help/struct.js'
 import { MessageRawType } from './help/struct.js'
-import { sendFileMessage, sendLocationMessage, sendMessage, sendTextMessage } from './help/message.js'
+import { sendFileMessage, sendLocationMessage, sendMessage, sendPostMessage, sendTextMessage } from './help/message.js'
 import CacheManager from './cache/cacheManager.js'
 import { checkPhoneNumber } from './help/utils.js'
-import type { ImageType } from 'wechaty-puppet/src/schemas/image'
 import { parse } from 'vcard4'
 
 export type PuppetWalnutOptions = PUPPET.PuppetOptions & {
@@ -188,7 +187,7 @@ class PuppetWalnut extends PUPPET.Puppet {
       timestamp: Date.parse(rawPayload.dateTime),
       type: PUPPET.types.Message.Text,
     }
-    const file = rawPayload.messageList[0]?.contentText[0] as FileItem
+    const files = rawPayload.messageList[0]?.contentText as FileItem[]
     switch (rawPayload.messageItem) {
       case MessageRawType.text:
         break
@@ -211,7 +210,7 @@ class PuppetWalnut extends PUPPET.Puppet {
       case MessageRawType.other:
         res.type = PUPPET.types.Message.Attachment
         res.text = 'file'
-        if (file.contentType === 'text/vcard') {
+        if (files[0] && files[0].contentType === 'text/vcard') {
           res.type = PUPPET.types.Message.Contact
           res.text = 'contact'
         }
@@ -225,31 +224,40 @@ class PuppetWalnut extends PUPPET.Puppet {
     return PuppetWalnut.getCacheManager().getMessage(messageId)
   }
 
-  override async messageImage (messageId: string, imageType: ImageType) : Promise<FileBoxInterface> {
+  override async messageImage (messageId: string, imageType: PUPPET.types.Image) : Promise<FileBoxInterface> {
     log.verbose('PuppetWalnut', 'messageImage(%s, %s)', messageId, imageType)
     const messagePayload = await this.messageRawPayload(messageId)
-    let file = messagePayload?.messageList[0]?.contentText[1] as FileItem
-    if (imageType === PUPPET.types.Image.Thumbnail) {
-      file = messagePayload?.messageList[0]?.contentText[0] as FileItem
+    const files = messagePayload?.messageList[0]?.contentText as FileItem[]
+    if (!files[0] || !files[1]) {
+      throw new Error('Wrong message structs!')
     }
-    return FileBox.fromUrl(file.url)
+    if (imageType === PUPPET.types.Image.Thumbnail) {
+      return FileBox.fromUrl(files[0].url)
+    }
+    return FileBox.fromUrl(files[1].url)
   }
 
   override async messageFile (messageId: string) : Promise<FileBoxInterface> {
     log.verbose('PuppetWalnut', 'messageFile(%s)', messageId)
     const messagePayload = await this.messageRawPayload(messageId)
-    let file = messagePayload?.messageList[0]?.contentText[0] as FileItem
-    if (messagePayload?.messageItem === MessageRawType.video) {
-      file = messagePayload.messageList[0]?.contentText[1] as FileItem
+    const files = messagePayload?.messageList[0]?.contentText as FileItem[]
+    if (!files[0] || !files[1]) {
+      throw new Error('Wrong message structs!')
     }
-    return FileBox.fromUrl(file.url)
+    if (messagePayload?.messageItem === MessageRawType.video) {
+      return FileBox.fromUrl(files[1].url)
+    }
+    return FileBox.fromUrl(files[0].url)
   }
 
   override async messageContact (messageId: string) : Promise<string> {
     log.verbose('PuppetWalnut', 'messageContact(%s)', messageId)
     const messagePayload = await this.messageRawPayload(messageId)
-    const file = messagePayload?.messageList[0]?.contentText[0] as FileItem
-    const contact = await FileBox.fromUrl(file.url).toBuffer()
+    const files = messagePayload?.messageList[0]?.contentText as FileItem[]
+    if (!files[0]) {
+      throw new Error('Wrong message structs!')
+    }
+    const contact = await FileBox.fromUrl(files[0].url).toBuffer()
     const cards = parse(contact.toString())
     // @ts-ignore
     return cards.TEL.value
@@ -285,6 +293,12 @@ class PuppetWalnut extends PUPPET.Puppet {
    * Post
    *
    */
+
+  override async messageSendPost (conversationId: string, postPayload: PUPPET.payloads.Post): Promise<void> {
+    log.verbose('PuppetWalnut', 'messageSendPost(%s, %s)', conversationId, postPayload)
+    await sendPostMessage(conversationId, postPayload)
+  }
+
   override async postRawPayload (postId: string): Promise<any> {
     log.verbose('PuppetWalnut', 'postRawPayload(%s)', postId)
     return { postId } as any
@@ -293,14 +307,6 @@ class PuppetWalnut extends PUPPET.Puppet {
   override async postRawPayloadParser (rawPayload: any): Promise<PUPPET.payloads.Post> {
     log.verbose('PuppetWalnut', 'postRawPayloadParser(%s)', rawPayload.id)
     return rawPayload
-  }
-
-  override async postPublish (payload: PUPPET.payloads.Post): Promise<void | string> {
-    log.verbose('PuppetWalnut', 'postPublish({type: %s})',
-      PUPPET.types.Post[
-        payload.type || PUPPET.types.Post.Unspecified
-      ],
-    )
   }
 
   override async postSearch (

@@ -142,6 +142,8 @@ WechatyBuilder.build()  // get a Wechaty instance
 
 ## 使用示例
 
+### 1. 创建实例
+
 ~~~ts
 const bot = WechatyBuilder.build({
   puppet: new PuppetWalnut(),
@@ -154,12 +156,32 @@ const bot = WechatyBuilder.build({
 
 await bot.start()
 
-const contact = await bot.Contact.find({ id: '15751763183' })
+const contact = await bot.Contact.find({ id: 'xxxxxxxxxxx' })
+~~~
 
+### 2. 文本消息
+
+```ts
+await contact.say('This is a simple text message.')
+```
+
+![text-message](https://user-images.githubusercontent.com/60428924/163546259-67dfa5a1-521a-4d87-bfbf-af4e09dabf7e.jpg)
+
+### 3. 图片消息
+
+~~~ts
+contact.say(FileBox.fromFile('C:\\Users\\Desktop\\1.png'))
+~~~
+
+![image-message](https://user-images.githubusercontent.com/60428924/163546352-1d573b86-65ee-474e-baf3-008ffe608a8d.jpg)
+
+### 4. 富文本消息
+
+~~~ts
 const post = await bot.Post.builder()
   .add('This is a single rich card.')
-  .add('This is the description of the rich card. It\'s the first field that will be truncated if it exceeds the maximum width or height of a card.')
-  .add(FileBox.fromFile('C:\\Users\\fabian\\Desktop\\1.png'))
+  .add('This is the description of the rich card.')
+  .add(FileBox.fromFile('C:\\Users\\Desktop\\1.png'))
   .type(PUPPET.types.Post.Unspecified)
   .build()
 

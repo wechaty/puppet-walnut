@@ -17,20 +17,14 @@ await bot.start()
 
 const contact = await bot.Contact.find({ id: '15751763183' })
 
-const post = await bot.Post.builder()
-  .add('This is a single rich card.')
-  .add('This is the description of the rich card. It\'s the first field that will be truncated if it exceeds the maximum width or height of a card.')
-  .add(FileBox.fromFile('C:\\Users\\fabian\\Desktop\\1.png'))
-  .type(PUPPET.types.Post.Unspecified)
-  .build()
-
-await contact.say(post)
-
 // const post = await bot.Post.builder()
-//   .add('this is a tweet from wechaty')
+//   .add('This is a single rich card.')
+//   .add('This is the description of the rich card. It\'s the first field that will be truncated if it exceeds the maximum width or height of a card.')
+//   .add(FileBox.fromFile('C:\\Users\\fabian\\Desktop\\1.png'))
 //   .type(PUPPET.types.Post.Unspecified)
 //   .build()
-// await bot.publish(post)
+//
+// await contact.say(post)
 
 // contact.say(new LocationInterface('payload'))
 // const location = {
@@ -40,7 +34,7 @@ await contact.say(post)
 //   longitude : 116.334154,
 //   name      : '东升乡人民政府(海淀区成府路45号)',
 // }
-// await contact.say('aaa')
+await contact.say('This is a simple text message.')
 // contact.say(FileBox.fromUrl('https://fabian.oss-cn-hangzhou.aliyuncs.com/img/mmexport1630917534919.jpg'))
 // console.log(msg)
 // contact.sync()

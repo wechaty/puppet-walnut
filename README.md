@@ -140,6 +140,34 @@ WechatyBuilder.build()  // get a Wechaty instance
   | find()         | `Promise`   | ✅       |        |
   | findAll()      | `Promise`   | ✅       |        |
 
+## 使用示例
+
+~~~ts
+const bot = WechatyBuilder.build({
+  puppet: new PuppetWalnut(),
+})  // get a Wechaty instance
+  .on('login',            (user: any) => log.info(`User ${user} logged in`))
+  .on('message',       async (message: { toContact: () => void }) => {
+    log.info(`Message: ${message}`)
+    console.log(message)
+  })
+
+await bot.start()
+
+const contact = await bot.Contact.find({ id: '15751763183' })
+
+const post = await bot.Post.builder()
+  .add('This is a single rich card.')
+  .add('This is the description of the rich card. It\'s the first field that will be truncated if it exceeds the maximum width or height of a card.')
+  .add(FileBox.fromFile('C:\\Users\\fabian\\Desktop\\1.png'))
+  .type(PUPPET.types.Post.Unspecified)
+  .build()
+
+await contact.say(post)
+~~~
+
+
+
 ## 项目介绍
 
 “开源软件供应链点亮计划-暑期2021”（以下简称 暑期2021）是由中科院软件所与 openEuler 社区共同举办的一项面向高校学生的暑期活动，旨在鼓励在校学生积极参与开源软件的开发维护，促进国内优秀开源软件社区的蓬勃发展。

@@ -5,6 +5,7 @@
 [![NPM Version](https://badge.fury.io/js/wechaty-puppet-walnut.svg)](https://badge.fury.io/js/wechaty-puppet-walnut)
 [![npm (tag)](https://img.shields.io/npm/v/wechaty-puppet-walnut/next.svg)](https://www.npmjs.com/package/wechaty-puppet-walnut?activeTab=versions)
 [![NPM](https://github.com/wechaty/wechaty-puppet-walnut/workflows/NPM/badge.svg)](https://github.com/wechaty/wechaty-puppet-walnut/actions?query=workflow%3ANPM)
+
 [![Powered by Wechaty](https://img.shields.io/badge/Powered%20By-Wechaty-brightgreen.svg)](https://github.com/wechaty/wechaty)
 [![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-blue.svg)](https://www.typescriptlang.org/)
 

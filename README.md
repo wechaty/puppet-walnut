@@ -222,6 +222,7 @@ Initial version.
 ## Maintainer
 
 - [Huan LI](https://github.com/huan) ([李卓桓](http://linkedin.com/in/zixia)), Tencent TVP of Chatbot, \<zixia@zixia.net\>
+- [Fabian Bao](https://github.com/fabian4) ([鲍耀龙](https://fabian4.site/)), \<fabian4@163.com\>
 
 ## COPYRIGHT & LICENSE
 

@@ -26,6 +26,7 @@ const post = await bot.Post.builder()
   .build()
 
 await contact.say(post)
+// await contact.say('AAA')
 
 // const location = {
 //   accuracy  : 11,

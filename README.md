@@ -160,9 +160,9 @@ const contact = await bot.Contact.find({ id: 'xxxxxxxxxxx' })
 
 ### 2. 文本消息
 
-```ts
+~~~ts
 await contact.say('This is a simple text message.')
-```
+~~~
 
 ![text-message](https://user-images.githubusercontent.com/60428924/163546259-67dfa5a1-521a-4d87-bfbf-af4e09dabf7e.jpg)
 

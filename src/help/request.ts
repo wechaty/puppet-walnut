@@ -5,7 +5,6 @@ import PuppetWalnut from '../puppet-walnut.js'
 import type { FileBoxInterface } from 'file-box'
 import FormData from 'form-data'
 import type { FileItem } from './struct.js'
-import * as util from "util";
 
 const headers = {
   'Content-Type': 'application/json',

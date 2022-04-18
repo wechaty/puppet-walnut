@@ -179,7 +179,7 @@ contact.say(FileBox.fromFile('C:\\Users\\Desktop\\1.png'))
 ~~~ts
 const post = await bot.Post.builder()
   .add('This is a single rich card.')
-  .add('This is the description of the rich card.')
+  .add('This is the description of the rich card. It\'s the first field that will be truncated if it exceeds the maximum width or height of a card.')
   .add(FileBox.fromFile('C:\\Users\\Desktop\\1.png'))
   .type(PUPPET.types.Post.Unspecified)
   .build()

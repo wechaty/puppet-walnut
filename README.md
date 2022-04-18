@@ -187,7 +187,7 @@ const post = await bot.Post.builder()
 await contact.say(post)
 ~~~
 
-
+![post-message](https://user-images.githubusercontent.com/60428924/163787857-fcde1562-c021-4e80-8a10-238e9615e3c7.jpg)
 
 ## 项目介绍
 

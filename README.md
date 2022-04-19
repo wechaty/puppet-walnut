@@ -140,6 +140,55 @@ WechatyBuilder.build()  // get a Wechaty instance
   | find()         | `Promise`   | ✅       |        |
   | findAll()      | `Promise`   | ✅       |        |
 
+## 使用示例
+
+### 1. 创建实例
+
+~~~ts
+const bot = WechatyBuilder.build({
+  puppet: new PuppetWalnut(),
+})  // get a Wechaty instance
+  .on('login',            (user: any) => log.info(`User ${user} logged in`))
+  .on('message',       async (message: { toContact: () => void }) => {
+    log.info(`Message: ${message}`)
+  })
+
+await bot.start()
+
+const contact = await bot.Contact.find({ id: 'xxxxxxxxxxx' })
+~~~
+
+### 2. 文本消息
+
+~~~ts
+await contact.say('This is a simple text message.')
+~~~
+
+![text-message](https://user-images.githubusercontent.com/60428924/163546259-67dfa5a1-521a-4d87-bfbf-af4e09dabf7e.jpg)
+
+### 3. 图片消息
+
+~~~ts
+contact.say(FileBox.fromFile('C:\\Users\\Desktop\\1.png'))
+~~~
+
+![image-message](https://user-images.githubusercontent.com/60428924/163546352-1d573b86-65ee-474e-baf3-008ffe608a8d.jpg)
+
+### 4. 富文本消息
+
+~~~ts
+const post = await bot.Post.builder()
+  .add('This is a single rich card.')
+  .add('This is the description of the rich card. It\'s the first field that will be truncated if it exceeds the maximum width or height of a card.')
+  .add(FileBox.fromFile('C:\\Users\\Desktop\\1.png'))
+  .type(PUPPET.types.Post.Unspecified)
+  .build()
+
+await contact.say(post)
+~~~
+
+![post-message](https://user-images.githubusercontent.com/60428924/163787857-fcde1562-c021-4e80-8a10-238e9615e3c7.jpg)
+
 ## 项目介绍
 
 “开源软件供应链点亮计划-暑期2021”（以下简称 暑期2021）是由中科院软件所与 openEuler 社区共同举办的一项面向高校学生的暑期活动，旨在鼓励在校学生积极参与开源软件的开发维护，促进国内优秀开源软件社区的蓬勃发展。
@@ -222,6 +271,7 @@ Initial version.
 ## Maintainer
 
 - [Huan LI](https://github.com/huan) ([李卓桓](http://linkedin.com/in/zixia)), Tencent TVP of Chatbot, \<zixia@zixia.net\>
+- [Fabian Bao](https://github.com/fabian4) ([鲍耀龙](https://fabian4.site/)), \<baoyaolong@gmail.com\>
 
 ## COPYRIGHT & LICENSE
 

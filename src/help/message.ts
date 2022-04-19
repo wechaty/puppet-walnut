@@ -6,7 +6,6 @@ import PuppetWalnut from '../puppet-walnut.js'
 import type { FileBoxInterface } from 'file-box'
 import type { MessageItem } from './struct.js'
 import type * as PUPPET from 'wechaty-puppet'
-
 export function sendTextMessage (contactId: string, msg: string) {
   sendMessage(contactId, {
     contentEncoding: contentEncoding.utf8,
@@ -40,7 +39,6 @@ export async function sendPostMessage (contactId: string, postPayload: PUPPET.pa
   if (title.type !== 'Text' || description.type !== 'Text' || img.type !== 'Attachment') {
     throw new Error('Wrong Post!!! please check your Post payload to make sure it right')
   }
-
   const fileItem = await uploadFile(true, (<FileBoxInterface>img.payload.filebox))
 
   sendMessage(contactId, {
@@ -49,14 +47,14 @@ export async function sendPostMessage (contactId: string, postPayload: PUPPET.pa
       message: {
         generalPurposeCard: {
           content: {
-            description: description.payload,
+            description: description.payload.text,
             media: {
               height: 'MEDIUM_HEIGHT',
               mediaContentType: fileItem.contentType,
               mediaFileSize: fileItem.fileSize,
               mediaUrl: fileItem.url,
             },
-            title: title.payload,
+            title: title.payload.text,
           },
           layout: {
             cardOrientation: 'HORIZONTAL',

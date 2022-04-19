@@ -39,7 +39,6 @@ export async function sendPostMessage (contactId: string, postPayload: PUPPET.pa
   if (title.type !== 'Text' || description.type !== 'Text' || img.type !== 'Attachment') {
     throw new Error('Wrong Post!!! please check your Post payload to make sure it right')
   }
-
   const fileItem = await uploadFile(true, (<FileBoxInterface>img.payload.filebox))
 
   sendMessage(contactId, {

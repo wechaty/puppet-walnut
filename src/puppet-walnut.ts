@@ -33,6 +33,7 @@ export type PuppetWalnutOptions = PUPPET.PuppetOptions & {
   sipId?: string,
   appId?: string,
   appKey?: string,
+  port?: number,
 }
 
 class PuppetWalnut extends PUPPET.Puppet {
@@ -48,9 +49,9 @@ class PuppetWalnut extends PUPPET.Puppet {
   static override readonly VERSION = VERSION
 
   constructor (options?: PuppetWalnutOptions) {
-    super()
+    super(options)
     PuppetWalnut.instance = this
-    PuppetWalnut.port = config.port
+    PuppetWalnut.port = options?.port || config.port
     PuppetWalnut.sipId = options?.sipId || process.env['WECHATY_PUPPET_WALNUT_SIPID'] || ''
     PuppetWalnut.appId = options?.appId || process.env['WECHATY_PUPPET_WALNUT_APPID'] || ''
     PuppetWalnut.appKey = options?.appKey || process.env['WECHATY_PUPPET_WALNUT_APPKEY'] || ''

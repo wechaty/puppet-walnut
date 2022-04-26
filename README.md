@@ -148,8 +148,8 @@ WechatyBuilder.build()  // get a Wechaty instance
 const bot = WechatyBuilder.build({
   puppet: new PuppetWalnut(),
 })  // get a Wechaty instance
-  .on('login',            (user: any) => log.info(`User ${user} logged in`))
-  .on('message',       async (message: { toContact: () => void }) => {
+  .on('login', (user: any) => log.info(`User ${user} logged in`))
+  .on('message', async (message: Message) => {
     log.info(`Message: ${message}`)
   })
 

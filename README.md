@@ -42,6 +42,8 @@
 5. 联系硬核桃社区申请账号密码。
 6. 登录成功之后就可以收到我们 chatbot 发送的消息了🎉。
 
+> 小白如何从0到1上手puppet-walnut 👉 <https://wechaty.js.org/2022/04/22/how-to-start-puppet-walnut/>
+
 ## 运行方法
 
 ### 安装依赖
@@ -148,8 +150,8 @@ WechatyBuilder.build()  // get a Wechaty instance
 const bot = WechatyBuilder.build({
   puppet: new PuppetWalnut(),
 })  // get a Wechaty instance
-  .on('login',            (user: any) => log.info(`User ${user} logged in`))
-  .on('message',       async (message: { toContact: () => void }) => {
+  .on('login', (user: any) => log.info(`User ${user} logged in`))
+  .on('message', async (message: Message) => {
     log.info(`Message: ${message}`)
   })
 

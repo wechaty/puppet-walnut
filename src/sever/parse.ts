@@ -4,7 +4,12 @@ import { log } from '../config.js'
 
 function notifyAuthorization (ctx: any) {
   log.silly('notifyAuthorization', JSON.stringify(ctx.request))
-  log.info(ctx.header)
+  const echoStr : string = ctx.request.get('echoStr')
+  ctx.set({
+    appId: PuppetWalnut.appId,
+    echoStr: echoStr,
+  })
+  ctx.response.body = {}
 }
 
 function parseMessage (ctx: any) {

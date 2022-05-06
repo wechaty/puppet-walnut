@@ -5,6 +5,7 @@ import axios from 'axios'
 import { initSever } from './server.js'
 
 test('server authorization test', async t => {
+  t.setTimeout(400000)
   await initSever(3000)
   await axios.request({
     data: {},

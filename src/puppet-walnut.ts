@@ -72,7 +72,7 @@ class PuppetWalnut extends PUPPET.Puppet {
 
   override async onStart (): Promise<void> {
 
-    await initSever()
+    await initSever(PuppetWalnut.port)
 
     PuppetWalnut.cacheManager = await CacheManager.init()
 

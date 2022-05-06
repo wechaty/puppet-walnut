@@ -3,13 +3,19 @@ import { logger } from './logging.js'
 import routers from './routers.js'
 import koaBody from 'koa-body'
 import { log } from '../config.js'
+import type { Server } from 'http'
 
 const app = new Koa()
+let server: Server
 
-export async function initSever (port: number) {
+export async function initServer (port: number) {
   app.use(logger)
   app.use(koaBody())
   app.use(routers)
-  app.listen(port)
+  server = app.listen(port)
   log.info('PuppetWalnut-Sever', `listen on port: ${port}`)
+}
+
+export async function closeServer () {
+  server.close()
 }

@@ -2,11 +2,10 @@
 
 import { test } from 'tstest'
 import axios from 'axios'
-import { initSever } from './server.js'
+import { closeServer, initServer } from './server.js'
 
 test('server authorization test', async t => {
-  t.setTimeout(400000)
-  await initSever(3000)
+  await initServer(3000)
   await axios.request({
     data: {},
     headers: {
@@ -19,4 +18,5 @@ test('server authorization test', async t => {
     t.equal(echoStr, 'sadfgaegraeqgeafveagfeafrgag')
     return null
   })
+  await closeServer()
 })

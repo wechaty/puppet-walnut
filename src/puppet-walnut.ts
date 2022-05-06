@@ -19,7 +19,7 @@
 import * as PUPPET from 'wechaty-puppet'
 import type { FileBoxInterface } from 'file-box'
 import { FileBox } from 'file-box'
-import { initSever } from './sever/sever.js'
+import { initServer } from './server/server.js'
 import { config, log, VERSION } from './config.js'
 import { updateToken } from './help/request.js'
 import type { FileItem, WalnutContactPayload, WalnutMessagePayload } from './help/struct.js'
@@ -72,7 +72,7 @@ class PuppetWalnut extends PUPPET.Puppet {
 
   override async onStart (): Promise<void> {
 
-    await initSever()
+    await initServer(PuppetWalnut.port)
 
     PuppetWalnut.cacheManager = await CacheManager.init()
 

@@ -76,7 +76,10 @@ class PuppetWalnut extends PUPPET.Puppet {
 
     PuppetWalnut.cacheManager = await CacheManager.init()
 
-    await updateToken()
+    updateToken()
+
+    // 定时两小时
+    setInterval(updateToken, 2 * 60 * 60 * 1000)
 
     this.login(PuppetWalnut.chatbotId)
 

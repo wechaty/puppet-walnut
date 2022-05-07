@@ -11,8 +11,8 @@ const headers = {
   authorization: 'accessToken',
 }
 
-export async function updateToken () {
-  await axios.request({
+export function updateToken () {
+  void axios.request({
     data: {
       appId: PuppetWalnut.appId,
       appKey: PuppetWalnut.appKey,
@@ -25,8 +25,6 @@ export async function updateToken () {
     log.info('update-token', `${headers['authorization']}`)
     return null
   })
-  // 定时两小时
-  // setTimeout(updateToken, 2 * 60 * 60 * 1000)
 }
 
 export async function uploadFile (temp: boolean, file: FileBoxInterface): Promise<FileItem> {

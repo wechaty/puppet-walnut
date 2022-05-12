@@ -11,8 +11,8 @@ const headers = {
   authorization: 'accessToken',
 }
 
-export function updateToken () {
-  void axios.request({
+export async function updateToken () {
+  await axios.request({
     data: {
       appId: PuppetWalnut.appId,
       appKey: PuppetWalnut.appKey,

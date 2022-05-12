@@ -1,6 +1,6 @@
 {
   "name": "wechaty-puppet-walnut",
-  "version": "1.18.5",
+  "version": "1.18.6",
   "description": "Puppet Walnut for Wechaty",
   "type": "module",
   "exports": {
@@ -24,6 +24,7 @@
     "lint:md": "markdownlint README.md",
     "lint:es": "eslint \"src/**/*.ts\" \"tests/**/*.spec.ts\" --ignore-pattern tests/fixtures/",
     "start": "node --loader ts-node/esm examples/ding-dong-bot.ts",
+    "dev": "cross-env WECHATY_LOG=silly node --loader ts-node/esm examples/chatbot.ts",
     "test": "npm run lint && npm run test:unit",
     "test:pack": "bash -x scripts/npm-pack-testing.sh",
     "test:unit": "cross-env NODE_OPTIONS=\"--no-warnings --loader=ts-node/esm\" tap \"src/**/*.spec.ts\" \"tests/**/*.spec.ts\""
@@ -70,7 +71,8 @@
     "koa-body": "^4.2.0",
     "koa-router": "^10.1.1",
     "uuid": "^8.3.2",
-    "vcard4": "^2.4.0"
+    "vcard4": "^2.4.0",
+    "wechaty": "^1.18.1"
   },
   "files": [
     "dist",

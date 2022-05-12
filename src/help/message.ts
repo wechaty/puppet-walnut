@@ -41,7 +41,37 @@ export async function sendPostMessage (contactId: string, postPayload: PUPPET.pa
   }
   const fileItem = await uploadFile(true, (<FileBoxInterface>img.payload.filebox))
 
-  sendMessage(contactId, {
+  const suggestion = [
+    {
+      reply:{
+        displayText:'aaa',
+      },
+    },
+    {
+      action:{
+        displayText:'Open website or deep link',
+        urlAction:{
+          openUrl:{
+            application:'webview',
+            url:'https://fabian4.site',
+            viewMode:'half',
+          },
+        },
+      },
+    },
+    {
+      action:{
+        dialerAction:{
+          dialPhoneNumber:{
+            phoneNumber:'+8617928222350',
+          },
+        },
+        displayText:'Call a phone number',
+      },
+    },
+  ]
+
+  const msg = {
     contentEncoding: contentEncoding.utf8,
     contentText: {
       message: {
@@ -54,6 +84,7 @@ export async function sendPostMessage (contactId: string, postPayload: PUPPET.pa
               mediaFileSize: fileItem.fileSize,
               mediaUrl: fileItem.url,
             },
+            suggestions: suggestion,
             title: title.payload.text,
           },
           layout: {
@@ -66,7 +97,9 @@ export async function sendPostMessage (contactId: string, postPayload: PUPPET.pa
       },
     },
     contentType: 'application/vnd.gsma.botmessage.v1.0+json',
-  })
+  }
+
+  sendMessage(contactId, msg)
 }
 
 export function sendMessage (contactId: string, msg: MessageItem) {

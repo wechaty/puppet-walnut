@@ -149,7 +149,10 @@ WechatyBuilder.build()  // get a Wechaty instance
 - `sipId`、`appId`和`appKey`可以通过环境变量或者此处传入。
 - `port`和`notifyUrlPrefix`可以指定 koa 服务监听的端口和路由前缀。
 > 比如 bot 申请的回调地址为： http://123.123.123.123:8080/sms/
+> 
 > 此时`port`设为 8080, `notifyUrlPrefix`为 '/sms'
+> 
+> `port`默认为 3000, `notifyUrlPrefix` 默认为 ''
 
 ~~~ts
 new PuppetWalnut({

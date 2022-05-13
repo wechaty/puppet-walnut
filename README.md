@@ -152,7 +152,7 @@ WechatyBuilder.build()  // get a Wechaty instance
 > 
 > 此时`port`设为 8080, `notifyUrlPrefix`为 '/sms'
 > 
-> `port`默认为 3000, `notifyUrlPrefix` 默认为 ''
+> `port`默认为 3000, `notifyUrlPrefix` 默认为空
 
 ~~~ts
 new PuppetWalnut({

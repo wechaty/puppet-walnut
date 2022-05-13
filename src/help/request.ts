@@ -11,6 +11,22 @@ const headers = {
   authorization: 'accessToken',
 }
 
+export async function initToken () {
+  await axios.request({
+    data: {
+      appId: PuppetWalnut.appId,
+      appKey: PuppetWalnut.appKey,
+    },
+    headers: headers,
+    method: 'POST',
+    url: PuppetWalnut.baseUrl + Api.accessToken,
+  }).then(res => {
+    headers.authorization = 'accessToken ' + res.data.accessToken
+    log.info('update-token', `${headers['authorization']}`)
+    return null
+  })
+}
+
 export function updateToken () {
   void axios.request({
     data: {
@@ -21,7 +37,7 @@ export function updateToken () {
     method: 'POST',
     url: PuppetWalnut.baseUrl + Api.accessToken,
   }).then(res => {
-    headers.authorization = headers.authorization + ' ' + res.data.accessToken
+    headers.authorization = 'accessToken ' + res.data.accessToken
     log.info('update-token', `${headers['authorization']}`)
     return null
   })

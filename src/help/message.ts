@@ -41,7 +41,7 @@ export async function sendPostMessage (contactId: string, postPayload: PUPPET.pa
   }
   const fileItem = await uploadFile(true, (<FileBoxInterface>img.payload.filebox))
 
-  sendMessage(contactId, {
+  const msg = {
     contentEncoding: contentEncoding.utf8,
     contentText: {
       message: {
@@ -66,7 +66,9 @@ export async function sendPostMessage (contactId: string, postPayload: PUPPET.pa
       },
     },
     contentType: 'application/vnd.gsma.botmessage.v1.0+json',
-  })
+  }
+
+  sendMessage(contactId, msg)
 }
 
 export function sendMessage (contactId: string, msg: MessageItem) {

@@ -1,12 +1,14 @@
 import Router from 'koa-router'
 import { checkDelivery, notifyAuthorization, parseMessage } from './parse.js'
+export default function initRouter (prefix: string): Router {
 
-const router = new Router()
+  const router = new Router()
 
-router.get('/sms/notifyPath', notifyAuthorization)
+  router.get(prefix + '/notifyPath', notifyAuthorization)
 
-router.post('/sms/messageNotification/sip:chatbotId@botplatform.rcs.chinaunicom.cn/messages', parseMessage)
+  router.post(prefix + '/messageNotification/sip:chatbotId@botplatform.rcs.chinaunicom.cn/messages', parseMessage)
 
-router.post('/sms/deliveryNotification/sip:chatbotId@botplatform.rcs.chinaunicom.cn/status', checkDelivery)
+  router.post(prefix + '/deliveryNotification/sip:chatbotId@botplatform.rcs.chinaunicom.cn/status', checkDelivery)
 
-export default router.routes()
+  return router
+}

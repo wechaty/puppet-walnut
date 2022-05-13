@@ -144,7 +144,24 @@ WechatyBuilder.build()  // get a Wechaty instance
 
 ## 使用示例
 
-### 1. 创建实例
+### 1. 可配置参数
+
+- `sipId`、`appId`和`appKey`可以通过环境变量或者此处传入。
+- `port`和`notifyUrlPrefix`可以指定 koa 服务监听的端口和路由前缀。
+> 比如 bot 申请的回调地址为： http://123.123.123.123:8080/sms/
+> 此时`port`设为 8080, `notifyUrlPrefix`为 '/sms'
+
+~~~ts
+new PuppetWalnut({
+  sipId: xxxxxxx,
+  appId: xxxxxxx,
+  appKey: xxxxxxx,
+  port: 3000,
+  notifyUrlPrefix: '/sms'
+})
+~~~
+
+### 2. 创建实例
 
 ~~~ts
 const bot = WechatyBuilder.build({
@@ -160,7 +177,7 @@ await bot.start()
 const contact = await bot.Contact.find({ id: 'xxxxxxxxxxx' })
 ~~~
 
-### 2. 文本消息
+### 3. 文本消息
 
 ~~~ts
 await contact.say('This is a simple text message.')
@@ -168,7 +185,7 @@ await contact.say('This is a simple text message.')
 
 ![text-message](https://user-images.githubusercontent.com/60428924/163546259-67dfa5a1-521a-4d87-bfbf-af4e09dabf7e.jpg)
 
-### 3. 图片消息
+### 4. 图片消息
 
 ~~~ts
 contact.say(FileBox.fromFile('C:\\Users\\Desktop\\1.png'))
@@ -176,7 +193,7 @@ contact.say(FileBox.fromFile('C:\\Users\\Desktop\\1.png'))
 
 ![image-message](https://user-images.githubusercontent.com/60428924/163546352-1d573b86-65ee-474e-baf3-008ffe608a8d.jpg)
 
-### 4. 富文本消息
+### 5. 富文本消息
 
 ~~~ts
 const post = await bot.Post.builder()

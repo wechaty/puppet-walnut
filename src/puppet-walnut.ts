@@ -34,6 +34,7 @@ export type PuppetWalnutOptions = PUPPET.PuppetOptions & {
   appId?: string,
   appKey?: string,
   port?: number,
+  notifyUrlPrefix?: string
 }
 
 class PuppetWalnut extends PUPPET.Puppet {
@@ -45,6 +46,7 @@ class PuppetWalnut extends PUPPET.Puppet {
   static baseUrl: string
   static chatbotId: string
   static instance: PuppetWalnut
+  static notifyUrlPrefix: string
   static cacheManager?: CacheManager
   static override readonly VERSION = VERSION
 
@@ -55,6 +57,7 @@ class PuppetWalnut extends PUPPET.Puppet {
     PuppetWalnut.sipId = options?.sipId || process.env['WECHATY_PUPPET_WALNUT_SIPID'] || ''
     PuppetWalnut.appId = options?.appId || process.env['WECHATY_PUPPET_WALNUT_APPID'] || ''
     PuppetWalnut.appKey = options?.appKey || process.env['WECHATY_PUPPET_WALNUT_APPKEY'] || ''
+    PuppetWalnut.notifyUrlPrefix = options?.notifyUrlPrefix || ''
     if (!PuppetWalnut.sipId || !PuppetWalnut.appId || !PuppetWalnut.appKey) {
       throw new Error('Set your Environment variables')
     }
@@ -72,7 +75,7 @@ class PuppetWalnut extends PUPPET.Puppet {
 
   override async onStart (): Promise<void> {
 
-    await initServer(PuppetWalnut.port)
+    await initServer(PuppetWalnut.port, PuppetWalnut.notifyUrlPrefix)
 
     PuppetWalnut.cacheManager = await CacheManager.init()
 

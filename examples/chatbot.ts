@@ -5,7 +5,9 @@ import { FileBox } from 'file-box'
 import { log } from 'wechaty-puppet'
 
 const bot = WechatyBuilder.build({
-  puppet: new PuppetWalnut(),
+  puppet: new PuppetWalnut({
+    notifyUrlPrefix: '/sms',
+  }),
 })  // get a Wechaty instance
   .on('login', (user: any) => log.info(`User ${user} logged in`))
   .on('message', async (message: Message) => {

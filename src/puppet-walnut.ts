@@ -21,7 +21,7 @@ import type { FileBoxInterface } from 'file-box'
 import { FileBox } from 'file-box'
 import { initServer } from './server/server.js'
 import { config, log, VERSION } from './config.js'
-import { updateToken } from './help/request.js'
+import {initToken, updateToken} from './help/request.js'
 import type { FileItem, WalnutContactPayload, WalnutMessagePayload } from './help/struct.js'
 import { MessageRawType } from './help/struct.js'
 import { sendFileMessage, sendLocationMessage, sendMessage, sendPostMessage, sendTextMessage } from './help/message.js'
@@ -79,13 +79,9 @@ class PuppetWalnut extends PUPPET.Puppet {
 
     PuppetWalnut.cacheManager = await CacheManager.init()
 
-    await updateToken()
+    await initToken()
 
-    // 定时两小时
-    // setInterval(async () => {
-    //   return  updateToken()
-    // }, 2 *  60 * 60 * 1000)
-    // setInterval(updateToken, 2 * 60 * 60 * 1000)
+    setInterval(updateToken, 2 * 60 * 60 * 1000)
 
     this.login(PuppetWalnut.chatbotId)
 

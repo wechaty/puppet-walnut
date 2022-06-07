@@ -26,7 +26,6 @@ export function sendLocationMessage (contactId: string, locationPayload: PUPPET.
 export async function sendFileMessage (contactId: string, file: FileBoxInterface) {
   const fileItem = await uploadFile(true, file)
   fileItem.contentType = 'image/png'
-
   sendMessage(contactId, {
     contentEncoding: contentEncoding.utf8,
     contentText: [fileItem],

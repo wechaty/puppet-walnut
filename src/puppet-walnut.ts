@@ -185,6 +185,7 @@ class PuppetWalnut extends PUPPET.Puppet {
    *
    */
   override async messageRawPayloadParser (rawPayload: WalnutMessagePayload): Promise<PUPPET.payloads.Message> {
+    log.verbose('PuppetWalnut', 'messageRawPayloadParser(%s)', rawPayload.messageId)
     const res = {
       id: rawPayload.messageId,
       listenerId: rawPayload.destinationAddress,

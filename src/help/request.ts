@@ -89,7 +89,7 @@ export function post (url: string, data = {}) {
 axios.interceptors.request.use(
   function (config) {
     // log.silly('PuppetWalnut-Axios',
-    //   `Params: ${util.inspect(config.data, false, 2, true)}, Url: ${config.url}`)
+    //   `Params: ${util.inspect(config.data, false, 4, true)}, Url: ${config.url}`)
     return config
   },
 )
